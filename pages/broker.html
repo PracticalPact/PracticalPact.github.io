@@ -8,6 +8,7 @@
 <body>
     <div class="layout">
 
+        ```html
         <nav class="sidebar">
             <h2>Consumer Driven Contract Testing - A CDCT method</h2>
             <a href="../index.html">Welcome</a>
@@ -27,34 +28,105 @@
 
             <h2>Purpose</h2>
             <p>
-                The Pact Broker stores contracts, service versions, verification results, and
-                dependency information.
+                The Pact Broker is the central place where consumer contracts, provider
+                verification results, service versions, branches, environments, and dependency
+                information are stored.
+            </p>
+            <p>
+                It acts as the source of truth for whether services are compatible with each
+                other before they are deployed.
             </p>
 
-            <h2>Main functions</h2>
+            <h2>Main Dashboard</h2>
+            <img src="images/brokerHome.png"
+                 alt="Checklist for whether the method is relevant"
+                 style="max-width: 50%; height: auto;" />
+            <p>
+                The Pacts page shows all registered consumer-provider relationships.
+                Each row represents a contract between a consumer and a provider.
+            </p>
             <ul>
-                <li>Stores contracts from consumers</li>
-                <li>Allows providers to retrieve contracts</li>
-                <li>Stores provider verification results</li>
-                <li>Shows which services depend on each other</li>
-                <li>Supports deployment decisions based on compatibility</li>
+                <li><strong>Consumer:</strong> The service that uses an API.</li>
+                <li><strong>Provider:</strong> The service that provides the API.</li>
+                <li><strong>Latest pact published:</strong> When the consumer last published a contract.</li>
+                <li><strong>Webhook status:</strong> Whether automatic verification has been triggered.</li>
+                <li><strong>Last verified:</strong> When the provider last verified the contract.</li>
+            </ul>
+            <p>
+                Green means the contract has been successfully verified. Grey means it has not
+                been verified yet. Red means verification failed.
+            </p>
+
+            <h2>Contract Details</h2>
+            <img src="images/pactContract.png"
+                 alt="Checklist for whether the method is relevant"
+                 style="max-width: 50%; height: auto;" />
+            <p>
+                Opening a pact shows the actual interactions that make up the contract.
+                These interactions describe what the consumer expects from the provider.
+            </p>
+            <p>
+                A contract can include expected HTTP methods, paths, headers, request data,
+                response status codes, and response bodies.
+            </p>
+            <p>
+                During verification, the provider runs these interactions against its real
+                implementation to prove that it still satisfies the consumer's expectations.
+            </p>
+
+            <h2>The Matrix</h2>
+            <img src="images/pactMatrix.png"
+                 alt="Checklist for whether the method is relevant"
+                 style="max-width: 50%; height: auto;" />
+            <p>
+                The Matrix shows whether specific consumer versions are compatible with
+                specific provider versions.
+            </p>
+            <p>
+                Each row answers this question:
+            </p>
+            <blockquote>
+                Is this exact consumer version compatible with this exact provider version?
+            </blockquote>
+            <p>
+                This is important because a contract may pass for one provider version but fail
+                for another. The Matrix keeps track of this compatibility history.
+            </p>
+
+            <h2>Versioning</h2>
+            <p>
+                Every pact and verification result is connected to a version number.
+                The version should normally match the Git commit SHA so the contract can be
+                traced back to the exact source code.
+            </p>
+            <ul>
+                <li><strong>Version:</strong> The exact service version, often a Git commit hash.</li>
+                <li><strong>Branch:</strong> The Git branch the version came from, such as main or feature/my-change.</li>
+                <li><strong>Environment:</strong> Where the version is deployed, such as test or production.</li>
             </ul>
 
-            <h2>Typical workflow</h2>
+            <h2>Typical Workflow</h2>
             <ol>
-                <li>Consumer publishes a contract.</li>
-                <li>Provider retrieves the contract.</li>
-                <li>Provider verifies the contract.</li>
-                <li>Broker stores the verification result.</li>
-                <li>Teams use the broker to check service compatibility.</li>
+                <li>The consumer writes a Pact test.</li>
+                <li>The consumer publishes the contract to the Pact Broker.</li>
+                <li>A webhook triggers the provider verification job.</li>
+                <li>The provider verifies the contract against its implementation.</li>
+                <li>The provider publishes the verification result back to the Broker.</li>
+                <li>The Broker updates the Matrix.</li>
+                <li>The team runs can-i-deploy before deployment.</li>
+                <li>Deployment only continues if the required verifications have passed.</li>
             </ol>
 
             <h2>Output</h2>
             <p>
-                A central overview of contracts and compatibility between services.
+                The Pact Broker provides a central overview of contracts, verification results,
+                service dependencies, and compatibility between versions.
+            </p>
+            <p>
+                This helps teams detect breaking API changes in CI/CD before they reach
+                production.
             </p>
         </main>
-
     </div>
 </body>
 </html>
