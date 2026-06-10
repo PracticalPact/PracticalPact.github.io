@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CDCT Concept</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html" class="active">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Consumer-Driven Contract Testing with Pact</h1>
+
+            <p>
+                In practice, Consumer-Driven Contract Testing (CDCT) works by defining a contract for each interaction between two microservices.
+                A typical interaction is an API call where one service (the consumer) requests data from another service (the provider).
+            </p>
+
+            <p>
+                The contract is defined by the consumer. It describes how the consumer expects the provider’s API to behave, including the structure of requests and the expected responses.
+                This contract reflects the actual needs of the consumer rather than a general API specification.
+            </p>
+            <p>
+                Once defined, the contract is shared with the provider.
+                This can be done in different ways, for example through shared files, version control, or other forms of communication between teams.
+                The provider then verifies the contract by testing whether its implementation satisfies the expectations described by the consumer.
+            </p>
+
+            <p>
+                For each interaction between a consumer and a provider, there is therefore a contract that defines the expected behaviour.
+                If either the consumer or the provider changes in a way that breaks this contract, the verification will fail.
+                This allows teams to detect compatibility issues early without relying on full end-to-end testing.
+            </p>
+
+            <h2>Purpose</h2>
+            <p>
+                The purpose is to verify microservice compatibility without running the full system like we do with integration- and E2E-tests.
+            </p>
+
+            <img src="../images/testpyramid.png"
+                 alt="Test pyramid"
+                 class="zoomable pyramid-img" />
+
+            <div id="overlay" onclick="closeImage()">
+                <img id="overlay-img" alt="Expanded diagram">
+            </div>
+
+            <p>
+                In the test pyramid, Consumer-Driven Contract Testing is typically positioned below integration, component tests, and end-to-end tests.
+                Unit tests verify individual classes or functions in isolation, while integration tests verify that multiple components or systems can work together correctly.
+                Component or service tests validate the behavior of an entire service in isolation from the rest of the system.
+                Contract tests focus specifically on the communication boundary between services by verifying that requests and responses match the agreed contract.
+                Because contract tests avoid running the full distributed system, they are generally faster, more stable, and easier to maintain than end-to-end tests, while still providing confidence that services remain compatible.
+            </p>
+
+            <h2>The Pact framework</h2>
+            <p>
+                Pact is an open source, code-first solution with support for a wide array of programming languages.
+                Tests are written in the same language as the application code and typically follow a behavior-driven testing style, similar to frameworks such as Gherkin.
+                A contract is automatically created from the Consumer tests and are encoded in a JSON format, meaning it can be used by a Provider written in any language.
+            </p>
+            <p>
+                Pact supports HTTP and asynchronous message systems. Notably, this omits RPC systems.
+            </p>
+            <p>
+                Pact further includes a so-called <a href="broker.html">Pact Broker</a>.
+                This is a central contract repository that keeps track of Consumer and Provider versions, their contracts, and verification results.
+                It helps teams check whether services are compatible and supports decisions about when it is safe to deploy changes.
+            </p>
+
+            <h2>How Pact works in practice</h2>
+
+            <p>
+                Pact implements Consumer-Driven Contract Testing by combining mocks, contract generation, and automated verification.
+                When the consumer runs its tests, the real provider is replaced by a mock provider.
+                This mock returns predefined responses based on the expected interactions. During this process, Pact records the requests and responses and generates a contract.
+            </p>
+            <p>
+                The generated contract is then published to the
+                <a href="broker.html">Pact Broker</a>.
+                This removes the need for manual sharing of contracts between teams.
+                The broker stores contracts, service versions, and verification results.
+            </p>
+            On the provider side, the contract is retrieved from the broker and used to verify the real implementation.
+            The provider runs tests against the contract, which defines the requests it must handle and the responses it must return.
+            If the provider behaves as specified, the verification succeeds.
+            <p>
+                In this process, mocks are only used to simulate the opposite side of the interaction. The service under test always runs its real implementation.
+                This allows consumer and provider to be tested independently, while still ensuring that they remain compatible.
+            </p>
+
+            <img src="../images/pact.png"
+                 alt="Pact diagram"
+                 class="zoomable" />
+
+            <div id="overlay" onclick="closeImage()">
+                <img id="overlay-img" alt="Expanded diagram">
+            </div>
+
+            <ul>
+                <li>Consumer: the service that calls another service</li>
+                <li>Provider: the service that exposes an API</li>
+                <li>Contract: the expected request and response between services</li>
+                <li>Verification: checking whether the provider satisfies the contract</li>
+            </ul>
+
+            <h2>When to use it</h2>
+            <p>
+                Use CDCT when services communicate through APIs and compatibility errors are found
+                too late in integration or end-to-end tests.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>
+
+<script>
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlay-img");
+
+    document.querySelectorAll(".zoomable").forEach(img => {
+        img.addEventListener("click", () => {
+            overlayImg.src = img.src;
+            overlay.style.display = "flex";
+        });
+    });
+
+    function closeImage() {
+        overlay.style.display = "none";
+        overlayImg.src = "";
+    }
+</script>

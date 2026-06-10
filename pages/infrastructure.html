@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Infrastructure</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html" class="active">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Infrastructure Setup</h1>
+
+            <h2>Goal</h2>
+            <p>
+                This page describes the infrastructure needed to run and manage contract testing.
+            </p>
+
+            <h2>Required components</h2>
+            <ul>
+                <li>Pact Broker</li>
+                <li>Database for the Pact Broker</li>
+                <li>CI/CD pipeline</li>
+                <li>Repository access</li>
+                <li>Internal hosting environment, such as Docker or Kubernetes</li>
+            </ul>
+
+            <h2>Steps</h2>
+            <ol>
+                <li>Deploy a Pact Broker.</li>
+                <li>Connect the broker to a database.</li>
+                <li>Configure access from consumer and provider repositories.</li>
+                <li>Configure environment names, such as test and production.</li>
+                <li>Verify that contracts can be published and retrieved.</li>
+            </ol>
+
+            <h2>Output</h2>
+            <p>
+                A working contract testing infrastructure that supports contract publication,
+                verification, and visibility.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>

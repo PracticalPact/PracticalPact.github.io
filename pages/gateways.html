@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gateways</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html" class="active">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Contract Testing with Gateways</h1>
+
+            <h2>Problem</h2>
+            <p>
+                Pact normally assumes a direct consumer-provider relationship. A gateway adds
+                an extra layer between the consumer and provider.
+            </p>
+
+            <h2>Method</h2>
+            <p>
+                Treat the gateway as its own service and create separate contracts for each boundary.
+            </p>
+
+            <h2>Steps</h2>
+            <ol>
+                <li>Create a contract between the frontend and the gateway.</li>
+                <li>Create a contract between the gateway and the backend provider.</li>
+                <li>Verify that the gateway satisfies the frontend contract.</li>
+                <li>Verify that the backend satisfies the gateway contract.</li>
+            </ol>
+
+            <h2>Decision points</h2>
+            <ul>
+                <li>If the gateway transforms requests, test the transformed request separately.</li>
+                <li>If authentication is converted by the gateway, do not claim that Pact verifies the full authentication flow.</li>
+                <li>If the gateway only routes traffic without transformation, the contract may be simpler.</li>
+            </ul>
+
+            <h2>Output</h2>
+            <p>
+                Verified contracts across both frontend-gateway and gateway-provider boundaries.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>

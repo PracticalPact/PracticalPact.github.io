@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Setup</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html" class="active">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Setting up a Pact Project</h1>
+
+            <h2>Goal</h2>
+            <p>
+                This page explains how to prepare a project for Consumer-Driven Contract Testing.
+            </p>
+
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>Either a consumer service or a provider service</li>
+                <li>Access to the source code repository</li>
+                <li>A test framework for the project language</li>
+            </ul>
+
+            <h2>Steps</h2>
+            <ol>
+                <li>
+                    Install the relevant Pact library for the project language.
+                    <details>
+                        <summary>Example for .NET</summary>
+                        <pre><code>
+                            #Find in Nuget package manager
+                            PackageReference Include="PactNet" Version="5.0.1"
+                            PackageReference Include="PactNet.Output.Xunit" Version="1.0.0"
+                    </code></pre>
+                    </details>
+                    <details>
+                        <summary>Example for JavaScript</summary>
+                        <pre><code>
+                            #Install via npm
+                            npm install @pact-foundation/pact
+                            npm install @pact-foundation/pact-cli@^18.0.0
+                        </code></pre>
+                    </details>
+                </li>
+                <li>Create a contract test project or test folder.</li>
+                <li>Configure the consumer name and provider name.</li>
+                <li>Write the first consumer test.</li>
+                <li>Run the test and generate a contract file.</li>
+                <li>Publish the contract to the Pact Broker.</li>
+                <li>Set up provider verification against the published contract.</li>
+            </ol>
+
+            <h2>Output</h2>
+            <p>
+                A project that can generate and publish Pact contracts.
+            </p>
+
+            <p>
+                Example provider setup:
+                <a href="../assets/Dockerfile" download>
+                    Download the provider Dockerfile
+                </a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

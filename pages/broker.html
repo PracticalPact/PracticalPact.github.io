@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pact Broker</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html" class="active">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Pact Broker</h1>
+
+            <h2>Purpose</h2>
+            <p>
+                The Pact Broker stores contracts, service versions, verification results, and
+                dependency information.
+            </p>
+
+            <h2>Main functions</h2>
+            <ul>
+                <li>Stores contracts from consumers</li>
+                <li>Allows providers to retrieve contracts</li>
+                <li>Stores provider verification results</li>
+                <li>Shows which services depend on each other</li>
+                <li>Supports deployment decisions based on compatibility</li>
+            </ul>
+
+            <h2>Typical workflow</h2>
+            <ol>
+                <li>Consumer publishes a contract.</li>
+                <li>Provider retrieves the contract.</li>
+                <li>Provider verifies the contract.</li>
+                <li>Broker stores the verification result.</li>
+                <li>Teams use the broker to check service compatibility.</li>
+            </ol>
+
+            <h2>Output</h2>
+            <p>
+                A central overview of contracts and compatibility between services.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>

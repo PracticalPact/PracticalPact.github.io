@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Consumer Driven Contract Testing - A CDCT method</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method </h2>
+
+            <a href="index.html">Welcome</a>
+            <a href="pages/cdct.html">CDCT Concept</a>
+            <a href="pages/setup.html">Project Setup</a>
+            <a href="pages/contracts.html">Contracts</a>
+            <a href="pages/infrastructure.html">Infrastructure</a>
+            <a href="pages/gateways.html">Gateways</a>
+            <a href="pages/cicd.html">CI/CD</a>
+            <a href="pages/local-tests.html">Local Tests</a>
+            <a href="pages/broker.html">Pact Broker</a>
+            <a href="pages/workflow.html">Team Workflow</a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+
+            <h1>Consumer Driven Contract Testing - A CDCT method</h1>
+
+            <p>
+                This page serves the purpose of helping you determine if the method described in
+                <strong>Consumer Driven Contract Testing - A CDCT method</strong> is relevant and suitable for your organisation.
+                It provides a checklist to assess relevance, criteria for organisational fit, and
+                guidance on when to use or avoid this method.
+            </p>
+
+            <img src="images/checklist.png"
+                 alt="Checklist for whether the method is relevant"
+                 style="max-width: 50%; height: auto;" />
+
+            <h2>Is this method right for your organization?</h2>
+
+            <p>This method is a good fit if most of the following apply:</p>
+
+            <ul>
+                <li>You are using or planning to use a microservices architecture</li>
+                <li>You are a medium to large organization with multiple teams</li>
+                <li>You are using container-based infrastructure (e.g., Docker, Kubernetes)</li>
+                <li>You have the resources to introduce and maintain a new testing strategy</li>
+            </ul>
+
+            <p>If several of these do <strong>not</strong> apply:</p>
+
+            <ul>
+                <li>For monolithic systems → use traditional testing approaches</li>
+                <li>For small teams or simple systems → use Pact without additional extensions</li>
+                <li>For non-containerized environments → evaluate standard Pact capabilities first</li>
+                <li>If resources are limited → avoid introducing a new testing strategy at this time</li>
+            </ul>
+
+            <p>
+                Additionally, you should have the following prerequisite knowledge to effectively
+                implement this method:
+            </p>
+
+            <details>
+                <summary>Prerequisite knowledge</summary>
+
+                <ul>
+                    <li>Basic understanding of APIs (request/response, HTTP methods, payloads)</li>
+                    <li>Experience with testing APIs</li>
+                    <li>A development workflow with version control and CI/CD</li>
+                    <li>Ability to run and manage multiple services (e.g., Docker)</li>
+                </ul>
+            </details>
+
+            <h2>When should you use this method?</h2>
+
+            <p>You should consider this method if your organisation experiences one or more of the following:</p>
+
+            <ul>
+                <li>You rely heavily on slow or unstable E2E and integration tests</li>
+                <li>You want faster feedback in your CI/CD pipeline</li>
+                <li>You have multiple services communicating through APIs</li>
+                <li>You struggle with contracts across gateways</li>
+                <li>You depend on external APIs and want safer validation</li>
+                <li>You want a structured way to adopt CDCT</li>
+            </ul>
+
+            <h2>When should you NOT use this method?</h2>
+
+            <ul>
+                <li>Your system is a monolith with little service interaction</li>
+                <li>Your system has low complexity</li>
+                <li>Your current testing setup already works well</li>
+                <li>You lack resources to maintain a new testing approach</li>
+            </ul>
+
+            <h2>What type of organisation is this for?</h2>
+
+            <ul>
+                <li>Microservice-based organisations</li>
+                <li>Teams working on independent services</li>
+                <li>CI/CD-driven environments with API communication</li>
+                <li>Smaller teams or simple systems can often use CDCT directly with tools like Pact without additional structure</li>
+            </ul>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

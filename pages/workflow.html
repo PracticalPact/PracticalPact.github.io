@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Workflow</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html" class="active">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Development Workflow and Team Coordination</h1>
+
+            <h2>Goal</h2>
+            <p>
+                CDCT should fit into normal development work instead of becoming a separate manual process.
+            </p>
+
+            <h2>Consumer team responsibilities</h2>
+            <ul>
+                <li>Define the API expectations they actually rely on</li>
+                <li>Maintain consumer contract tests</li>
+                <li>Publish new contracts when expectations change</li>
+            </ul>
+
+            <h2>Provider team responsibilities</h2>
+            <ul>
+                <li>Verify contracts from consumers</li>
+                <li>Investigate failed contract verifications</li>
+                <li>Coordinate breaking API changes with affected consumers</li>
+            </ul>
+
+            <h2>Decision points</h2>
+            <ul>
+                <li>If a provider change breaks a contract, the provider team must either adapt the API or coordinate with the consumer.</li>
+                <li>If a consumer adds a new expectation, the provider team must verify whether the provider supports it.</li>
+                <li>If several teams depend on one service, contract changes should be reviewed before deployment.</li>
+            </ul>
+
+            <h2>Output</h2>
+            <p>
+                A clearer workflow for maintaining service compatibility across teams.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>

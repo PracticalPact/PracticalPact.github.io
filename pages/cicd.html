@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CI/CD</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html" class="active">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>CI/CD Integration</h1>
+
+            <h2>Goal</h2>
+            <p>
+                Contract testing should run automatically as part of the development pipeline.
+            </p>
+
+            <h2>Consumer pipeline</h2>
+            <ol>
+                <li>Run consumer tests.</li>
+                <li>Generate contract files.</li>
+                <li>Publish contracts to the Pact Broker.</li>
+            </ol>
+
+            <h2>Provider pipeline</h2>
+            <ol>
+                <li>Retrieve relevant contracts from the Pact Broker.</li>
+                <li>Run provider verification tests.</li>
+                <li>Publish verification results to the Pact Broker.</li>
+            </ol>
+
+            <h2>Decision points</h2>
+            <ul>
+                <li>If verification passes, allow the pipeline to continue.</li>
+                <li>If verification fails, block deployment or notify the provider team.</li>
+                <li>If the failure is caused by missing test setup, update the provider test configuration.</li>
+            </ul>
+
+            <h2>Output</h2>
+            <p>
+                Automated compatibility checks in the CI/CD pipeline.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contracts</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html" class="active">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>Creating Contracts</h1>
+
+            <h2>Goal</h2>
+            <p>
+                A contract should describe one real interaction between a consumer and a provider.
+            </p>
+
+            <h2>Input</h2>
+            <ul>
+                <li>The API endpoint used by the consumer</li>
+                <li>The request method, path, headers, and body</li>
+                <li>The expected provider response</li>
+            </ul>
+
+            <h2>Steps</h2>
+            <ol>
+                <li>Identify a real API call made by the consumer.</li>
+                <li>Define the expected request.</li>
+                <li>Define the expected response.</li>
+                <li>Write a consumer test using a Pact mock provider.</li>
+                <li>Run the test to generate the contract.</li>
+                <li>Review the generated contract before publishing.</li>
+            </ol>
+
+            <h2>Decision points</h2>
+            <ul>
+                <li>If the interaction is not used by the consumer, do not create a contract.</li>
+                <li>If the response contains dynamic values, use matchers instead of fixed values.</li>
+                <li>If sensitive data appears in the contract, replace it with safe test data.</li>
+            </ul>
+
+            <h2>Output</h2>
+            <p>
+                A contract that captures the consumer’s expectations of the provider.
+            </p>
+        </main>
+
+    </div>
+</body>
+</html>
