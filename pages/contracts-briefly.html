@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contracts in Short</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/scripts.js"></script>
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>A Brief Introduction to Contracts</h1>
+            <p><i>Builds on the concepts introduced in <a href="cdct-briefly.html">A Brief Introduction to CDCT</a>.</i></p>
+
+            <p>Communication in CDCT is defined as the Consumer sending a request to the Provider, followed by the Provider sending a response to the Consumer. A Contract is essentially made up of a number of these exchanges, which we will call Scenarios. Each Scenario additionally has a description of what happens in the Scenario. A description is simply text without further meaning.</p>
+
+            <img src="../images/contracts/ContractScenario.png"
+                 alt="Contract and Scenario structure"
+                 class="zoomable" />
+            
+            <button type="button" class="expandable-button">For Developers</button>
+            <div class="expandable-content">
+                <p>A more accurate domain model displayed as an UML class diagram can be seen here.</p>
+                <img src="../images/contracts/ContractScenarioUml.drawio.png"
+                 alt="Contract and Scenario UML Diagram"
+                 class="zoomable" />
+            </div> 
+
+            <p></p>
+            
+        </main>
+
+    </div>
+</body>
+</html>
+
+<script>
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlay-img");
+
+    document.querySelectorAll(".zoomable").forEach(img => {
+        img.addEventListener("click", () => {
+            overlayImg.src = img.src;
+            overlay.style.display = "flex";
+        });
+    });
+
+    function closeImage() {
+        overlay.style.display = "none";
+        overlayImg.src = "";
+    }
+</script>
