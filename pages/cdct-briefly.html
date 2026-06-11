@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CDCT Concept</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/scripts.js"></script>
+</head>
+<body>
+    <div class="layout">
+
+        <nav class="sidebar">
+            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
+            <a href="../index.html">Welcome</a>
+            <a href="cdct.html" class="active">CDCT Concept</a>
+            <a href="setup.html">Project Setup</a>
+            <a href="contracts.html">Contracts</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="gateways.html">Gateways</a>
+            <a href="cicd.html">CI/CD</a>
+            <a href="local-tests.html">Local Tests</a>
+            <a href="broker.html">Pact Broker</a>
+            <a href="workflow.html">Team Workflow</a>
+        </nav>
+
+        <main class="content">
+            <h1>A Brief Introduction to CDCT</h1>
+
+            <p>Consumer-Driven Contract Testing (CDCT) is a way to test if two separate programs (micro-services, to be more precise) are able to communicate with each other in a way that they both understand. It is, in essence, about establishing a shared language between them that they can both rely on.</p>
+            <p>This agreement is formalised in a so-called Contract. It defines what the communication should "look like" and <i>how</i> things must be said. It does not define <i>what</i> must be said. As en example, imagine a contact form on a website: you can enforce that the user fills out an "email" field, and even that it has the format of a real email address, but you can not immediately ensure that the entered email is theirs or even exists. To do that, you would need to send a confirmation email. CDCT operates on that same level of immediate verification. To do the equivelant of a verification email, you would need a different testing method. </p>
+            <button type="button" class="expandable-button">For Developers</button>
+            <div class="expandable-content">
+                <p>You can think of CDCT as a type-checker. If you program in an untyped language — such as javascript — you have no guardrails to ensure type compatibility. If you call a function expecting to get a string, but which actually gives a number, you will not get an error until something breaks during runtime. Hopefully in an automated test, but possibly in production. Then comes the fun part of figuring out what went wrong. Moving to a typed language — such as typescript — means that error would be caught before you could even start the program.</p>
+                <p>In the world of microservices, this is equivelant to relying on the OAS of the API that you're calling. You hope that it's accurate and won't change tomorrow. If not, the error can hopefully be caught by one of your integration tests, or maybe someone will stumble on it before your service stops functioning in production. Introducing CDCT means you clearly define the format of the input and output of your endpoints. If either party deviates, CDCT will catch it before anything can be deployed. </p>
+                <p>As per the same analogy, a type checker can not tell you that a function performs the correct operations — only that its input and output follows a particular structure. It is nonetheless an essential tool for software development.</p>
+            </div> 
+            <p>In the context of CDCT, communication happens between two micro-services at a time. One initiates the exchange with a request and the other responds. We call the former a Consumer and the latter a Provider. Thus a contract contains the rules of every request and response. This also means that for every two micro-services that talk to each other, there will be one Contract.</p>
+            <p>As the name "Consumer-Driven Contract Testing" implies, it is the Consumer that creates the Contract. It must then prove that it itself fulfills the Contract, after which the Contract is given to the Provider. The Provider must then perform the same proof. This exchange of Contracts and verifications is handled by something called a Broker. It is essentially a centralised database that holds alls the Contracts and verification proofs for all your micro-services.</p>
+            <p>CDCT is fully automised, so whenever either the Consumer or Provider changes, the tests will be run immediately. This means that mistakes will be caught quickly and less time will be spent on quality assurance and debugging down the road.</p>
+            <button type="button" class="expandable-button">For Developers</button>
+            <div class="expandable-content">
+                <p>The beautiful thing about CDCT is that it can be performed in total isolation. The Consumer does not need to actually communicate with the Provider to perform its test, and vice versa. That makes it possible to run CDCT both locally and in CI/CD pipelines without any of the hassle of integration tests.</p>
+            </div> 
+        </main>
+
+    </div>
+</body>
+</html>
+
+<script>
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlay-img");
+
+    document.querySelectorAll(".zoomable").forEach(img => {
+        img.addEventListener("click", () => {
+            overlayImg.src = img.src;
+            overlay.style.display = "flex";
+        });
+    });
+
+    function closeImage() {
+        overlay.style.display = "none";
+        overlayImg.src = "";
+    }
+</script>
