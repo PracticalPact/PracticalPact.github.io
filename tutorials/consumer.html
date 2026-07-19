@@ -15,15 +15,36 @@
             <h1>Consumer tutorial</h1>
             <p>This tutorial will teach you to implement Consumer-Driven Contract Testing (CDCT) for a Consumer. If you do not know what CDCT or a Consumer is, read <a href="https://practicalpact.github.io/pages/cdct-briefly.html">this short introduction</a> before you continue.</p>
             <p>To set up a given microservice as a Consumer, the following steps are followed.</p>
+
+            <ul>
+                <li><a href="#running-example">Running Example</a></li>
+                <li><a href="#consumer-contract-sequence-diagram">Consumer contract sequence diagram</a></li>
+                <li><a href="#update-gitignore">Update .gitignore</a></li>
+                <li><a href="#create-test-file">Create Test File</a></li>
+                <li><a href="#create-scenarios">Create Scenarios</a></li>
+                <li><a href="#the-contract">The contract</a></li>
+                <li><a href="#continuous-integration">Continuous Integration (CI)</a></li>
+                <li><a href="#continuous-deployment">Continuous Deployment (CD)</a></li>
+            </ul>
+
             <h1 id="running-example">Running Example</h1>
             <p>During this tutorial, a running example will be used for code snippets. It is a very simple frontend for a forum where you can create posts. If you wish, you can explore it on GitHub. The main branch has the full code including the Consumer tests.</p>
             <p>C#: <a href="https://github.com/PracticalPact/example-consumer-csharp">https://github.com/PracticalPact/example-consumer-csharp</a> </p>
             <p>JavaScript: WIP, but you can look at <a href="https://github.com/ds-itu-frontend-service/ReactProjectTicTacToe-APACTproject/tree/my-change">https://github.com/ds-itu-frontend-service/ReactProjectTicTacToe-APACTproject/tree/my-change</a> </p>
             <h1 id="consumer-contract-sequence-diagram">Consumer contract sequence diagram</h1>
-            <img src="../images/Consumer.drawio.png"
-                 alt="Consumer contract sequence diagram"
-                 class="zoomable" />
+
             <p>In CDCT, the Consumer defines the API interactions it depends on by creating contract tests. These tests describe the requests the Consumer sends and the responses it expects from the Provider. The generated contracts are published to the Pact Broker, where they can be verified by Providers. This ensures that service integrations remain compatible as systems evolve. This is done by sending requests to a mock provider and verifying that the Consumer behaves as expected. You can see this visualised in the sequence diagram below. You do not need to fully understand it now, but may find it useful to refer back to later.</p>
+
+            <button type="button" class="expandable-button">Example: Consumer:Frontend. Provider: Favorite API</button>
+            <div class="expandable-content">
+                <figure>
+                    <img src="../images/Consumer.drawio.png"
+                         alt="Consumer contract sequence diagram"
+                         class="zoomable" />
+                    <figcaption>Figure 1: Consumer contract sequence diagram</figcaption>
+                </figure>
+            </div>
+
             <h1 id="update-gitignore">Update .gitignore</h1>
             <p>Start by adding <code>pacts/</code> to your .gitignore.</p>
             <h1 id="create-test-file">Create Test File</h1>
@@ -440,7 +461,7 @@ describe('Favorites API Pact', () => {
                     </tr>
                 </tbody>
             </table>
-            <h1 id="continuous-integration-ci-">Continuous Integration (CI)</h1>
+            <h1 id="continuous-integration">Continuous Integration (CI)</h1>
             <p>You have now created the Contracts locally. However, for the Provider to make use of it, it must be uploaded to the Broker. This is done in the CI pipeline. Therefore you must add a CI script. These examples use GitHub Actions. </p>
             <p>First go to your repository settings and add a variable called <code>BROKER_URL</code>. Set it to your broker url.</p>
             <p>Next create a file in <code>.github/workflows/</code> called <code>ci.yml</code> . Look in the examples below to find the specific contents.  </p>
@@ -553,11 +574,14 @@ jobs:
 
             <p>After pushing, you should be able to see your Contract in the Broker.</p>
 
-            <img src="../images/consumerPactBrokerExample.png"
-                 alt="Broker showing the running example"
-                 class="zoomable" />
+            <figure>
+                <img src="../images/consumerPactBrokerExample.png"
+                     alt="Broker showing the running example"
+                     class="zoomable" />
+                <figcaption>Figure 2: Broker showing the consumer contract</figcaption>
+            </figure>
 
-            <h1 id="continuous-deployment-cd-">Continuous Deployment (CD)</h1>
+            <h1 id="continuous-deployment">Continuous Deployment (CD)</h1>
             <p>Finally, we will add CD to the pipeline. Before we deploy our microservice anywhere, we want to make sure that our Providers are correctly deployed. </p>
             <p>Make a new file called <code>cd.yml</code> in <code>.github/workflows</code> with the contents. It will first check if our Providers are correctly deployed, and then record our deployment. This example is in GitHub Actions and does not actually perform a deployment; it simply marks it in the Broker for the purposes of CDCT.</p>
             <p>While the CI script from before is run automatically, this must be triggered manually from the Actions page. This is only possible once it has been merged into main, so you may not be able to do it for a while.</p>

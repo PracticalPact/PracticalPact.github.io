@@ -39,10 +39,13 @@
                 <li><code>pactUrl</code>: the URL of the published Pact contract</li>
                 <li><code>publishVerificationResult</code>: whether the result should be published back to the Broker</li>
             </ul>
-            <img src="../images/OASSeq.png"
-                 alt="Sequence diagram that shows the Oas Microservice flow"
-                 class="zoomable" />
-            
+            <figure>
+                <img src="../images/OASSeq.png"
+                     alt="Sequence diagram that shows the Oas Microservice flow"
+                     class="zoomable" />
+                <figcaption>Figure 1: OAS Microservice flow</figcaption>
+            </figure>
+
             <p>From there:</p>
             <ol>
                 <li><code>Resolve(providerUrl)</code> is called to check whether the URL is a valid absolute URL pointing to a Swagger endpoint.</li>

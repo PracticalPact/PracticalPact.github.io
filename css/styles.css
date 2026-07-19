@@ -161,3 +161,48 @@ figcaption {
     font-size: 14px;
     font-style: italic;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    table-layout: fixed;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+th {
+    background: #f2f2f2;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:hover {
+    background: #f4f7fb;
+}
+
+td code,
+th code {
+    background: #f1f1f1;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        table-layout: auto;
+    }
+}
