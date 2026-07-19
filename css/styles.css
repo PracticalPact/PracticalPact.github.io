@@ -76,6 +76,7 @@ body {
     height: auto;
 }
 
+<<<<<<< HEAD
 .topbar {
     display: flex;
     gap: 24px;
@@ -92,4 +93,29 @@ body {
 .brand {
     font-weight: bold;
     margin-right: auto;
+=======
+.expandable-button {
+    background-color: #BDD2B6;
+    
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .expandable-button:hover {
+    background-color: #A2B29F;
+}
+
+.expandable-content {
+    padding: 0 18px;
+    
+    overflow: hidden;
+    background-color: #F8EDE3;
+    max-height: 0;
+    transition: max-height 0.2s ease-out;
+>>>>>>> 9f9c258e3208ddee1c2ce1156bd665d1eada40d9
 }
