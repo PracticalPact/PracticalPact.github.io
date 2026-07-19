@@ -16,14 +16,16 @@
             <p>Setting a gateway up for CDCT testing is a one-time process. Once it has been done, the gateway will be able to automatically transform contracts according to its own behaviour. The idea is that the gateway will run while verifying a contract that targets it as a provider. As it does, it will observe how each request is transformed when it goes through the gateway. These transformed requests are then turned into a new contract where the gateway is the provider. Follow the instructions on this page to set up the gateway testing. Currently only C# is supported.</p>
             <h1 id="create-test-setup">Create Test Setup</h1>
             <p>Create the files required to run the provider tests.</p>
-            <p>Perform the following steps.</p>
-            <p><strong>New Project</strong></p>
-            <p>In the solution, create a new project. This project will contain all Provider tests for the solution. If you have no other naming conventions established, consider calling it <em>ContractTests</em>. Choose a test framework such as xUnit or MSTest and set up the test project as you normally would.</p>
-            <p>If instead your organisation prefers to have all tests within a single project, make a directory in that project called <em>ContractTests</em>.</p>
-            <p><strong>Packages</strong></p>
-            <p>In the test project, install the nuget packages PracticalPact.Gateway and PracticalPact.Utilities.</p>
-            <p><strong>Main file</strong></p>
-            <p>Create <em>GatewayContractTests.cs</em> with the following contents. Make necessary adjustments if you do not use xUnit. Also set [GATEWAY_NAME] to the name of the github repository of the gateway.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <p>Perform the following steps.</p>
+                <p><strong>New Project</strong></p>
+                <p>In the solution, create a new project. This project will contain all Provider tests for the solution. If you have no other naming conventions established, consider calling it <em>ContractTests</em>. Choose a test framework such as xUnit or MSTest and set up the test project as you normally would.</p>
+                <p>If instead your organisation prefers to have all tests within a single project, make a directory in that project called <em>ContractTests</em>.</p>
+                <p><strong>Packages</strong></p>
+                <p>In the test project, install the nuget packages PracticalPact.Gateway and PracticalPact.Utilities.</p>
+                <p><strong>Main file</strong></p>
+                <p>Create <em>GatewayContractTests.cs</em> with the following contents. Make necessary adjustments if you do not use xUnit. Also set [GATEWAY_NAME] to the name of the github repository of the gateway.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">using</span> PracticalPact.Gateway;
 <span class="hljs-keyword">using</span> PracticalPact.Utilities;
 <span class="hljs-keyword">using</span> PactNet;
@@ -37,30 +39,30 @@
 <span class="hljs-function"><span class="hljs-keyword">public</span> class <span class="hljs-title">GatewayContractTests</span>(<span class="hljs-params">ITestOutputHelper output</span>)
 </span>{
     [Fact]
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ContractTest</span>(<span class="hljs-params"></span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ContractTest</span>(<span class="hljs-params"></span>)
     </span>{
-            <span class="hljs-comment">// --- Start server ----</span>
-            <span class="hljs-keyword">var</span> app = Program.Create([], builder =&gt;
+                <span class="hljs-comment">// --- Start server ----</span>
+                <span class="hljs-keyword">var</span> app = Program.Create([], builder =&gt;
             {
                 builder.Services.AddGatewayTestingServicesWithYarp();  <span class="hljs-comment">// Must be changed if Gateway does not use YARP.</span>
             });
         app.UseGatewayTesting();
-            <span class="hljs-keyword">await</span> app.StartAsync();
+                <span class="hljs-keyword">await</span> app.StartAsync();
 
-            <span class="hljs-comment">// --- Configuration (sets log output location) ---</span>
-            <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
+                <span class="hljs-comment">// --- Configuration (sets log output location) ---</span>
+                <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
         {
             Outputters = <span class="hljs-keyword">new</span> List&lt;IOutput&gt;
             {
-            <span class="hljs-keyword">new</span> XunitOutput(output)
+                <span class="hljs-keyword">new</span> XunitOutput(output)
             }
         };
 
-            <span class="hljs-comment">// --- Configure how to fetch and publish contracts ---</span>
+                <span class="hljs-comment">// --- Configure how to fetch and publish contracts ---</span>
         EnvVerifierSourceFactory sourceFactory = <span class="hljs-keyword">new</span>(<span class="hljs-string">"[GATEWAY_NAME]"</span>, <span class="hljs-string">"http://localhost:9292/"</span>);
         sourceFactory.SetPublishFromLocalFallback();  <span class="hljs-comment">// For intial testing; remove once setup is done</span>
 
-            <span class="hljs-comment">// --- Run tests ---</span>
+                <span class="hljs-comment">// --- Run tests ---</span>
         GatewaySetupUtility.VerifyGateway(
             sourceFactory.GetApplicationName(), 
             config, 
@@ -69,24 +71,27 @@
     }
 }
 </code></pre>
-            <p><strong>Start App</strong></p>
-            <p>In the code template above, it is assumed that the app can be built with Program.Create, and that it lets you pass a delegate to modify the builder. Modify it to fit your setup. If you are not able to start the app like that, the next section will help you make the correct refactoring.</p>
-            <p><strong>AddGatewayTestingServices</strong></p>
-            <p>In order for the gateway testing to work, any HTTP client used by the gateway needs to make use of <code>CatchTransformedResponseHandler</code> in the <code>PracticalPact.Gateway.Execution</code> namespace. How this is done depends on how your Gateway is built.</p>
-            <ul>
-                <li><strong>YARP</strong><br>The code snippet above assumes you use YARP, and the Handler is added with <code>AddGatewayTestingServicesWithYarp</code>. No changes are needed.</li>
-                <li><strong>Most other solutions</strong><br>In most cases, calling <code>AddGatewayTestingServicesWithFilter</code> instead will work. It sets up a <code>HttpMessageHandlerBuilderFilter</code>. This will for example work if you have a custom built gateway that creates HttpClients with a HttpClientFactory.</li>
-                <li><strong>Otherwise</strong><br>If the above fails, you need create your own way of adding the Handler. Calling <code>AddGatewayTestingServices</code> instead will give you a starting point, as it injects the handler as a transient service. Then it is up to you to use it.</li>
-            </ul>
+                <p><strong>Start App</strong></p>
+                <p>In the code template above, it is assumed that the app can be built with Program.Create, and that it lets you pass a delegate to modify the builder. Modify it to fit your setup. If you are not able to start the app like that, the next section will help you make the correct refactoring.</p>
+                <p><strong>AddGatewayTestingServices</strong></p>
+                <p>In order for the gateway testing to work, any HTTP client used by the gateway needs to make use of <code>CatchTransformedResponseHandler</code> in the <code>PracticalPact.Gateway.Execution</code> namespace. How this is done depends on how your Gateway is built.</p>
+                <ul>
+                    <li><strong>YARP</strong><br>The code snippet above assumes you use YARP, and the Handler is added with <code>AddGatewayTestingServicesWithYarp</code>. No changes are needed.</li>
+                    <li><strong>Most other solutions</strong><br>In most cases, calling <code>AddGatewayTestingServicesWithFilter</code> instead will work. It sets up a <code>HttpMessageHandlerBuilderFilter</code>. This will for example work if you have a custom built gateway that creates HttpClients with a HttpClientFactory.</li>
+                    <li><strong>Otherwise</strong><br>If the above fails, you need create your own way of adding the Handler. Calling <code>AddGatewayTestingServices</code> instead will give you a starting point, as it injects the handler as a transient service. Then it is up to you to use it.</li>
+                </ul>
+            </div>
             <h1 id="refactor">Refactor</h1>
             <p>In the previous section, we saw that we need to be able to start the gateway from the test code and configure the builder. Normally, it is started through the main file and then just runs.</p>
             <p>There are multiple ways to achieve this. It might be the case that your project already is correctly configured, in which case you can skip this section.</p>
             <p>Consult the language specific instructions for help.</p>
-            <p>Besides being able to start the app from the test code, you need access to its builder, so you can inject services later. You also need access to the app before it is started so you can create new endpoints and set up test-specific middleware.</p>
-            <p>Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this, but it does unfortunately <strong>not</strong> work with Pact.</p>
-            <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
-            <h2 id="-modern-setup-with-all-code-in-program-cs-"><strong>Modern setup with all code in Program.cs</strong></h2>
-            <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <p>Besides being able to start the app from the test code, you need access to its builder, so you can inject services later. You also need access to the app before it is started so you can create new endpoints and set up test-specific middleware.</p>
+                <p>Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this, but it does unfortunately <strong>not</strong> work with Pact.</p>
+                <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
+                <h2 id="-modern-setup-with-all-code-in-program-cs-"><strong>Modern setup with all code in Program.cs</strong></h2>
+                <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
 <pre><code class="lang-c#">using ...;
 
 <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
@@ -98,35 +103,36 @@
 
 public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword">Program</span> { }
 </code></pre>
-            <p>If there is no Program class definition there, make one.</p>
-            <p>Rewrite Program.cs to look like the following.</p>
+                <p>If there is no Program class definition there, make one.</p>
+                <p>Rewrite Program.cs to look like the following.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">using</span> ...;
 
 <span class="hljs-keyword">var</span> app = CreateApp(args);
 app.Run();
 
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">partial</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Program</span> {
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> WebApplication <span class="hljs-title">CreateApp</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args, Action&lt;WebApplicationBuilder&gt;? configureBuilder = <span class="hljs-literal">null</span></span>)</span>{
-            <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
-            <span class="hljs-comment">// Set up builder...</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> WebApplication <span class="hljs-title">CreateApp</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args, Action&lt;WebApplicationBuilder&gt;? configureBuilder = <span class="hljs-literal">null</span></span>)</span>{
+                <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+                <span class="hljs-comment">// Set up builder...</span>
     configureBuilder?.Invoke(builder);
-            <span class="hljs-keyword">var</span> app = builder.Build();
-            <span class="hljs-comment">// Set up app...</span>
+                <span class="hljs-keyword">var</span> app = builder.Build();
+                <span class="hljs-comment">// Set up app...</span>
 
-            <span class="hljs-keyword">return</span> app;
+                <span class="hljs-keyword">return</span> app;
   }
 }
 </code></pre>
-            <p>With this refactor, we will in the next section be able to start the app like this:</p>
+                <p>With this refactor, we will in the next section be able to start the app like this:</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
-            <span class="hljs-comment">// Modify builder...</span>
+                <span class="hljs-comment">// Modify builder...</span>
 });
 <span class="hljs-comment">// Modify app...</span>
 
 await <span class="hljs-keyword">app</span>.StartAsync();
 </code></pre>
-            <h1 id="ci">CI</h1>
-            <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
+                </div>
+                <h1 id="ci">CI</h1>
+                <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
 <pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: CI
 
 <span class="yaml"><span class="hljs-attr">on:</span> 
@@ -156,8 +162,8 @@ await <span class="hljs-keyword">app</span>.StartAsync();
 <span class="hljs-attr">      - name:</span> Run all tests 
 <span class="hljs-attr">        run:</span> dotnet test</span>
 </code></pre>
-            <h1 id="what-now-">What Now?</h1>
-            <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
+                <h1 id="what-now-">What Now?</h1>
+                <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
 
         </main>
     </div>
