@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>Writing Consumer Tests for Gateways</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,13 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="writing-consumer-tests-for-gateways">Writing Consumer Tests for Gateways</h1>
+            <p>Writing tests for a provider behind a gateway is done mostly in the same way as writing for the provider directly. See this guide for instructions on that. Besides that, take the following sections into account for some minor modifications.</p>
+            <h1 id="writing-tests">Writing Tests</h1>
+            <p>The big difference is that the tests of course need to be written to fit what the gateway expects. If it for example transforms endpoints or cookies, you must write the tests to fit the gateway, not to test the final provider. This is good news; it’s how your Consumer works in production anyway. This means you can test the exact behaviour of your real application.</p>
+            <p>For example, if the gateway takes a JOSSO cookie and turns it into an x-session header for the Provider, you write your tests with the JOSSO cookie; not the x-session header.</p>
+            <h1 id="provider-name">Provider Name</h1>
+            <p>When configuring the Provider name for the test, you write the name of the gateway followed by <code>-&gt;</code> and then the provider name. So if the name of the provider is <code>ds-favorite</code> and the name of the gateway is <code>ds-dli-webapi-gateway</code> , you write the name <code>ds-dli-webapi-gateway-&gt;ds-favorite</code>.</p>
         </main>
     </div>
 

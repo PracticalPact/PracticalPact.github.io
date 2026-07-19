@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>Gateway CI/CD</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,54 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="gateway-cd">Gateway cd</h1>
+            <p>In the scenario of Casino Frontend → Gateway → FavoriteApi:</p>
+            <p>The gateway creates two seperate contracts. One called Casino->Gateway and another called Gateway->Favorite. </p>
+            <p>Casino as a consumer relates to provider  called GW->Favorite.<br>Casino->Gateway as a consumer relates to Favorite as a provider<br>The pact matrix has two pairs. Casino - GW->Favorite (pair 1) and Casino->GW - Favorite (pair 2).</p>
+            <p>When applying can-i-deploy, we want that in the pair 1, both consumer and provider only has one version each. For pair 2, we need to have note two versions: one for casino and one for gateway. </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th><strong>Casino</strong></th>
+                        <th><strong>GW->Favorite</strong></th>
+                        <th><strong>Status</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>main, version 1, deployed</td>
+                        <td>version 1, deployed</td>
+                        <td>Verified</td>
+                    </tr>
+                    <tr>
+                        <td>feature, version 2, not deployed</td>
+                        <td>version 1, deployed</td>
+                        <td>Verified</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th><strong>Casino-Gateway</strong></th>
+                        <th><strong>Favorite</strong></th>
+                        <th><strong>Status</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>version 1-version 1, deployed</td>
+                        <td>main, version one, deployed</td>
+                        <td>Verified</td>
+                    </tr>
+                    <tr>
+                        <td>version2-version1</td>
+                        <td>main, version 1,</td>
+                        <td>Not verified</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </main>
     </div>
 
