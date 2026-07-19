@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>Contract error</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,42 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="contract-error">Contract error</h1>
+            <p>Pact lets you control how much output you see during verification. The options are <code>Error</code>, <code>Warn</code>, <code>Info</code>, <code>Debug</code>, <code>Trace</code>, and <code>None</code>. The default is <code>Warn</code>, and this guide shows errors at that level.</p>
+            <p><strong>Pending Pacts</strong></p>
+            <p>When a consumer publishes a new pact that the provider has never verified before, it starts in a pending state. This means that even if verification fails, <strong>it will not block deployment</strong>. Once the provider has verified it successfully for the first time, it leaves pending state and future failures will block the build as normal.</p>
+            <p>Types of contract errors:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th><strong>Errormessage</strong></th>
+                        <th><strong>Explanation</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>No pacts found for provider &#39;PROVIDER&#39; matching the given consumer version selectors in pact broker &#39;PACTBROKERURL&#39;</td>
+                        <td>The broker has no pacts for this provider that match the selectors (main branch, deployed, etc). Either no consumer has published a pact against this provider, or the selectors don&#39;t match any existing consumer versions.</td>
+                    </tr>
+                    <tr>
+                        <td>Verifying a pact between &#39;CONSUMER&#39; and &#39;PROVIDER&#39; &#39;Given statement from contract&#39;, &#39;uponreceiving statement from contract&#39; - One or more of the setup state change handlers has failed</td>
+                        <td>The provider state endpoint (<code>/provider-states</code>) received a <code>given</code> string it doesn&#39;t handle — hit the <code>default</code> case and threw. The consumer has a provider state in its pact that the provider hasn&#39;t implemented yet.</td>
+                    </tr>
+                    <tr>
+                        <td>1. Verifying a pact between &#39;CONSUMER&#39; and &#39;PROVIDER&#39; &#39;Given statement from contract&#39;, &#39;uponreceiving statement from contract&#39; - One or more of the setup state change handlers has failed     1.1) has status code 201, expected 201 but was 200</td>
+                        <td>The interaction expects status 201 but the provider returned 200. Classic mismatch between what the consumer declared in the pact and what the provider actually returns.</td>
+                    </tr>
+                    <tr>
+                        <td>This pact is still in pending state for ds-favorite-clone--oliverndmagnus as the successful verification results have not yet been published.Pending Failures:</td>
+                        <td>The pact has never been successfully verified by this provider before. Pending pacts don&#39;t fail the build — they&#39;re informational only. Once verified successfully for the first time, pending state is removed.These are failures from pending pacts. They&#39;re shown for visibility but don&#39;t fail the build because <code>EnablePending()</code> is set.</td>
+                    </tr>
+                    <tr>
+                        <td>pact_verifier: Provider setup state change for &#39;given statement from contract - MismatchRes ult::Error(&quot;Invalid status code: 500&quot;, Some(&quot;21db97c1d4c1e847e55864057a8a78443d518734&quot;))</td>
+                        <td>The provider state endpoint itself returned 500 — meaning it threw an unhandled exception during setup. The default case throwing new Exception(...) causes this.</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </main>
     </div>
 

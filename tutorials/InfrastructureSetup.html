@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>How to set up infrastructure for our method</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,100 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="how-to-set-up-infrastructure-for-our-method">How to set up infrastructure for our method</h1>
+            <h2 id="overview">Overview</h2>
+            <p>This guide describes the infrastructure requirements to deploy and run the system.<br>The system consists of two microservices:</p>
+            <ul>
+                <li><strong>Pact Broker</strong> — stores and manages Pact contracts, backed by a relational database. Deployed using a pre-built Docker image.</li>
+                <li><strong>OAS Service</strong> — a .NET microservice that compares a Pact contract against an OpenAPI Specification (e.g. <code>swagger.json</code>) to validate syntax compatibility. Built from source and deployed as a container.</li>
+            </ul>
+            <h2 id="requirements">Requirements</h2>
+            <h3 id="1-container-orchestration-platform">1. Container Orchestration Platform</h3>
+            <p>You need a platform capable of running and managing containers, such as Kubernetes or any Kubernetes-compatible alternative (e.g. Docker Desktop with Kubernetes, k3s, OpenShift).</p>
+            <p>The platform must be able to:</p>
+            <ul>
+                <li>Pull and run Docker images</li>
+                <li>Build and run containerised .NET applications</li>
+                <li>Allow services to communicate with each other over an internal network</li>
+            </ul>
+            <h3 id="2-net-sdk">2. .NET SDK</h3>
+            <p>The OAS Service is built from source. You need the .NET SDK installed to build and publish it. Check the repository for the specific version required.</p>
+            <h3 id="3-database">3. Database</h3>
+            <p>Pact Broker requires a relational database (e.g. MariaDB, MySQL, or PostgreSQL). You can run it as a container alongside the services or use a managed database service. Either way, it must be reachable from the Pact Broker container at startup.</p>
+            <p>The database requires persistent storage — do not use container-local storage, as data will be lost on restart.</p>
+            <p>Database credentials must be available to the Pact Broker container at runtime. These should not be hardcoded — use a secrets management solution appropriate for your platform (e.g. Kubernetes Secrets, a vault service, or a config server).</p>
+            <h3 id="4-networking">4. Networking</h3>
+            <p>The services must be able to reach each other over the internal network:</p>
+            <ul>
+                <li><strong>OAS Service → Pact Broker</strong>: OAS Service fetches contracts from Pact Broker and must be able to resolve its hostname and reach its HTTP port.</li>
+                <li><strong>Pact Broker → Database</strong>: Pact Broker must be able to reach the database on its configured port.</li>
+                <li><strong>OAS Service → Internal services</strong>: OAS Service needs to fetch OpenAPI specifications (e.g. <code>swagger.json</code>) from other teams&#39; services. These services are typically only accessible from within the company&#39;s internal network, so the OAS Service must be deployed inside the same internal cluster to reach them.</li>
+            </ul>
+            <h3 id="5-github-token">5. GitHub Token</h3>
+            <p>The system will eventually notify provider repositories automatically when a contract verification fails — for example, by opening a pull request from your CI/CD pipeline to the affected repository.<br>For this to work, your CI/CD pipeline needs a GitHub token with permission to create pull requests on other repositories in your organisation.</p>
+            <p>How you provide this token depends on your CI/CD setup. One option is to use a self-hosted GitHub Actions runner with the token configured as a secret.</p>
+            <h2 id="deployment">Deployment</h2>
+            <h3 id="production">Production</h3>
+            <p>Production deployment depends on your container orchestration platform and CI/CD setup. The order matters due to dependencies:</p>
+            <ol>
+                <li><strong>Database first</strong> — the database must be running and reachable before Pact Broker starts.</li>
+                <li><strong>Pact Broker second</strong> — must be running and reachable before OAS Service starts.</li>
+                <li><strong>OAS Service last</strong> — requires Pact Broker to be available on startup.</li>
+            </ol>
+            <p>For each service, ensure environment variables are configured as described in the Environment Variables section below, and that credentials are injected securely from your secrets management solution.</p>
+            <h2 id="environment-variables">Environment Variables</h2>
+            <p><strong>Pact Broker:</strong></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th><strong>Variable</strong></th>
+                        <th><strong>Description</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_ADAPTER</code></td>
+                        <td>Database adapter — e.g. <code>mysql2</code> for MariaDB/MySQL, <code>postgres</code> for PostgreSQL</td>
+                    </tr>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_HOST</code></td>
+                        <td>Database hostname</td>
+                    </tr>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_PORT</code></td>
+                        <td>Database port (<code>3306</code> for MySQL, <code>5432</code> for PostgreSQL)</td>
+                    </tr>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_NAME</code></td>
+                        <td>Database name</td>
+                    </tr>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_USERNAME</code></td>
+                        <td>Database user — should be injected from a secrets store at runtime</td>
+                    </tr>
+                    <tr>
+                        <td><code>PACT_BROKER_DATABASE_PASSWORD</code></td>
+                        <td>Database password — should be injected from a secrets store at runtime</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>OAS-service:</strong></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>PACT_BROKER_URL</code></td>
+                        <td>Internal URL of the Pact Broker (e.g. <code>http://pact-broker:9292</code>)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Refer to each service&#39;s repository for the full list of supported variables.</p>
+
         </main>
     </div>
 

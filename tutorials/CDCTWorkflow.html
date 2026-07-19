@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>CDCT Workflow</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,30 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="cdct-workflow">CDCT Workflow</h1>
+            <p>With the introduction of CDCT in your organisation, some modifications will likely need to be made to the development workflow. </p>
+            <h1 id="making-changes">Making Changes</h1>
+            <p>When you need to update your microservice — such as when introducing a new feature or fixing a bug — it is of course necessary to consider if such a change would influence other microservices. If one or more microservices depend on you as downstream Consumers, your change might break them. If you depend on one or more microservices as upstream Providers, your change might require new things from them. With CDCT implemented, such issues will be caught.</p>
+            <p>If you identify that other microservices will be influenced, you may want to consider if it is possible to perform the change in a way that avoids this. If not, you will need to talk to the owners of those microservices about the changes. </p>
+            <p>If you are uncertain — or accidentally miss something — you can make the change and see what happens with the tests. Read the following sections for information on this and how to coordinate changes.</p>
+            <h2 id="changing-as-a-consumer">Changing as a Consumer</h2>
+            <p>When you eventually do publish your new contract, a webhook will be run, which triggers an automatic verification of the contract. If this succeeds, it means that no changes are needed for the Provider. If it fails, the Provider team will be notified with a pull request prompting them to deal with the issue. Depending on the severity of the changes, this might lead to further discussion.</p>
+            <p>Before making changes to your contract, there are several potential issues to consider. Read the following sections for more information. </p>
+            <h3 id="provider-states">Provider States</h3>
+            <p>The Provider test code needs to have an entry for every provider state in all of its contracts. Therefore you should strive to reuse provider states that already are defined in your own or other contracts with the Provider. You can see this by going through the contracts that target the Provider in the Broker, or you can or course talk with the Provider team about it.</p>
+            <p>Adding new Provider States is likely a small task for the Provider team, but it still requires a change. A high amount of Provider States will also increase the maintenance cost of their test code.</p>
+            <h3 id="adding-features">Adding Features</h3>
+            <p>If you need something from the Provider that you didn’t before — such as calling a new endpoint — your first step should be to figure out of this is already implemented. You can talk with the Provider team about this or look in their OpenAPI Specifcation if they have one. Alternatively, look at their other contracts. You should follow the format that already is established to minimize the work for the Provider team, unless you have a good reason to want something else.</p>
+            <p>If you do need something new or different, you will need to coordinate this with the Provider team. In the end, you will be the one to write the contract, but they will reject it if they do not like it. </p>
+            <h3 id="modifying-features">Modifying Features</h3>
+            <p>If you need to modify the input or expect the output to be in a different format, the process is similar to that of Adding Features. You begin by investigating if your new requirement already exists, and if possible, you comply with that. Otherwise you coordinate with the Provider Team to accomodate the new requirement.</p>
+            <h3 id="removing-features">Removing Features</h3>
+            <p>If you delete cases from the contract, it will have no impact on the Provider. You might still want to let them know that you no longer need these features.</p>
+            <h2 id="changing-as-a-provider">Changing as a Provider</h2>
+            <p>It is very easy to determine if your changes will affect your Consumers: you simply run your Provider tests locally. If they succeed, all is good, and if they fail, you have a breaking change that you need to act on.</p>
+            <p>You will be unable to deploy your new version to an environment that has an incompatible Consumer. Therefore you should almost always do the change in a non-breaking way. This can be done in several ways depending on the scenario: adding new endpoints instead of modifying or removing; making fields optional instead of mandatory; or introducing a new API version. Such changes can be deployed, and the Consumer teams can then adapt before you remove the deprecated features.</p>
+            <p>This means that you will need to get the Consumer teams on-board with the changes, as they will need to adapt and write new contracts. This should probably be done before you spend time implementing the changes.</p>
+
         </main>
     </div>
 

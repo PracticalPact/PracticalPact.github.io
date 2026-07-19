@@ -12,7 +12,48 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="local-testing-pact-broker">Local testing Pact Broker</h1>
+            <h3 id="local-for-testing-">Local (for testing)</h3>
+            <p>To test the system locally, you can run Pact Broker and its database using Docker Compose. A minimal setup:</p>
+            <p>yaml</p>
+<pre><code><span class="hljs-attribute">services</span>:
+            <span class="hljs-attribute">postgres</span>:
+            <span class="hljs-attribute">image</span>: <span class="hljs-attribute">postgres</span>:<span class="hljs-number">16</span>
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">POSTGRES_USER</span>: postgres
+            <span class="hljs-attribute">POSTGRES_PASSWORD</span>: password
+            <span class="hljs-attribute">POSTGRES_DB</span>: postgres
+            <span class="hljs-attribute">volumes</span>:
+      - <span class="hljs-attribute">pg</span>:/var/lib/postgresql/data
+
+            <span class="hljs-attribute">pact-broker</span>:
+            <span class="hljs-attribute">image</span>: pactfoundation/<span class="hljs-attribute">pact-broker</span>:latest
+            <span class="hljs-attribute">ports</span>:
+      - <span class="hljs-string">"9292:9292"</span>
+            <span class="hljs-attribute">depends_on</span>:
+      - postgres
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">PACT_BROKER_PORT</span>: <span class="hljs-string">"9292"</span>
+            <span class="hljs-attribute">PACT_BROKER_DATABASE_URL</span>: <span class="hljs-string">"postgres://postgres:password@postgres/postgres"</span>
+            <span class="hljs-attribute">PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES</span>: <span class="hljs-string">"5"</span>
+
+<span class="hljs-attribute">volumes</span>:
+            <span class="hljs-attribute">pg</span>:
+</code></pre><p>This starts Pact Broker on <code>http://localhost:9292</code>.</p>
+            <p>To also test contract creation, a <code>contract-factory</code> service can be added to the setup. This is a test utility that generates and publishes contracts to the Pact Broker:</p>
+            <p>yaml</p>
+<pre><code>  <span class="hljs-attribute">contract-factory</span>:
+            <span class="hljs-attribute">image</span>: magnusmouritzen/<span class="hljs-attribute">contract-factory</span>:latest
+            <span class="hljs-attribute">ports</span>:
+      - <span class="hljs-string">"3000:3000"</span>
+            <span class="hljs-attribute">depends_on</span>:
+      - pact-broker
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">BROKER_URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//pact-broker:9292</span>
+            <span class="hljs-attribute">BRANCH</span>: main
+            <span class="hljs-attribute">TAGS</span>: main
+</code></pre><p>Note that the local setup uses <code>PACT_BROKER_DATABASE_URL</code> as a single connection string rather than individual host/port/name variables. Both formats are supported by the Pact Broker image.</p>
+
         </main>
     </div>
 
