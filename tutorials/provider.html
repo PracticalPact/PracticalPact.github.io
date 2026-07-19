@@ -281,7 +281,7 @@ app.Run();
   }
 }
 </code></pre>
-                <p>With this refactor, we will <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Create-test-project-or-directory">in the next section</a> be able to start the app like this:</p>
+                <p>With this refactor, we will <a href="#create-test-project">in the next section</a> be able to start the app like this:</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
                 <span class="hljs-comment">// Modify builder...</span>
 });
@@ -536,7 +536,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             <p>Running the tests now will likely fail. Look at the error messages and consider which of the following cases apply.</p>
             <ul>
                 <li>If the errors are about starting the app, you will need to go back and make sure that you are starting the app correctly.</li>
-                <li>If you get errors because your app is failing to connect to some external services, go the section on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. When done there, come back here and try again. </li>
+                <li>If you get errors because your app is failing to connect to some external services, go the to section on <a href="#stub-external-dependencies">stubbing external services</a>. When done there, come back here and try again. </li>
                 <li>If you get errors about not being able to connect to the broker, or that no contracts were found, review the current section.</li>
             </ul>
             <p>When everything works correctly, you will see the test summary state that the test passed. If you scroll up a bit, you should however see some information on failed verification. See the image below for a C# example of what this looks like. This is exactly the expected behaviour at this point, and you can carry on to the next section.</p>
@@ -567,7 +567,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                      class="zoomable" />
                 <figcaption>Figure 9: Running Example Provider States</figcaption>
             </figure>
-            <p>When you handle each provider state, you will need to figure out what the minimal steps needed are for the state to be fulfilled. To do this, you may need to go back and forth between this section and the one on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. </p>
+            <p>When you handle each provider state, you will need to figure out what the minimal steps needed are for the state to be fulfilled. To do this, you may need to go back and forth between this section and the one on <a href="#stub-external-dependencies">stubbing external services</a>. </p>
             <p>For example, consider an example where your Provider makes use of a database. If there is a provider state that says that there must exist an item with a particular id, you will probably need to make a database stub, such that you easily can manipulate the data. </p>
             <p>The language specific section contains the implementation for the Running Example using the contract picture above and the stubs defined in the example in the next section. Use it for inspiration.</p>
             <button type="button" class="expandable-button">C#</button>
@@ -612,7 +612,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             </div>
             <h1 id="stub-external-dependencies">Stub External Dependencies</h1>
             <p>CDCT tests communication between microservices, but it does so in total isolation. That is, the Provider may not rely on any external service besides the Pact Broker. The Consumer calls come from a mock created by Pact. Therefore all external dependencies must be cut off. This requires you to understand your application and determine where to create the stubs. You will also need to figure out the behaviour of the stubs yourself. </p>
-            <p>Furthermore, you may need to create stubs to properly fulfil provider states as mentioned <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Provider-States">previously</a>. You will likely need to jump back and forth between these steps as you go along and figure out what you need.</p>
+            <p>Furthermore, you may need to create stubs to properly fulfil provider states as mentioned <a href="#provider-states">previously</a>. You will likely need to jump back and forth between these steps as you go along and figure out what you need.</p>
             <p>However, be careful that you do not stub away the things that you want to test. As a rule of thumb, strive to create stubs at the bottom of the dependency hierarchy in order to preserve as much original functionality as possible. While contract tests are not about testing functionality, we must ensure that responses look the way they would in a real scenario.</p>
             <button type="button" class="expandable-button">C#</button>
             <div class="expandable-content">
@@ -717,7 +717,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             <button type="button" class="expandable-button">C#</button>
             <div class="expandable-content">
                 <ul>
-                    <li>If you get a lot of 404 responses:<br>Look at the subsection on Controllers in the <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Refactor-Code">section on Refactoring</a>.</li>
+                    <li>If you get a lot of 404 responses:<br>Look at the subsection on Controllers in the <a href="#refactor-code">section on Refactoring</a>.</li>
                     <li>If your provider states all fail:<br>Did you remember to inject your stubs properly? If you made a CreateApp in Program with a configureBuilder delegate, did you remember to actually invoke it?</li>
                 </ul>
             </div>

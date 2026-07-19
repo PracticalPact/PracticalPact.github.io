@@ -31,22 +31,23 @@
             <ol>
                 <li>
                     Install the relevant Pact library for the project language.
-                    <details>
-                        <summary>Example for .NET</summary>
+                    <button type="button" class="expandable-button">Example for C#</button>
+                    <div class="expandable-content">
                         <pre><code>
                             #Find in Nuget package manager
                             PackageReference Include="PactNet" Version="5.0.1"
                             PackageReference Include="PactNet.Output.Xunit" Version="1.0.0"
                     </code></pre>
-                    </details>
-                    <details>
-                        <summary>Example for JavaScript</summary>
+
+                    </div>
+                    <button type="button" class="expandable-button">Example for JavaScript</button>
+                    <div class="expandable-content">
                         <pre><code>
                             #Install via npm
                             npm install @pact-foundation/pact
                             npm install @pact-foundation/pact-cli@^18.0.0
                         </code></pre>
-                    </details>
+                        </div>
                 </li>
                 <li>Create a contract test project or test folder.</li>
                 <li>Configure the consumer name and provider name.</li>
