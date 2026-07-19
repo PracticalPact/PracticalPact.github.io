@@ -120,3 +120,44 @@ body {
 .sidebar-sub {
     margin-left: 16px;
 }
+
+.info-box {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    margin: 24px 0;
+    background: #eaf2ff;
+    border-radius: 4px;
+}
+
+    .info-box p {
+        margin: 0 0 12px;
+    }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+.info-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: white;
+    background: #3478d4;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+figure {
+    margin: 24px 0;
+}
+
+figcaption {
+    margin-top: 8px;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+}
