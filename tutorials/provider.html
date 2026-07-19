@@ -240,7 +240,14 @@
             <button type="button" class="expandable-button">C#</button>
             <div class="expandable-content">
                 <p>Besides being able to start the app from the test code, you need access to its builder, so you can inject services later. You also need access to the app before it is started so you can create new endpoints and set up test-specific middleware. </p>
-                <p>Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this, but it does unfortunately <strong>not</strong> work with Pact.</p>
+                <div class="warning-box">
+                    <span class="warning-icon">⚠</span>
+
+                    <p>
+                        Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this,
+                        but it does unfortunately <strong>not</strong> work with Pact.
+                    </p>
+                </div>
                 <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
                 <h2 id="modern-program-setup"><strong>Modern setup with all code in Program.cs</strong></h2>
                 <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>

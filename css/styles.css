@@ -206,3 +206,82 @@ th code {
         table-layout: auto;
     }
 }
+
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    margin: 24px 0;
+    background: #fff4c2;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+
+    .warning-box p {
+        margin: 0;
+    }
+
+.warning-icon {
+    color: #d97706;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.contract-comparison {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 24px 0;
+}
+
+    .contract-comparison th,
+    .contract-comparison td {
+        width: 50%;
+        padding: 10px;
+        border: 1px solid #d6d6d6;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .contract-comparison th {
+        background: #f1f2f3;
+    }
+
+    .contract-comparison td {
+        background: #f7f8f9;
+    }
+
+    .contract-comparison h3 {
+        margin: 0 0 8px;
+        font-size: 14px;
+    }
+
+        .contract-comparison h3:not(:first-child) {
+            margin-top: 16px;
+        }
+
+    .contract-comparison pre {
+        margin: 0;
+        padding: 12px;
+        overflow-x: auto;
+        background: #f1f2f3;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        white-space: pre;
+    }
+
+    .contract-comparison code {
+        padding: 0;
+        background: transparent;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 12px;
+    }
+
+@media (max-width: 800px) {
+    .contract-comparison {
+        display: block;
+        overflow-x: auto;
+        min-width: 800px;
+    }
+}

@@ -56,6 +56,8 @@
                 <p>Create a new project, which you can call ConsumerTests. The C# example below uses xUnit, but Pact can be used with other test frameworks as well. </p>
                 <p>Install the nuget packages PactNet version 5.0.1. If you use Xunit, also install PactNet.Output.Xunit version 1.0.0. The following is an example of what might be in the project file.</p>
 
+                <button type="button" class="expandable-button">Requirements (csproj file)</button>
+                <div class="expandable-content">
 <pre><code>    &lt;ItemGroup&gt;
         &lt;PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" /&gt;
         &lt;PackageReference Include="PactNet" Version="5.0.1" /&gt;
@@ -68,8 +70,9 @@
     &lt;Using Include="Xunit" /&gt;
   &lt;/ItemGroup&gt;
 </code></pre>
+                    </div>
 
-                <p>Create a new class to carry out the tests. Consider calling it ConsumerTests.cs. Paste in the following code and replace [TEST_CLASS_NAME] with your chosen class name. Replace [PROVIDER NAME] with the name of the Provider that you are writing tests for. Make sure it matches its repository name to avoid confusion. Finally, replace [CONSUMER NAME] with the name of your current microservice. This is simply a fallback value when running locally; on the CI pipeline, it will be replaced by your repository name. </p>
+                    <p>Create a new class to carry out the tests. Consider calling it ConsumerTests.cs. Paste in the following code and replace [TEST_CLASS_NAME] with your chosen class name. Replace [PROVIDER NAME] with the name of the Provider that you are writing tests for. Make sure it matches its repository name to avoid confusion. Finally, replace [CONSUMER NAME] with the name of your current microservice. This is simply a fallback value when running locally; on the CI pipeline, it will be replaced by your repository name. </p>
 
 <pre><code>using System.Net;
 using PactNet;
@@ -94,12 +97,12 @@ public class [TEST_CLASS_NAME]
 }
 </code></pre>
 
-                <p>You have now created the boilerplate setup, which defines who the Consumer and who the Provider is. It also specifies where the contracts will be placed locally (in your repository root) and how logging works. In the next section you'll be able to see the running example version of this setup.</p>
-            </div>
+                    <p>You have now created the boilerplate setup, which defines who the Consumer and who the Provider is. It also specifies where the contracts will be placed locally (in your repository root) and how logging works. In the next section you'll be able to see the running example version of this setup.</p>
+                </div>
 
-            <button type="button" class="expandable-button">JavaScript</button>
-            <div class="expandable-content">
-                <p>In order to install Pact in your project, you must run these two lines in the terminal:</p>
+                <button type="button" class="expandable-button">JavaScript</button>
+                <div class="expandable-content">
+                    <p>In order to install Pact in your project, you must run these two lines in the terminal:</p>
 
 <pre><code>npm install @pact-foundation/pact@^16.3.0
 </code></pre>
@@ -107,26 +110,26 @@ public class [TEST_CLASS_NAME]
 <pre><code>npm install @pact-foundation/pact-cli@^18.0.0
 </code></pre>
 
-                <p>Make sure these lines are included in your package.json under "scripts":</p>
+                    <p>Make sure these lines are included in your package.json under "scripts":</p>
 
 <pre><code>"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
 "test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
 "test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact"
 </code></pre>
 
-                <p>If you have several consumer tests for one consumer, you can add more tests and include them in test:pacts. An example could be with OAS:</p>
+                    <p>If you have several consumer tests for one consumer, you can add more tests and include them in test:pacts. An example could be with OAS:</p>
 
 <pre><code>"test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
 "test:pactOAS": "jest --runInBand --testMatch='**/[PATH TO OAS TEST FILE]'",
 </code></pre>
 
-                <p>Finally, the last script should include:</p>
+                    <p>Finally, the last script should include:</p>
 
 <pre><code>"test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact &amp;&amp; npm run test:pactOAS"
 </code></pre>
 
-                <p>Below is shown the template for a given contract test. Make a directory for consumer tests called <code>consumerTests/</code> and in that a .js file (e.g. called ConsumerTests.js). </p>
-                <p>It starts with Pact configuration and naming as shown below:</p>
+                    <p>Below is shown the template for a given contract test. Make a directory for consumer tests called <code>consumerTests/</code> and in that a .js file (e.g. called ConsumerTests.js). </p>
+                    <p>It starts with Pact configuration and naming as shown below:</p>
 
 <pre><code>/** @jest-environment node */
 
@@ -146,18 +149,18 @@ describe("[NAME OF THE TEST]", () => {
   });
 });
 </code></pre>
-            </div>
+                </div>
 
-            <h1 id="create-scenarios">Create Scenarios</h1>
-            <p>Now it is time to create the Scenarios of the Contract. If you are uncertain about what a Scenario is or how a Contract is structured, read this short explanation before you continue.</p>
-            <p>For each Scenario, we need to specify what the request will be, and what the rules for the response are. Remember that this also includes an example of a response that follows those rules. We of course also need to make a description of the Scenario and define a Provider State.</p>
-            <p>Additionally, we also need to prove that our Consumer actually is capable of sending the requests that we specify, and that it can handle a response that follows the rules we laid out. This is a safety check to ensure that we do not make a Contract that we ourselves can't obey.</p>
-            <p>The Pact framework helps us here. It has functionality to spin up a mock HTTP server that we can send real HTTP requests to. For each Scenario we describe, it will expect us to send it an HTTP request that is identical to what we described in the Scenario. It will then respond according to the example response we provided in the Scenario. This way, each Scenario will be executed as a test. If all tests pass, the Scenarios will be combined into a final Contract.</p>
-            <p>When performing these tests, it is crucial that the code we use to send the requests is the same as the production code. Otherwise we might get a disconnect between the real behaviour and what we are testing. This would be troublesome, if we later on changed the production code without remembering the test code.</p>
+                <h1 id="create-scenarios">Create Scenarios</h1>
+                <p>Now it is time to create the Scenarios of the Contract. If you are uncertain about what a Scenario is or how a Contract is structured, read this short explanation before you continue.</p>
+                <p>For each Scenario, we need to specify what the request will be, and what the rules for the response are. Remember that this also includes an example of a response that follows those rules. We of course also need to make a description of the Scenario and define a Provider State.</p>
+                <p>Additionally, we also need to prove that our Consumer actually is capable of sending the requests that we specify, and that it can handle a response that follows the rules we laid out. This is a safety check to ensure that we do not make a Contract that we ourselves can't obey.</p>
+                <p>The Pact framework helps us here. It has functionality to spin up a mock HTTP server that we can send real HTTP requests to. For each Scenario we describe, it will expect us to send it an HTTP request that is identical to what we described in the Scenario. It will then respond according to the example response we provided in the Scenario. This way, each Scenario will be executed as a test. If all tests pass, the Scenarios will be combined into a final Contract.</p>
+                <p>When performing these tests, it is crucial that the code we use to send the requests is the same as the production code. Otherwise we might get a disconnect between the real behaviour and what we are testing. This would be troublesome, if we later on changed the production code without remembering the test code.</p>
 
-            <button type="button" class="expandable-button">C#</button>
-            <div class="expandable-content">
-                <p>Each Scenario is written in its own test method and consists of two parts. The first part is the Scenario, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
+                <button type="button" class="expandable-button">C#</button>
+                <div class="expandable-content">
+                    <p>Each Scenario is written in its own test method and consists of two parts. The first part is the Scenario, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
 
 
 <pre><code>[Fact]
@@ -195,9 +198,9 @@ public async Task [TEST_NAME]()
 }
 </code></pre>
 
-                <p>To further dig into the syntax of Pact .NET, take a look here <a href="https://github.com/pact-foundation/pact-net">https://github.com/pact-foundation/pact-net</a> . </p>
-                <p><strong>Running Example</strong></p>
-                <p>Below is the entire consumer test code for the running example. It has three Scenarios: a successful get, a failed get, and a successful post. There are of course more possible Scenarios, but this is enough for now.</p>
+                    <p>To further dig into the syntax of Pact .NET, take a look here <a href="https://github.com/pact-foundation/pact-net">https://github.com/pact-foundation/pact-net</a> . </p>
+                    <p><strong>Running Example</strong></p>
+                    <p>Below is the entire consumer test code for the running example. It has three Scenarios: a successful get, a failed get, and a successful post. There are of course more possible Scenarios, but this is enough for now.</p>
 
 <pre><code>using System.Net;
 using PactNet;
@@ -316,11 +319,11 @@ public class ExampleProviderCsharpTest
     }
 }
 </code></pre>
-            </div>
+                </div>
 
-            <button type="button" class="expandable-button">JavaScript</button>
-            <div class="expandable-content">
-                <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
+                <button type="button" class="expandable-button">JavaScript</button>
+                <div class="expandable-content">
+                    <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
 
 
 <pre><code>  it("returns [DATA FOR A VALID REQUEST]", async () => {
@@ -341,7 +344,7 @@ public class ExampleProviderCsharpTest
   })
 </code></pre>
 
-                <p>After that comes the local test execution as explained previously. It might look like the following. In this example, we just used axios, but a real case would likely have an axios wrapper or similar. Again, use code as close to production as possible..</p>
+                    <p>After that comes the local test execution as explained previously. It might look like the following. In this example, we just used axios, but a real case would likely have an axios wrapper or similar. Again, use code as close to production as possible..</p>
 
 <pre><code> .executeTest(async mockServer => {
     const response = await axios({
@@ -357,8 +360,8 @@ public class ExampleProviderCsharpTest
 });
 </code></pre>
 
-                <p>To further dig into the Pact syntax, take a look here <a href="https://github.com/pact-foundation/pact-js">https://github.com/pact-foundation/pact-js</a> </p>
-                <p>All together an example of GET ALL FAVORITES is shown below:</p>
+                    <p>To further dig into the Pact syntax, take a look here <a href="https://github.com/pact-foundation/pact-js">https://github.com/pact-foundation/pact-js</a> </p>
+                    <p>All together an example of GET ALL FAVORITES is shown below:</p>
 
 <pre><code>/** @jest-environment node */
 
@@ -433,41 +436,165 @@ describe('Favorites API Pact', () => {
 });
 </code></pre>
 
-                <ol>
-                    <li>It sets up Pact between CasinoFrontend and FavoriteAPI</li>
-                    <li>It defines one expected GET request for favorites</li>
-                    <li>It defines the response the mock provider should return</li>
-                    <li>It sends the request to Pact's mock provider</li>
-                    <li>It checks that the response status is 200</li>
-                    <li>Pact saves the interaction as a contract in the pacts folder</li>
-                </ol>
-            </div>
+                    <ol>
+                        <li>It sets up Pact between CasinoFrontend and FavoriteAPI</li>
+                        <li>It defines one expected GET request for favorites</li>
+                        <li>It defines the response the mock provider should return</li>
+                        <li>It sends the request to Pact's mock provider</li>
+                        <li>It checks that the response status is 200</li>
+                        <li>Pact saves the interaction as a contract in the pacts folder</li>
+                    </ol>
+                </div>
 
-            <p>If you have multiple Providers, you should make a separate file for each, as they will get their own Contracts.</p>
-            <p>Do not place <em>any </em>sensitive information in your Contracts.</p>
-            <h1 id="the-contract">The contract</h1>
-            <p>When you run your tests, you should see a directory called pacts appear. Inside of it, you can find your contract.</p>
-            <p>The contract is generated from the Pact code shown in the previous section. Below, the example is shown alongside the contract it produces.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th><strong>Contract</strong><code>{   "consumer": { "name": "CasinoFrontend" },   "provider": { "name": "FavoriteApi" },    "interactions": [     {       "description": "a request for user favorites",       "providerStates": [         { "name": "a user with favorites exists" }       ],        "request": {         "method": "GET",         "path": "/v1/casino/game",         "headers": {           "x-session": ["valid-token"]         }       },        "response": {         "status": 200,         "headers": {           "Content-Type": ["application/json"]         },         "body": {           "favorites": [             {               "id": "1",               "entityId": "abc123"             }           ]         }       }     }   ] }</code></th>
-                        <th><strong>JS code</strong><code>it("gets all favorites for a user", async () =&gt; {     await pact       .addInteraction()       .given("a user with favorites exists")       .uponReceiving("a request for user favorites")       .withRequest("GET", "/v1/casino/game", builder =&gt; {         builder.headers({           "x-session": "valid-token",         });       })       .willRespondWith(200, builder =&gt; {         builder.jsonBody({           favorites: eachLike({             id: like("1"),             entityId: like("abc123"),           }),         });       })       .executeTest(async mockServer =&gt; {         const response = await axios.get(           ${mockServer.url}/v1/casino/game,           {             headers: {               "x-session": "valid-token",             },           }         );          expect(response.status).toBe(200);       });   });</code><strong>C# code</strong><code>[Fact]     public async Task Gets_favorites_for_authorized_user()     {         _pact             .UponReceiving("a request for user favorites")             .Given("a user with favorites exists")             .WithRequest(HttpMethod.Get, "/v1/casino/game")             .WithHeader("x-session", "valid-token")             .WillRespond()             .WithStatus(HttpStatusCode.OK)             .WithJsonBody(new             {                 favorites = Match.MinType(new                 {                     id = Match.Type("1"),                     entityId = Match.Type("abc123")                 }, 1)             });          await _pact.VerifyAsync(async ctx =&gt;         {             var client = new HttpClient { BaseAddress = ctx.MockServerUri };              var request = new HttpRequestMessage(HttpMethod.Get, "/v1/casino/game");             request.Headers.Add("x-session", "valid-token");              var response = await client.SendAsync(request);              Assert.Equal(HttpStatusCode.OK, response.StatusCode);         });     }</code></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            <h1 id="continuous-integration">Continuous Integration (CI)</h1>
-            <p>You have now created the Contracts locally. However, for the Provider to make use of it, it must be uploaded to the Broker. This is done in the CI pipeline. Therefore you must add a CI script. These examples use GitHub Actions. </p>
-            <p>First go to your repository settings and add a variable called <code>BROKER_URL</code>. Set it to your broker url.</p>
-            <p>Next create a file in <code>.github/workflows/</code> called <code>ci.yml</code> . Look in the examples below to find the specific contents.  </p>
+                <p>If you have multiple Providers, you should make a separate file for each, as they will get their own Contracts.</p>
+                <div class="warning-box">
+                    <span class="warning-icon">⚠</span>
+                    <p>Do not place <em>any </em>sensitive information in your Contracts.</p>
+                    </div>
+                    <h1 id="the-contract">The contract</h1>
+                    <p>When you run your tests, you should see a directory called pacts appear. Inside of it, you can find your contract.</p>
+                    <p>The contract is generated from the Pact code shown in the previous section. Below, the example is shown alongside the contract it produces.</p>
+                    <table class="contract-comparison">
+                        <thead>
+                            <tr>
+                                <th>Contract</th>
+                                <th>Code</th>
+                            </tr>
+                        </thead>
 
-            <button type="button" class="expandable-button">JavaScript</button>
-            <div class="expandable-content">
+                        <tbody>
+                            <tr>
+                                <td>
+<pre><code>{
+  "consumer": {
+    "name": "CasinoFrontend"
+  },
+  "provider": {
+    "name": "FavoriteApi"
+  },
+  "interactions": [
+    {
+      "description": "a request for user favorites",
+      "providerStates": [
+        {
+          "name": "a user with favorites exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/v1/casino/game",
+        "headers": {
+          "x-session": ["valid-token"]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": ["application/json"]
+        },
+        "body": {
+          "favorites": [
+            {
+              "id": "1",
+              "entityId": "abc123"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}</code></pre>
+                                </td>
+
+                                <td>
+                                    <h3>JavaScript</h3>
+
+<pre><code>it("gets all favorites for a user", async () =&gt; {
+  await pact
+    .addInteraction()
+    .given("a user with favorites exists")
+    .uponReceiving("a request for user favorites")
+    .withRequest("GET", "/v1/casino/game", builder =&gt; {
+      builder.headers({
+        "x-session": "valid-token",
+      });
+    })
+    .willRespondWith(200, builder =&gt; {
+      builder.jsonBody({
+        favorites: eachLike({
+          id: like("1"),
+          entityId: like("abc123"),
+        }),
+      });
+    })
+    .executeTest(async mockServer =&gt; {
+      const response = await axios.get(
+        `${mockServer.url}/v1/casino/game`,
+        {
+          headers: {
+            "x-session": "valid-token",
+          },
+        }
+      );
+
+      expect(response.status).toBe(200);
+    });
+});</code></pre>
+
+                                    <h3>C#</h3>
+
+<pre><code>[Fact]
+public async Task Gets_favorites_for_authorized_user()
+{
+    _pact
+        .UponReceiving("a request for user favorites")
+        .Given("a user with favorites exists")
+        .WithRequest(HttpMethod.Get, "/v1/casino/game")
+        .WithHeader("x-session", "valid-token")
+        .WillRespond()
+        .WithStatus(HttpStatusCode.OK)
+        .WithJsonBody(new
+        {
+            favorites = Match.MinType(new
+            {
+                id = Match.Type("1"),
+                entityId = Match.Type("abc123")
+            }, 1)
+        });
+
+    await _pact.VerifyAsync(async ctx =&gt;
+    {
+        var client = new HttpClient
+        {
+            BaseAddress = ctx.MockServerUri
+        };
+
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            "/v1/casino/game"
+        );
+
+        request.Headers.Add("x-session", "valid-token");
+
+        var response = await client.SendAsync(request);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            response.StatusCode
+        );
+    });
+}</code></pre>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h1 id="continuous-integration">Continuous Integration (CI)</h1>
+                    <p>You have now created the Contracts locally. However, for the Provider to make use of it, it must be uploaded to the Broker. This is done in the CI pipeline. Therefore you must add a CI script. These examples use GitHub Actions. </p>
+                    <p>First go to your repository settings and add a variable called <code>BROKER_URL</code>. Set it to your broker url.</p>
+                    <p>Next create a file in <code>.github/workflows/</code> called <code>ci.yml</code> . Look in the examples below to find the specific contents.  </p>
+
+                    <button type="button" class="expandable-button">JavaScript</button>
+                    <div class="expandable-content">
 <pre><code>name: CI
 
 on: [push]
@@ -515,10 +642,10 @@ jobs:
             -ContentType "application/json" `
             -Body '{"branch": "${{ github.ref_name }}"}'
 </code></pre>
-            </div>
+                    </div>
 
-            <button type="button" class="expandable-button">C#</button>
-            <div class="expandable-content">
+                    <button type="button" class="expandable-button">C#</button>
+                    <div class="expandable-content">
 <pre><code>name: CI
 
 on: 
@@ -570,24 +697,24 @@ jobs:
       - name: Run provider contract tests
         run: dotnet test --no-build --filter "Category=Contract&ContractRole=Provider"
 </code></pre>
-            </div>
+                    </div>
 
-            <p>After pushing, you should be able to see your Contract in the Broker.</p>
+                    <p>After pushing, you should be able to see your Contract in the Broker.</p>
 
-            <figure>
-                <img src="../images/consumerPactBrokerExample.png"
-                     alt="Broker showing the running example"
-                     class="zoomable" />
-                <figcaption>Figure 2: Broker showing the consumer contract</figcaption>
-            </figure>
+                    <figure>
+                        <img src="../images/consumerPactBrokerExample.png"
+                             alt="Broker showing the running example"
+                             class="zoomable" />
+                        <figcaption>Figure 2: Broker showing the consumer contract</figcaption>
+                    </figure>
 
-            <h1 id="continuous-deployment">Continuous Deployment (CD)</h1>
-            <p>Finally, we will add CD to the pipeline. Before we deploy our microservice anywhere, we want to make sure that our Providers are correctly deployed. </p>
-            <p>Make a new file called <code>cd.yml</code> in <code>.github/workflows</code> with the contents. It will first check if our Providers are correctly deployed, and then record our deployment. This example is in GitHub Actions and does not actually perform a deployment; it simply marks it in the Broker for the purposes of CDCT.</p>
-            <p>While the CI script from before is run automatically, this must be triggered manually from the Actions page. This is only possible once it has been merged into main, so you may not be able to do it for a while.</p>
+                    <h1 id="continuous-deployment">Continuous Deployment (CD)</h1>
+                    <p>Finally, we will add CD to the pipeline. Before we deploy our microservice anywhere, we want to make sure that our Providers are correctly deployed. </p>
+                    <p>Make a new file called <code>cd.yml</code> in <code>.github/workflows</code> with the contents. It will first check if our Providers are correctly deployed, and then record our deployment. This example is in GitHub Actions and does not actually perform a deployment; it simply marks it in the Broker for the purposes of CDCT.</p>
+                    <p>While the CI script from before is run automatically, this must be triggered manually from the Actions page. This is only possible once it has been merged into main, so you may not be able to do it for a while.</p>
 
-            <button type="button" class="expandable-button">Show code</button>
-            <div class="expandable-content">
+                    <button type="button" class="expandable-button">Show code</button>
+                    <div class="expandable-content">
 <pre><code>name: CD
 run-name: CD - ${{ inputs.environment }}
 
@@ -632,9 +759,9 @@ jobs:
           version: ${{ github.sha }}
           environment: ${{ inputs.environment }}
 </code></pre>
-            </div>
+                    </div>
 
-        </main>
+</main>
     </div>
 
     <script src="../js/scripts.js"></script>
