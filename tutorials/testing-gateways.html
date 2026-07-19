@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PAGE TITLE</title>
+    <title>Provider tutorial</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -12,7 +12,10 @@
         <nav class="sidebar"></nav>
 
         <main class="content">
-            <h1>PAGE TITLE</h1>
+            <h1 id="testing-gateways">Testing Gateways</h1>
+            <p>When you want to test a Consumer-Provider pair that has a gateway as an intermediary, you must instead write the tests to target the gateway. Thus the direct link gets broken and instead you end up with two pairs, where the gateway is the Provider of the original Consumer and the Consumer of the original Provider. When the gateway receives a contract for verification, it will automatically transform it into a contract that it can pass on to the original Provider. From the point of view of the Consumer, the process is therefore almost exactly the same as it would have been without the gateway. </p>
+            <p>Setting up contract testing for the gateway is a one-time endeavour. Follow this guide for instructions on how to do that.</p>
+            <p>To learn how to write tests that target a provider through a gateway, follow this guide.</p>
         </main>
     </div>
 
