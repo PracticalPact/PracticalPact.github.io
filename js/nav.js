@@ -18,8 +18,8 @@ const sidebars = {
         title: "Tutorials",
         links: [
             ["tutorials/index.html", "Getting Started"],
-            ["tutorials/first-contract.html", "Writing Your First Contract"],
-            ["tutorials/broker-setup.html", "Setting Up the Broker"],
+            ["tutorials/consumer.html", "Consumer"],
+            ["tutorials/provider.html", "Provider"],
         ]
     }
 };
