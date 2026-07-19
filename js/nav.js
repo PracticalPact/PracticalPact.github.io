@@ -20,10 +20,14 @@ const sidebars = {
             ["tutorials/index.html", "Getting Started"],
             ["tutorials/consumer.html", "Consumer"],
             ["tutorials/provider.html", "Provider"],
+            ["tutorials/testing-gateways.html", "Testing Gateways", [
+                ["tutorials/gateway-setup.html", "Setting Up Gateway Tests"],
+                ["tutorials/gateway-consumer.html", "Writing Consumer Tests"],
+                ["tutorials/gateway-cicd.html", "Gateway CI/CD"],
+            ]],
         ]
     }
 };
-
 function renderNav(section, base = "") {
     document.querySelector(".topbar").innerHTML = `
     <a href="${base}index.html" class="brand">CDCT Method</a>
@@ -32,10 +36,16 @@ function renderNav(section, base = "") {
   `;
     const s = sidebars[section];
     const current = location.pathname.split("/").pop();
+
+    function renderLinks(links) {
+        return links.map(([href, label, children]) => `
+      <a href="${base}${href}"${href.endsWith(current) ? ' class="active"' : ''}>${label}</a>
+      ${children ? `<div class="sidebar-sub">${renderLinks(children)}</div>` : ""}
+    `).join("");
+    }
+
     document.querySelector(".sidebar").innerHTML = `
     <h2>${s.title}</h2>
-    ${s.links.map(([href, label]) =>
-        `<a href="${base}${href}"${href.endsWith(current) ? ' class="active"' : ''}>${label}</a>`
-    ).join("")}
+    ${renderLinks(s.links)}
   `;
 }

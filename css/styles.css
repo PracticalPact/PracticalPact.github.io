@@ -116,3 +116,7 @@ body {
     max-height: 0;
     transition: max-height 0.2s ease-out;
 }
+
+.sidebar-sub {
+    margin-left: 16px;
+}

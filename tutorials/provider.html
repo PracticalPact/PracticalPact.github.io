@@ -717,15 +717,16 @@ jobs:
           baseBranch: pact-failures</span>
 </code></pre>
                 <p>CD part is WIP.</p>
-                </div>
-                <h1 id="what-now-">What Now?</h1>
-                <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
-                <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
-                <p>Read more about cooperation with CDCT here.</p>
+            </div>
+            <h1 id="what-now-">What Now?</h1>
+            <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
+            <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
+            <p>Read more about cooperation with CDCT here.</p>
 
         </main>
     </div>
 
+    <script src="../js/scripts.js"></script>
     <script src="../js/nav.js"></script>
     <script>renderNav('tutorials', '../')</script>
 </body>
