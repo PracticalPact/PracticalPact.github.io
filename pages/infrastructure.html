@@ -6,21 +6,11 @@
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
+    <div class="topbar"></div>
+
     <div class="layout">
 
-        <nav class="sidebar">
-            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
-            <a href="../index.html">Welcome</a>
-            <a href="cdct.html">CDCT Concept</a>
-            <a href="setup.html">Project Setup</a>
-            <a href="contracts.html">Contracts</a>
-            <a href="infrastructure.html" class="active">Infrastructure</a>
-            <a href="gateways.html">Gateways</a>
-            <a href="cicd.html">CI/CD</a>
-            <a href="local-tests.html">Local Tests</a>
-            <a href="broker.html">Pact Broker</a>
-            <a href="workflow.html">Team Workflow</a>
-        </nav>
+        <nav class="sidebar"></nav>
 
         <main class="content">
             <h1>Infrastructure Setup</h1>
@@ -56,5 +46,7 @@
         </main>
 
     </div>
+    <script src="../js/nav.js"></script>
+    <script>renderNav('docs', '../')</script>
 </body>
 </html>

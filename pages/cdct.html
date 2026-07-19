@@ -6,21 +6,10 @@
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <div class="layout">
+    <div class="topbar"></div>
 
-        <nav class="sidebar">
-            <h2>Consumer Driven Contract Testing - A CDCT method</h2>
-            <a href="../index.html">Welcome</a>
-            <a href="cdct.html" class="active">CDCT Concept</a>
-            <a href="setup.html">Project Setup</a>
-            <a href="contracts.html">Contracts</a>
-            <a href="infrastructure.html">Infrastructure</a>
-            <a href="gateways.html">Gateways</a>
-            <a href="cicd.html">CI/CD</a>
-            <a href="local-tests.html">Local Tests</a>
-            <a href="broker.html">Pact Broker</a>
-            <a href="workflow.html">Team Workflow</a>
-        </nav>
+    <div class="layout">
+        <nav class="sidebar"></nav>
 
         <main class="content">
             <h1>Consumer-Driven Contract Testing with Pact</h1>
@@ -54,10 +43,6 @@
             <img src="../images/testpyramid.png"
                  alt="Test pyramid"
                  class="zoomable pyramid-img" />
-
-            <div id="overlay" onclick="closeImage()">
-                <img id="overlay-img" alt="Expanded diagram">
-            </div>
 
             <p>
                 In the test pyramid, Consumer-Driven Contract Testing is typically positioned below integration, component tests, and end-to-end tests.
@@ -126,22 +111,25 @@
         </main>
 
     </div>
+
+    <script src="../js/nav.js"></script>
+    <script>renderNav('docs', '../')</script>
+
+    <script>
+        const overlay = document.getElementById("overlay");
+        const overlayImg = document.getElementById("overlay-img");
+
+        document.querySelectorAll(".zoomable").forEach(img => {
+            img.addEventListener("click", () => {
+                overlayImg.src = img.src;
+                overlay.style.display = "flex";
+            });
+        });
+
+        function closeImage() {
+            overlay.style.display = "none";
+            overlayImg.src = "";
+        }
+    </script>
 </body>
 </html>
-
-<script>
-    const overlay = document.getElementById("overlay");
-    const overlayImg = document.getElementById("overlay-img");
-
-    document.querySelectorAll(".zoomable").forEach(img => {
-        img.addEventListener("click", () => {
-            overlayImg.src = img.src;
-            overlay.style.display = "flex";
-        });
-    });
-
-    function closeImage() {
-        overlay.style.display = "none";
-        overlayImg.src = "";
-    }
-</script>
