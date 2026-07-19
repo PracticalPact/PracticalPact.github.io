@@ -20,11 +20,15 @@
             <p>C#: <a href="https://github.com/PracticalPact/example-consumer-csharp">https://github.com/PracticalPact/example-consumer-csharp</a> </p>
             <p>JavaScript: WIP, but you can look at <a href="https://github.com/ds-itu-frontend-service/ReactProjectTicTacToe-APACTproject/tree/my-change">https://github.com/ds-itu-frontend-service/ReactProjectTicTacToe-APACTproject/tree/my-change</a> </p>
             <h1 id="consumer-contract-sequence-diagram">Consumer contract sequence diagram</h1>
+            <img src="../images/Consumer.drawio.png"
+                 alt="Consumer contract sequence diagram"
+                 class="zoomable" />
             <p>In CDCT, the Consumer defines the API interactions it depends on by creating contract tests. These tests describe the requests the Consumer sends and the responses it expects from the Provider. The generated contracts are published to the Pact Broker, where they can be verified by Providers. This ensures that service integrations remain compatible as systems evolve. This is done by sending requests to a mock provider and verifying that the Consumer behaves as expected. You can see this visualised in the sequence diagram below. You do not need to fully understand it now, but may find it useful to refer back to later.</p>
             <h1 id="update-gitignore">Update .gitignore</h1>
             <p>Start by adding <code>pacts/</code> to your .gitignore.</p>
             <h1 id="create-test-file">Create Test File</h1>
             <p>See below for test file examples for both C# and JavaScript.</p>
+
 
             <button type="button" class="expandable-button">C#</button>
             <div class="expandable-content">
@@ -549,10 +553,10 @@ jobs:
 
             <p>After pushing, you should be able to see your Contract in the Broker.</p>
 
-            <img src="../images/consumerPackBrokerExample.png"
+            <img src="../images/consumerPactBrokerExample.png"
                  alt="Broker showing the running example"
                  class="zoomable" />
-            
+
             <h1 id="continuous-deployment-cd-">Continuous Deployment (CD)</h1>
             <p>Finally, we will add CD to the pipeline. Before we deploy our microservice anywhere, we want to make sure that our Providers are correctly deployed. </p>
             <p>Make a new file called <code>cd.yml</code> in <code>.github/workflows</code> with the contents. It will first check if our Providers are correctly deployed, and then record our deployment. This example is in GitHub Actions and does not actually perform a deployment; it simply marks it in the Broker for the purposes of CDCT.</p>
