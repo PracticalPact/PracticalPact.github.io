@@ -17,139 +17,183 @@
             <p>Your job is to implement CDCT for a microservice that will act as a Provider for another Consumer. First choose the microservice that you understand the best, and which could serve as the Provider for something else. This would likely be an API that is called by some front end or other microservice. The one that you choose will be the project to work on throughout this tutorial.</p>
             <p>To set up a project for the role of Provider is mostly a one-time endeavour. When Contracts are created or modified, you may need to extend the Provider States — we will get to those later — but that should be a minor task. </p>
 
+            <ul>
+                <li><a href="#provider-contract-sequence-diagram">Provider contract sequence diagram</a></li>
+                <li><a href="#running-example-overview">Running Example</a></li>
+                <li>
+                    <a href="#local-test-environment">Local test environment</a>
+                    <ul>
+                        <li><a href="#docker">Docker</a></li>
+                        <li><a href="#docker-compose">Docker Compose</a></li>
+                        <li><a href="#create-contract">Create Contract</a></li>
+                        <li><a href="#running-example-contract">Running Example</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#refactor-code">Refactor Code</a>
+                    <ul>
+                        <li><a href="#modern-program-setup">Modern setup with all code in Program.cs</a></li>
+                        <li><a href="#using-controllers">Using Controllers</a></li>
+                        <li><a href="#running-example-refactor">Running Example</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#create-test-project">Create test project or directory</a>
+                    <ul>
+                        <li><a href="#running-example-provider-test">Running Example</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#provider-states">Provider States</a>
+                    <ul>
+                        <li><a href="#running-example-provider-states">Running Example</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#stub-external-dependencies">Stub External Dependencies</a>
+                    <ul>
+                        <li><a href="#running-example-stubs">Running Example</a></li>
+                    </ul>
+                </li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#finishing-local-example">Finishing the Local Example</a></li>
+                <li><a href="#ci-cd">CI/CD</a></li>
+                <li><a href="#what-now">What Now?</a></li>
+            </ul>
+
             <h1 id="provider-contract-sequence-diagram">Provider contract sequence diagram</h1>
 
             <p>When you are done with this guide, your microservice will be able to perform contract tests according to the sequence diagram below. You do not need to understand it now, but you may find it useful to return to later.</p>
-            <button type="button" class="expandable-button">C#</button>
+            <button type="button" class="expandable-button">Provider contract sequence diagram</button>
             <div class="expandable-content">
 
                 <figure>
-                <img src="../images/Provider.drawio.png"
-                     alt="Provider contract sequence diagram"
-                     class="zoomable" />
-                <figcaption>
-                    Figure 1: Provider contract sequence diagram.
-                </figcaption>
+                    <img src="../images/Provider.drawio.png"
+                         alt="Provider contract sequence diagram"
+                         class="zoomable" />
+                    <figcaption>
+                        Figure 1: Provider contract sequence diagram.
+                    </figcaption>
                 </figure>
             </div>
 
-                <h1 id="running-example">Running Example</h1>
-                <p>Throughout the guide, a running example will be used to demonstrate the implementation. You can see it at <a href="https://github.com/PracticalPact/example-provider-csharp">https://github.com/PracticalPact/example-provider-csharp</a>. It may be worthwhile to read its README to understand its basic structure to better understand the examples.</p>
-                <p>At the end of this guide, both this example microservice and your own one will function as a Provider capable of performing CDCT. We will have made an example Contract that it can succesfully validate both locally and in a CICD pipeline. This means that if a Consumer has published a Contract for us, then whenever we push our code, we will validate our compatibility with that Contract. You can see the actual flow of that in the sequence diagram above.</p>
-                <h1 id="local-test-environment">Local test environment</h1>
-                <p>Your organisation has a centralised Broker, which all services communicate with. Consumers upload their contracts and Providers download them. You can find it at <a href="https://pact-broker-dev.dsservice.eu/">https://pact-broker-dev.dsservice.eu/</a>. You do not need to know more about the Broker now, but if you at some point get confused about it, you can read more <a href="https://practicalpact.github.io/pages/broker.html">here</a>. For this guide, we will use a local Broker so you do not need to worry about breaking anything.</p>
-                <p>Additionally, in a “real” scenario, your Provider would likely already have one or more Contracts from Consumers that are waiting to be verified. Whether or not that is currently true for your Provider, we will simplify by using an example contract that you have full control over.</p>
-                <p>You will therefore create your own contract using <strong>the Pact Contract Builder</strong> (which is available at <code>localhost:3000</code> after starting the Docker Compose setup below). <strong>The Pact Contract Builder</strong> allows you to manually define a contract by entering the required Scenarios and parameters, without needing to implement an actual Consumer application.</p>
-                <p>This lets the guide focus entirely on the Provider side of contract testing. It also gives you the power to see what happens if you make changes to the contract. Once everything is working locally, you will move on to using the central Broker and contracts published by real Consumers.</p>
-                <p>To set up the local environment, perform the following steps.</p>
-                <h2 id="docker">Docker</h2>
-                <p>Ensure that you have <a href="https://www.docker.com/get-started/">Docker</a> installed and that it is running.</p>
-                <h2 id="docker-compose">Docker Compose</h2>
-                <p>Create a file called <code>docker-compose.yml</code> with the following contents. The location of the file does not matter.</p>
+            <h1 id="running-example-overview">Running Example</h1>
+            <p>Throughout the guide, a running example will be used to demonstrate the implementation. You can see it at <a href="https://github.com/PracticalPact/example-provider-csharp">https://github.com/PracticalPact/example-provider-csharp</a>. It may be worthwhile to read its README to understand its basic structure to better understand the examples.</p>
+            <p>At the end of this guide, both this example microservice and your own one will function as a Provider capable of performing CDCT. We will have made an example Contract that it can succesfully validate both locally and in a CICD pipeline. This means that if a Consumer has published a Contract for us, then whenever we push our code, we will validate our compatibility with that Contract. You can see the actual flow of that in the sequence diagram above.</p>
+            <h1 id="local-test-environment">Local test environment</h1>
+            <p>Your organisation has a centralised Broker, which all services communicate with. Consumers upload their contracts and Providers download them. You can find it at <a href="https://pact-broker-dev.dsservice.eu/">https://pact-broker-dev.dsservice.eu/</a>. You do not need to know more about the Broker now, but if you at some point get confused about it, you can read more <a href="https://practicalpact.github.io/pages/broker.html">here</a>. For this guide, we will use a local Broker so you do not need to worry about breaking anything.</p>
+            <p>Additionally, in a “real” scenario, your Provider would likely already have one or more Contracts from Consumers that are waiting to be verified. Whether or not that is currently true for your Provider, we will simplify by using an example contract that you have full control over.</p>
+            <p>You will therefore create your own contract using <strong>the Pact Contract Builder</strong> (which is available at <code>localhost:3000</code> after starting the Docker Compose setup below). <strong>The Pact Contract Builder</strong> allows you to manually define a contract by entering the required Scenarios and parameters, without needing to implement an actual Consumer application.</p>
+            <p>This lets the guide focus entirely on the Provider side of contract testing. It also gives you the power to see what happens if you make changes to the contract. Once everything is working locally, you will move on to using the central Broker and contracts published by real Consumers.</p>
+            <p>To set up the local environment, perform the following steps.</p>
+            <h2 id="docker">Docker</h2>
+            <p>Ensure that you have <a href="https://www.docker.com/get-started/">Docker</a> installed and that it is running.</p>
+            <h2 id="docker-compose">Docker Compose</h2>
+            <p>Create a file called <code>docker-compose.yml</code> with the following contents. The location of the file does not matter.</p>
 <pre><code class="lang-yaml"><span class="hljs-attribute">services</span>:
-                <span class="hljs-attribute">postgres</span>:
-                <span class="hljs-attribute">image</span>: <span class="hljs-attribute">postgres</span>:<span class="hljs-number">16</span>
-                <span class="hljs-attribute">environment</span>:
-                <span class="hljs-attribute">POSTGRES_USER</span>: postgres
-                <span class="hljs-attribute">POSTGRES_PASSWORD</span>: password
-                <span class="hljs-attribute">POSTGRES_DB</span>: postgres
-                <span class="hljs-attribute">volumes</span>:
+            <span class="hljs-attribute">postgres</span>:
+            <span class="hljs-attribute">image</span>: <span class="hljs-attribute">postgres</span>:<span class="hljs-number">16</span>
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">POSTGRES_USER</span>: postgres
+            <span class="hljs-attribute">POSTGRES_PASSWORD</span>: password
+            <span class="hljs-attribute">POSTGRES_DB</span>: postgres
+            <span class="hljs-attribute">volumes</span>:
       - <span class="hljs-attribute">pg</span>:/var/lib/postgresql/data
 
-                <span class="hljs-attribute">pact-broker</span>:
-                <span class="hljs-attribute">image</span>: pactfoundation/<span class="hljs-attribute">pact-broker</span>:latest
-                <span class="hljs-attribute">ports</span>:
+            <span class="hljs-attribute">pact-broker</span>:
+            <span class="hljs-attribute">image</span>: pactfoundation/<span class="hljs-attribute">pact-broker</span>:latest
+            <span class="hljs-attribute">ports</span>:
       - <span class="hljs-string">"9292:9292"</span>
-                <span class="hljs-attribute">depends_on</span>:
+            <span class="hljs-attribute">depends_on</span>:
       - postgres
-                <span class="hljs-attribute">environment</span>:
-                <span class="hljs-attribute">PACT_BROKER_PORT</span>: <span class="hljs-string">"9292"</span>
-                <span class="hljs-attribute">PACT_BROKER_DATABASE_URL</span>: <span class="hljs-string">"postgres://postgres:password@postgres/postgres"</span>
-                <span class="hljs-attribute">PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES</span>: <span class="hljs-string">"5"</span>
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">PACT_BROKER_PORT</span>: <span class="hljs-string">"9292"</span>
+            <span class="hljs-attribute">PACT_BROKER_DATABASE_URL</span>: <span class="hljs-string">"postgres://postgres:password@postgres/postgres"</span>
+            <span class="hljs-attribute">PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES</span>: <span class="hljs-string">"5"</span>
 
-                <span class="hljs-attribute">contract-factory</span>:
-                <span class="hljs-attribute">image</span>: magnusmouritzen/<span class="hljs-attribute">contract-factory</span>:latest
-                <span class="hljs-attribute">ports</span>:
+            <span class="hljs-attribute">contract-factory</span>:
+            <span class="hljs-attribute">image</span>: magnusmouritzen/<span class="hljs-attribute">contract-factory</span>:latest
+            <span class="hljs-attribute">ports</span>:
      - <span class="hljs-string">"3000:3000"</span>
-                <span class="hljs-attribute">depends_on</span>:
+            <span class="hljs-attribute">depends_on</span>:
      - pact-broker
-                <span class="hljs-attribute">environment</span>:
-                <span class="hljs-attribute">BROKER_URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//pact-broker:9292</span>
-                <span class="hljs-attribute">BRANCH</span>: main
-                <span class="hljs-attribute">TAGS</span>: main
-                <span class="hljs-attribute">NODE_TLS_REJECT_UNAUTHORIZED</span>: <span class="hljs-string">"0"</span>
-                <span class="hljs-attribute">PACT_DISABLE_SSL_VERIFICATION</span>: <span class="hljs-string">"true"</span>
+            <span class="hljs-attribute">environment</span>:
+            <span class="hljs-attribute">BROKER_URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//pact-broker:9292</span>
+            <span class="hljs-attribute">BRANCH</span>: main
+            <span class="hljs-attribute">TAGS</span>: main
+            <span class="hljs-attribute">NODE_TLS_REJECT_UNAUTHORIZED</span>: <span class="hljs-string">"0"</span>
+            <span class="hljs-attribute">PACT_DISABLE_SSL_VERIFICATION</span>: <span class="hljs-string">"true"</span>
 
 <span class="hljs-attribute">volumes</span>:
-                <span class="hljs-attribute">pg</span>:
+            <span class="hljs-attribute">pg</span>:
 </code></pre>
-                <p>Navigate to the file in your terminal and run <code>docker compose up --pull always</code>. If you later want to stop it, use <code>docker compose down</code>.</p>
-                <h2 id="create-contract">Create Contract</h2>
-                <p>You now have two websites running. The first is at <a href="http://localhost:9292">http://localhost:9292</a>. This is the Broker where you can see the contracts. Currently there is only a default example. </p>
-                <p>The second website is at <a href="http://localhost:3000">http://localhost:3000</a>. This is where you will create your Consumer contract from. Before you continue further, read <a href="https://practicalpact.github.io/pages/contracts-briefly.html">this short introduction to contracts</a> if you do not already know how they function.</p>
-                <p>Do so by following these steps. As you go along, you will be able to see the resulting contract take form on the right.</p>
-                <ol>
-                    <li>
-                        Fill in the name of your Provider service. This should match the Git repository name.
-                    </li>
+            <p>Navigate to the file in your terminal and run <code>docker compose up --pull always</code>. If you later want to stop it, use <code>docker compose down</code>.</p>
+            <h2 id="create-contract">Create Contract</h2>
+            <p>You now have two websites running. The first is at <a href="http://localhost:9292">http://localhost:9292</a>. This is the Broker where you can see the contracts. Currently there is only a default example. </p>
+            <p>The second website is at <a href="http://localhost:3000">http://localhost:3000</a>. This is where you will create your Consumer contract from. Before you continue further, read <a href="https://practicalpact.github.io/pages/contracts-briefly.html">this short introduction to contracts</a> if you do not already know how they function.</p>
+            <p>Do so by following these steps. As you go along, you will be able to see the resulting contract take form on the right.</p>
+            <ol>
+                <li>
+                    Fill in the name of your Provider service. This should match the Git repository name.
+                </li>
 
-                    <li>
-                        Think of the simplest endpoint of your service that accepts a GET request. This will be your successful GET test.
+                <li>
+                    Think of the simplest endpoint of your service that accepts a GET request. This will be your successful GET test.
 
-                        <ol type="a">
-                            <li>
-                                Write the path of that endpoint without including the base URL. If a particular resource is accessed by an ID or something similar, remember to include it.
-                            </li>
-                            <li>
-                                Write a description that matches a successful interaction with this endpoint.
-                            </li>
-                            <li>
-                                Consider whether the service requires certain headers. If so, fill them into the headers field. If not, leave it empty.
-                            </li>
-                            <li>
-                                Think about the response that the service would return. Fill in the status code.
-                            </li>
-                            <li>
-                                Write an example response body. The exact values do not matter here. Only the structure, field names, and value types must be correct.
-                            </li>
-                            <li>
-                                Consider what must be true for the Provider to produce this result. For example, if you request an item with ID <code>1</code>, the Provider may need an item with that ID to exist. Describe this in the Given field, for example: <q>an item with id 1 exists</q>.
-                            </li>
-                        </ol>
-                    </li>
+                    <ol type="a">
+                        <li>
+                            Write the path of that endpoint without including the base URL. If a particular resource is accessed by an ID or something similar, remember to include it.
+                        </li>
+                        <li>
+                            Write a description that matches a successful interaction with this endpoint.
+                        </li>
+                        <li>
+                            Consider whether the service requires certain headers. If so, fill them into the headers field. If not, leave it empty.
+                        </li>
+                        <li>
+                            Think about the response that the service would return. Fill in the status code.
+                        </li>
+                        <li>
+                            Write an example response body. The exact values do not matter here. Only the structure, field names, and value types must be correct.
+                        </li>
+                        <li>
+                            Consider what must be true for the Provider to produce this result. For example, if you request an item with ID <code>1</code>, the Provider may need an item with that ID to exist. Describe this in the Given field, for example: <q>an item with id 1 exists</q>.
+                        </li>
+                    </ol>
+                </li>
 
-                    <li>
-                        Consider how this endpoint could be called with GET in a way that would not return a successful response. For example, this could happen if you request an item that does not exist or forget to include a required header. This will be your failed GET test.
+                <li>
+                    Consider how this endpoint could be called with GET in a way that would not return a successful response. For example, this could happen if you request an item that does not exist or forget to include a required header. This will be your failed GET test.
 
-                        <ol type="a">
-                            <li>
-                                Fill in the same information as above, but modify it to match the failing case.
-                            </li>
-                            <li>
-                                Consider whether the Provider needs a specific state to produce the failure. For example, if you request an item with ID <code>1</code> and want the request to fail because the item does not exist, you could write: <q>no item with id 1 exists</q>.
-                            </li>
-                        </ol>
-                    </li>
+                    <ol type="a">
+                        <li>
+                            Fill in the same information as above, but modify it to match the failing case.
+                        </li>
+                        <li>
+                            Consider whether the Provider needs a specific state to produce the failure. For example, if you request an item with ID <code>1</code> and want the request to fail because the item does not exist, you could write: <q>no item with id 1 exists</q>.
+                        </li>
+                    </ol>
+                </li>
 
-                    <li>
-                        Think of an endpoint that can be called with a POST request. This will be your successful POST test.
+                <li>
+                    Think of an endpoint that can be called with a POST request. This will be your successful POST test.
 
-                        <ol type="a">
-                            <li>
-                                Follow the same steps as before to create a successful request.
-                            </li>
-                            <li>
-                                Include a request body if needed. Also consider whether any special headers are required, such as <code>Content-Type</code>.
-                            </li>
-                        </ol>
-                    </li>
+                    <ol type="a">
+                        <li>
+                            Follow the same steps as before to create a successful request.
+                        </li>
+                        <li>
+                            Include a request body if needed. Also consider whether any special headers are required, such as <code>Content-Type</code>.
+                        </li>
+                    </ol>
+                </li>
 
-                    <li>
-                        Click <q>Upload contract to Pact Broker</q>.
-                    </li>
-                </ol>
-                <p>Go to your <a href="http://localhost:9292">Broker</a> and reload. You should be able to see your new contract from a Consumer called Frontend App. </p>
-                <p>Throughout the rest of the tutorial, you may need to go back and change the contract. You can do so in the same way as before, which will create a new version of the contract. You can inspect the versions by clicking at the grid-icon of the contract.</p>
+                <li>
+                    Click <q>Upload contract to Pact Broker</q>.
+                </li>
+            </ol>
+            <p>Go to your <a href="http://localhost:9292">Broker</a> and reload. You should be able to see your new contract from a Consumer called Frontend App. </p>
+            <p>Throughout the rest of the tutorial, you may need to go back and change the contract. You can do so in the same way as before, which will create a new version of the contract. You can inspect the versions by clicking at the grid-icon of the contract.</p>
             <figure>
                 <img src="../images/PactBrokerGridExample.png"
                      alt="Pact Version Overview"
@@ -157,49 +201,49 @@
                 <figcaption>Figure 2: Pact Version Overview</figcaption>
             </figure>
 
-                <h3 id="running-example">Running Example</h3>
-                <p>For the example, we will create these three Scenarios.</p>
+            <h3 id="running-example-contract">Running Example</h3>
+            <p>For the example, we will create these three Scenarios.</p>
 
-                <button type="button" class="expandable-button">Images</button>
-                <div class="expandable-content">
-                    <figure>
-                        <img src="../images/ContractFactoryExample0.png"
-                             alt="Pact Version Overview"
-                             class="zoomable" />
-                        <figcaption>Figure 3: Contract Factory Example</figcaption>
-                        </figure>
-                        <figure>
-                            <img src="../images/ContractFactoryExample1.png"
-                                 alt="Pact Version Overview"
-                                 class="zoomable" />
-                            <figcaption>Figure 4: Contract Factory Example</figcaption>
-                        </figure>
-                        <figure>
-                            <img src="../images/ContractFactoryExample2.png"
-                                 alt="Pact Version Overview"
-                                 class="zoomable" />
-                            <figcaption>Figure 5: Contract Factory Example</figcaption>
-                        </figure>
-                        <figure>
-                            <img src="../images/ContractFactoryExample3.png"
-                                 alt="Pact Version Overview"
-                                 class="zoomable" />
-                            <figcaption>Figure 6: Contract Factory Example</figcaption>
-                        </figure>
-                        <p>If you have (or will) followed the Consumer implementation guide and paid attention to the running example, you may notice that this is a simplified version of the Contract built there.</p>
-</div>
+            <button type="button" class="expandable-button">Images</button>
+            <div class="expandable-content">
+                <figure>
+                    <img src="../images/ContractFactoryExample0.png"
+                         alt="Pact Version Overview"
+                         class="zoomable" />
+                    <figcaption>Figure 3: Contract Factory Example</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/ContractFactoryExample1.png"
+                         alt="Pact Version Overview"
+                         class="zoomable" />
+                    <figcaption>Figure 4: Contract Factory Example</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/ContractFactoryExample2.png"
+                         alt="Pact Version Overview"
+                         class="zoomable" />
+                    <figcaption>Figure 5: Contract Factory Example</figcaption>
+                </figure>
+                <figure>
+                    <img src="../images/ContractFactoryExample3.png"
+                         alt="Pact Version Overview"
+                         class="zoomable" />
+                    <figcaption>Figure 6: Contract Factory Example</figcaption>
+                </figure>
+                <p>If you have (or will) followed the Consumer implementation guide and paid attention to the running example, you may notice that this is a simplified version of the Contract built there.</p>
+            </div>
 
-                <h1 id="refactor-code">Refactor Code</h1>
-                <p>The first step in setting a project up for Provider tests is to ensure that the app can be run from the test code. Normally, it is started through the main file and then just runs. We need to be able to start it from another file, and then be able to configure it and send it requests. </p>
-                <p>There are multiple ways to achieve this. It might be the case that your project already is correctly configured, and that no further work is needed. You may want to move on to the next step and then return to this as needed.</p>
-                <p>Consult the language specific instructions for help.</p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <p>Besides being able to start the app from the test code, you need access to its builder, so you can inject services later. You also need access to the app before it is started so you can create new endpoints and set up test-specific middleware. </p>
-                    <p>Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this, but it does unfortunately <strong>not</strong> work with Pact.</p>
-                    <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
-                    <h2 id="-modern-setup-with-all-code-in-program-cs-"><strong>Modern setup with all code in Program.cs</strong></h2>
-                    <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
+            <h1 id="refactor-code">Refactor Code</h1>
+            <p>The first step in setting a project up for Provider tests is to ensure that the app can be run from the test code. Normally, it is started through the main file and then just runs. We need to be able to start it from another file, and then be able to configure it and send it requests. </p>
+            <p>There are multiple ways to achieve this. It might be the case that your project already is correctly configured, and that no further work is needed. You may want to move on to the next step and then return to this as needed.</p>
+            <p>Consult the language specific instructions for help.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <p>Besides being able to start the app from the test code, you need access to its builder, so you can inject services later. You also need access to the app before it is started so you can create new endpoints and set up test-specific middleware. </p>
+                <p>Microsoft recommends Microsoft.AspNetCore.Mvc.Testing for testing like this, but it does unfortunately <strong>not</strong> work with Pact.</p>
+                <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
+                <h2 id="modern-program-setup"><strong>Modern setup with all code in Program.cs</strong></h2>
+                <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
 <pre><code class="lang-c#">using ...;
 
 <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
@@ -211,52 +255,52 @@
 
 public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword">Program</span> { }
 </code></pre>
-                    <p>If there is no Program class definition there, make one.</p>
-                    <p>Rewrite Program.cs to look like the following.</p>
+                <p>If there is no Program class definition there, make one.</p>
+                <p>Rewrite Program.cs to look like the following.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">using</span> ...;
 
 <span class="hljs-keyword">var</span> app = CreateApp(args);
 app.Run();
 
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">partial</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Program</span> {
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> WebApplication <span class="hljs-title">CreateApp</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args, Action&lt;WebApplicationBuilder&gt;? configureBuilder = <span class="hljs-literal">null</span></span>)</span>{
-                    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
-                    <span class="hljs-comment">// Set up builder...</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> WebApplication <span class="hljs-title">CreateApp</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args, Action&lt;WebApplicationBuilder&gt;? configureBuilder = <span class="hljs-literal">null</span></span>)</span>{
+                <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+                <span class="hljs-comment">// Set up builder...</span>
     configureBuilder?.Invoke(builder);
-                    <span class="hljs-keyword">var</span> app = builder.Build();
-                    <span class="hljs-comment">// Set up app...</span>
+                <span class="hljs-keyword">var</span> app = builder.Build();
+                <span class="hljs-comment">// Set up app...</span>
 
-                    <span class="hljs-keyword">return</span> app;
+                <span class="hljs-keyword">return</span> app;
   }
 }
 </code></pre>
-                    <p>With this refactor, we will <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Create-test-project-or-directory">in the next section</a> be able to start the app like this:</p>
+                <p>With this refactor, we will <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Create-test-project-or-directory">in the next section</a> be able to start the app like this:</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
-                    <span class="hljs-comment">// Modify builder...</span>
+                <span class="hljs-comment">// Modify builder...</span>
 });
 <span class="hljs-comment">// Modify app...</span>
 
 await <span class="hljs-keyword">app</span>.StartAsync();
 </code></pre>
-                    <h2 id="-using-controllers-"><strong>Using Controllers </strong></h2>
-                    <p>If your API endpoints are created with Controller classes, you will likely have a line that adds those controllers to the app builder: <code>builder.Services.AddControllers()</code>. This will add all controllers in the current assembly. The issue is that when the code is run from another project, it will be unable to find the normal controllers. Therefore we have to chain on the line <code>.AddApplicationPart(typeof(Program).Assembly)</code>.</p>
-                    <p>So if it for example looked like this before:</p>
+                <h2 id="using-controllers"><strong>Using Controllers</strong></h2>
+                <p>If your API endpoints are created with Controller classes, you will likely have a line that adds those controllers to the app builder: <code>builder.Services.AddControllers()</code>. This will add all controllers in the current assembly. The issue is that when the code is run from another project, it will be unable to find the normal controllers. Therefore we have to chain on the line <code>.AddApplicationPart(typeof(Program).Assembly)</code>.</p>
+                <p>So if it for example looked like this before:</p>
 <pre><code class="lang-c#"><span class="hljs-selector-tag">builder</span><span class="hljs-selector-class">.Services</span><span class="hljs-selector-class">.AddControllers</span>()
-                    <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
+                <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
         {
-                    <span class="hljs-comment">// ...</span>
+                <span class="hljs-comment">// ...</span>
         });
 </code></pre>
-                    <p>It would now be</p>
+                <p>It would now be</p>
 <pre><code class="lang-c#"><span class="hljs-selector-tag">builder</span><span class="hljs-selector-class">.Services</span><span class="hljs-selector-class">.AddControllers</span>()
-                    <span class="hljs-selector-class">.AddApplicationPart</span>(typeof(Program).Assembly)
-                    <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
+                <span class="hljs-selector-class">.AddApplicationPart</span>(typeof(Program).Assembly)
+                <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
         {
-                    <span class="hljs-comment">// ...</span>
+                <span class="hljs-comment">// ...</span>
         });
 </code></pre>
-                    <h2 id="running-example">Running Example</h2>
-                    <p>In the example, <code>Program.cs</code> looks like this:</p>
+                <h2 id="running-example-refactor">Running Example</h2>
+                <p>In the example, <code>Program.cs</code> looks like this:</p>
 <pre><code class="lang-c#">using ForumBackend.Posts;
 using ForumBackend.Sso;
 
@@ -272,7 +316,7 @@ builder.Services.AddSingleton&lt;IPostRepository, DatabasePostRepository&gt;();
 
 <span class="hljs-keyword">if</span> (<span class="hljs-keyword">app</span>.Environment.IsDevelopment())
 {
-                    <span class="hljs-keyword">app</span>.MapOpenApi();
+                <span class="hljs-keyword">app</span>.MapOpenApi();
 }
 
 <span class="hljs-keyword">app</span>.UseHttpsRedirection();
@@ -282,7 +326,7 @@ builder.Services.AddSingleton&lt;IPostRepository, DatabasePostRepository&gt;();
 <span class="hljs-keyword">app</span>.<span class="hljs-keyword">Run</span>();
 public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword">Program</span> { }
 </code></pre>
-                    <p>So we simply change it to this:</p>
+                <p>So we simply change it to this:</p>
 <pre><code class="lang-c#">using ForumBackend.Posts;
 using ForumBackend.Sso;
 
@@ -293,47 +337,47 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 {
     public static WebApplication CreateApp(string[] <span class="hljs-keyword">args</span>, Action&lt;WebApplicationBuilder&gt;? configureBuilder = null)
     {
-                    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
+                <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
 
         builder.Services.AddOpenApi();
 
-                    <span class="hljs-comment">// Add our external dependencies</span>
+                <span class="hljs-comment">// Add our external dependencies</span>
         builder.Services.AddSingleton&lt;ISso, SsoClient&gt;();
         builder.Services.AddSingleton&lt;IPostRepository, DatabasePostRepository&gt;();
 
-                    <span class="hljs-comment">// Customize builder (used in testing)</span>
+                <span class="hljs-comment">// Customize builder (used in testing)</span>
         configureBuilder?.Invoke(builder);
 
-                    <span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = builder.Build();
+                <span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = builder.Build();
 
-                    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">app</span>.Environment.IsDevelopment())
+                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">app</span>.Environment.IsDevelopment())
         {
-                    <span class="hljs-keyword">app</span>.MapOpenApi();
+                <span class="hljs-keyword">app</span>.MapOpenApi();
         }
 
-                    <span class="hljs-keyword">app</span>.UseHttpsRedirection();
+                <span class="hljs-keyword">app</span>.UseHttpsRedirection();
 
-                    <span class="hljs-keyword">app</span>.MapPostsEndpoints();
+                <span class="hljs-keyword">app</span>.MapPostsEndpoints();
 
-                    <span class="hljs-keyword">return</span> <span class="hljs-keyword">app</span>;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">app</span>;
     }
 }
 </code></pre>
-                </div>
-                <h1 id="create-test-project-or-directory">Create test project or directory</h1>
-                <p>Create the files required to run the provider tests. </p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <p>Perform the following steps.</p>
+            </div>
+            <h1 id="create-test-project">Create test project or directory</h1>
+            <p>Create the files required to run the provider tests. </p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <p>Perform the following steps.</p>
 
-                    <p><strong>New Project</strong></p>
-                    <p>In the solution, create a new project. This project will contain all Provider tests for the solution. If you have no other naming conventions established, consider calling it <em>ContractTests</em>. Choose a test framework such as xunit or MSTest and set up the test project as you normally would.</p>
-                    <p>If instead your organisation prefers to have all tests within a single project, make a directory in that project called <em>ProviderTests</em>.</p>
-                    <p><strong>Packages</strong></p>
-                    <p>In the test project, install the newest version of PracticalPact.Utilities from Nuget.</p>
-                    <p>If you use xunit, also install the newest 1.x version of PactNet.Output.Xunit.</p>
-                    <p><strong>Main file</strong></p>
-                    <p>Create <em>ProviderTests.cs</em> with the following contents. Make necessary adjustments if you do not use MsTest. Also replace [APPLICATION_NAME] and set the correct namespace. The application name must match what you wrote in the contract. Also write the correct code for creating and starting the app at the start of ContractTest(). Go back to the previous section if you need to make changes to the code.</p>
+                <p><strong>New Project</strong></p>
+                <p>In the solution, create a new project. This project will contain all Provider tests for the solution. If you have no other naming conventions established, consider calling it <em>ContractTests</em>. Choose a test framework such as xunit or MSTest and set up the test project as you normally would.</p>
+                <p>If instead your organisation prefers to have all tests within a single project, make a directory in that project called <em>ProviderTests</em>.</p>
+                <p><strong>Packages</strong></p>
+                <p>In the test project, install the newest version of PracticalPact.Utilities from Nuget.</p>
+                <p>If you use xunit, also install the newest 1.x version of PactNet.Output.Xunit.</p>
+                <p><strong>Main file</strong></p>
+                <p>Create <em>ProviderTests.cs</em> with the following contents. Make necessary adjustments if you do not use MsTest. Also replace [APPLICATION_NAME] and set the correct namespace. The application name must match what you wrote in the contract. Also write the correct code for creating and starting the app at the start of ContractTest(). Go back to the previous section if you need to make changes to the code.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection.Extensions;
@@ -345,33 +389,33 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 <span class="hljs-keyword">namespace</span> <span class="hljs-title">YOUR_NAMESPACE</span>
 {
     [TestClass]
-                    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ProviderTests</span>
+                <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ProviderTests</span>
     {
         [TestMethod]
         [TestCategory(<span class="hljs-string">"Contract"</span>)]
         [TestProperty(<span class="hljs-string">"ContractRole"</span>, <span class="hljs-string">"Provider"</span>)]
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ContractTest</span>(<span class="hljs-params"></span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ContractTest</span>(<span class="hljs-params"></span>)
         </span>{
-                    <span class="hljs-comment">// Create appp</span>
-                    <span class="hljs-comment">// APP CREATION EXAMPLE - REPLACE WITH YOUR OWN</span>
-                    <span class="hljs-keyword">var</span> app = Program.CreateApp([], builder =&gt;
+                <span class="hljs-comment">// Create appp</span>
+                <span class="hljs-comment">// APP CREATION EXAMPLE - REPLACE WITH YOUR OWN</span>
+                <span class="hljs-keyword">var</span> app = Program.CreateApp([], builder =&gt;
             {
 
             });
-                    <span class="hljs-comment">// END EXAMPLE</span>
+                <span class="hljs-comment">// END EXAMPLE</span>
 
             AddProviderStateEndpoint(app);
             app.UseRouting();
 
-                    <span class="hljs-keyword">await</span> app.StartAsync();
+                <span class="hljs-keyword">await</span> app.StartAsync();
 
 
-                    <span class="hljs-comment">// Run Pact</span>
-                    <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
+                <span class="hljs-comment">// Run Pact</span>
+                <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
             {
                 Outputters = <span class="hljs-keyword">new</span> List&lt;IOutput&gt;
                 {
-                    <span class="hljs-keyword">new</span> ConsoleOutput()
+                <span class="hljs-keyword">new</span> ConsoleOutput()
                 }
             };
 
@@ -388,34 +432,34 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 .Verify();
         }
 
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="app"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;exception cref="Exception"&gt;</span><span class="hljs-doctag">&lt;/exception&gt;</span></span>
-                    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddProviderStateEndpoint</span>(<span class="hljs-params">WebApplication app</span>)
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="app"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;exception cref="Exception"&gt;</span><span class="hljs-doctag">&lt;/exception&gt;</span></span>
+                <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddProviderStateEndpoint</span>(<span class="hljs-params">WebApplication app</span>)
         </span>{
             app.MapPost(<span class="hljs-string">"/provider-states"</span>, (ProviderState providerState) =&gt;
             {
-                    <span class="hljs-keyword">switch</span> (providerState.State)
+                <span class="hljs-keyword">switch</span> (providerState.State)
                 {
-                    <span class="hljs-keyword">default</span>:
-                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
+                <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
                 }
             });
         }
     }
 }
 </code></pre>
-                    <p>All this code performs three important tasks.</p>
-                    <ul>
-                        <li>It creates and starts the app.</li>
-                        <li>AddProviderStateEndpoint adds a new endpoint only used for these contract tests: “/provider-states”. When we run the Provider tests, a Consumer mock will be created and call this endpoint with the content of your “given” strings from before. Currently it will always fail — we will work on it <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Provider-States">later</a>.</li>
-                        <li>It runs the verification. This creates a mock Consumer, which will send the app requests as defined in the contract. For each request, it will compare the response to what the contract dictates.</li>
-                    </ul>
-                    <p>The provider tests can now be run with <code>dotnet test --filter &quot;TestCategory=Contract&amp;ContractRole=Provider&quot;</code>. </p>
-                    <h2 id="running-example">Running Example</h2>
-                    <p>We will use Xunit, which results in the following code. Note that the attributes are different from the MsTest code. Also note that we need to get an output helper and set it in the Pact configuration to see our test output in the test explorer in the IDE.</p>
+                <p>All this code performs three important tasks.</p>
+                <ul>
+                    <li>It creates and starts the app.</li>
+                    <li>AddProviderStateEndpoint adds a new endpoint only used for these contract tests: “/provider-states”. When we run the Provider tests, a Consumer mock will be created and call this endpoint with the content of your “given” strings from before. Currently it will always fail — we will work on it <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Provider-States">later</a>.</li>
+                    <li>It runs the verification. This creates a mock Consumer, which will send the app requests as defined in the contract. For each request, it will compare the response to what the contract dictates.</li>
+                </ul>
+                <p>The provider tests can now be run with <code>dotnet test --filter &quot;TestCategory=Contract&amp;ContractRole=Provider&quot;</code>. </p>
+                <h2 id="running-example-provider-test">Running Example</h2>
+                <p>We will use Xunit, which results in the following code. Note that the attributes are different from the MsTest code. Also note that we need to get an output helper and set it in the Pact configuration to see our test output in the test explorer in the IDE.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection.Extensions;
@@ -432,19 +476,19 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
     [Fact]
     [Trait(<span class="hljs-string">"TestCategory"</span>, <span class="hljs-string">"Contract"</span>)]
     [Trait(<span class="hljs-string">"ContractRole"</span>, <span class="hljs-string">"Provider"</span>)]
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ProviderContractTest</span>(<span class="hljs-params"></span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ProviderContractTest</span>(<span class="hljs-params"></span>)
     </span>{
-                    <span class="hljs-keyword">var</span> app = Program.CreateApp([], builder =&gt;
+                <span class="hljs-keyword">var</span> app = Program.CreateApp([], builder =&gt;
         {
         });
 
         AddProviderStateEndpoint(app);
         app.UseRouting();
 
-                    <span class="hljs-keyword">await</span> app.StartAsync();
+                <span class="hljs-keyword">await</span> app.StartAsync();
 
-                    <span class="hljs-comment">// Run Pact</span>
-                    <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
+                <span class="hljs-comment">// Run Pact</span>
+                <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactVerifierConfig
         {
             Outputters = [<span class="hljs-keyword">new</span> XunitOutput(output)],
             LogLevel = PactLogLevel.Information
@@ -463,66 +507,66 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             .Verify();
     }
 
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="app"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;exception cref="Exception"&gt;</span><span class="hljs-doctag">&lt;/exception&gt;</span></span>
-                    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddProviderStateEndpoint</span>(<span class="hljs-params">WebApplication app</span>)
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="app"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;exception cref="Exception"&gt;</span><span class="hljs-doctag">&lt;/exception&gt;</span></span>
+                <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddProviderStateEndpoint</span>(<span class="hljs-params">WebApplication app</span>)
     </span>{
         app.MapPost(<span class="hljs-string">"/provider-states"</span>, (ProviderState providerState) =&gt;
         {
-                    <span class="hljs-keyword">switch</span> (providerState.State)
+                <span class="hljs-keyword">switch</span> (providerState.State)
             {
-                    <span class="hljs-keyword">default</span>:
-                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
+                <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
             }
         });
     }
 }
 </code></pre>
-                </div>
-                <p>Running the tests now will likely fail. Look at the error messages and consider which of the following cases apply.</p>
-                <ul>
-                    <li>If the errors are about starting the app, you will need to go back and make sure that you are starting the app correctly.</li>
-                    <li>If you get errors because your app is failing to connect to some external services, go the section on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. When done there, come back here and try again. </li>
-                    <li>If you get errors about not being able to connect to the broker, or that no contracts were found, review the current section.</li>
-                </ul>
-                <p>When everything works correctly, you will see the test summary state that the test passed. If you scroll up a bit, you should however see some information on failed verification. See the image below for a C# example of what this looks like. This is exactly the expected behaviour at this point, and you can carry on to the next section.</p>
-                <button type="button" class="expandable-button">But why did the test succeed if the verification failed?</button>
-                <div class="expandable-content">
-                    <p>Because the contract is still considered to be “pending”. That is, it has never been verified by the Provider. Once it has been successfully verified once, it will no longer be pending. After that, if verification was to fail, the test as a whole would fail. It is a mechanism to prevent breaking the Provider team’s workflow just because a Consumer publishes a new contract.</p>
-                </div>
-                <figure>
-                    <img src="../images/ProviderTerminalExample.png"
-                         alt="Provider test summary"
-                         class="zoomable" />
-                    <figcaption>Figure 7: Provider Terminal Example</figcaption>
-                </figure>
+            </div>
+            <p>Running the tests now will likely fail. Look at the error messages and consider which of the following cases apply.</p>
+            <ul>
+                <li>If the errors are about starting the app, you will need to go back and make sure that you are starting the app correctly.</li>
+                <li>If you get errors because your app is failing to connect to some external services, go the section on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. When done there, come back here and try again. </li>
+                <li>If you get errors about not being able to connect to the broker, or that no contracts were found, review the current section.</li>
+            </ul>
+            <p>When everything works correctly, you will see the test summary state that the test passed. If you scroll up a bit, you should however see some information on failed verification. See the image below for a C# example of what this looks like. This is exactly the expected behaviour at this point, and you can carry on to the next section.</p>
+            <button type="button" class="expandable-button">But why did the test succeed if the verification failed?</button>
+            <div class="expandable-content">
+                <p>Because the contract is still considered to be “pending”. That is, it has never been verified by the Provider. Once it has been successfully verified once, it will no longer be pending. After that, if verification was to fail, the test as a whole would fail. It is a mechanism to prevent breaking the Provider team’s workflow just because a Consumer publishes a new contract.</p>
+            </div>
+            <figure>
+                <img src="../images/ProviderTerminalExample.png"
+                     alt="Provider test summary"
+                     class="zoomable" />
+                <figcaption>Figure 7: Provider Terminal Example</figcaption>
+            </figure>
 
-                <h1 id="provider-states">Provider States</h1>
-                <p>Now it is time to take care of the provider states. These are the ones that you wrote in the “given” fields of your contract. They tell the Provider how to prepare for the test that is about to run.</p>
-                <p>To find the provider states for your Provider, open the Pact Broker. Find all rows where your service is the Provider. Each row represents the contract from a unique Consumer. We need to take care of all of their “givens”. For now, you will of course only have one row with the contract that you made yourself. For each row, click the file icon to see the contract from that Consumer. </p>
-                <figure>
-                    <img src="../images/RunningExamplePactBroker.png"
-                         alt="Running Example Pact Broker"
-                         class="zoomable" />
-                    <figcaption>Figure 8: Running Example Pact Broker</figcaption>
-                </figure>
-                <p>In the contract view, you can see all the test cases. Here we are interested in the text that comes after each “given”. These are the provider states that we must accomodate.</p>
-                <figure>
-                    <img src="../images/RunningExampleProviderStates.png"
-                         alt="Running Example Provider States"
-                         class="zoomable" />
-                    <figcaption>Figure 9: Running Example Provider States</figcaption>
-                </figure>
-                <p>When you handle each provider state, you will need to figure out what the minimal steps needed are for the state to be fulfilled. To do this, you may need to go back and forth between this section and the one on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. </p>
-                <p>For example, consider an example where your Provider makes use of a database. If there is a provider state that says that there must exist an item with a particular id, you will probably need to make a database stub, such that you easily can manipulate the data. </p>
-                <p>The language specific section contains the implementation for the Running Example using the contract picture above and the stubs defined in the example in the next section. Use it for inspiration.</p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <h2 id="running-example">Running Example</h2>
-                    <p>This example uses the SsoStub and the PostRepositoryStub which will be introduced in the next section. If you also need something similar, you must create them first. </p>
+            <h1 id="provider-states">Provider States</h1>
+            <p>Now it is time to take care of the provider states. These are the ones that you wrote in the “given” fields of your contract. They tell the Provider how to prepare for the test that is about to run.</p>
+            <p>To find the provider states for your Provider, open the Pact Broker. Find all rows where your service is the Provider. Each row represents the contract from a unique Consumer. We need to take care of all of their “givens”. For now, you will of course only have one row with the contract that you made yourself. For each row, click the file icon to see the contract from that Consumer. </p>
+            <figure>
+                <img src="../images/RunningExamplePactBroker.png"
+                     alt="Running Example Pact Broker"
+                     class="zoomable" />
+                <figcaption>Figure 8: Running Example Pact Broker</figcaption>
+            </figure>
+            <p>In the contract view, you can see all the test cases. Here we are interested in the text that comes after each “given”. These are the provider states that we must accomodate.</p>
+            <figure>
+                <img src="../images/RunningExampleProviderStates.png"
+                     alt="Running Example Provider States"
+                     class="zoomable" />
+                <figcaption>Figure 9: Running Example Provider States</figcaption>
+            </figure>
+            <p>When you handle each provider state, you will need to figure out what the minimal steps needed are for the state to be fulfilled. To do this, you may need to go back and forth between this section and the one on <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Stub-external-dependencies">stubbing external services</a>. </p>
+            <p>For example, consider an example where your Provider makes use of a database. If there is a provider state that says that there must exist an item with a particular id, you will probably need to make a database stub, such that you easily can manipulate the data. </p>
+            <p>The language specific section contains the implementation for the Running Example using the contract picture above and the stubs defined in the example in the next section. Use it for inspiration.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <h2 id="running-example-provider-states">Running Example</h2>
+                <p>This example uses the SsoStub and the PostRepositoryStub which will be introduced in the next section. If you also need something similar, you must create them first. </p>
 <pre><code class="lang-c#"><span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
 <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
 <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
@@ -532,122 +576,122 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 </span>{
     app.MapPost(<span class="hljs-string">"/provider-states"</span>, (ProviderState providerState, ISso sso, IPostRepository postRepo) =&gt;
     {
-                    <span class="hljs-keyword">if</span> (sso <span class="hljs-keyword">is</span> SsoStub ssoStub &amp;&amp; postRepo <span class="hljs-keyword">is</span> PostRepositoryStub postRepoStub)
+                <span class="hljs-keyword">if</span> (sso <span class="hljs-keyword">is</span> SsoStub ssoStub &amp;&amp; postRepo <span class="hljs-keyword">is</span> PostRepositoryStub postRepoStub)
         {
-                    <span class="hljs-keyword">switch</span> (providerState.State)
+                <span class="hljs-keyword">switch</span> (providerState.State)
             {
-                    <span class="hljs-keyword">case</span> <span class="hljs-string">"a user with at least one post is logged in with session id: valid-token"</span>:
-                    <span class="hljs-keyword">int</span>[] userIds = ssoStub.SetUsers([<span class="hljs-string">"valid-token"</span>]);
+                <span class="hljs-keyword">case</span> <span class="hljs-string">"a user with at least one post is logged in with session id: valid-token"</span>:
+                <span class="hljs-keyword">int</span>[] userIds = ssoStub.SetUsers([<span class="hljs-string">"valid-token"</span>]);
                     postRepoStub.SetPostsForUser(userIds[<span class="hljs-number">0</span>], [<span class="hljs-string">"some-post-id"</span>]);
-                    <span class="hljs-keyword">break</span>;
-                    <span class="hljs-keyword">case</span> <span class="hljs-string">"no user exists with session id: invalid-token"</span>:
+                <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> <span class="hljs-string">"no user exists with session id: invalid-token"</span>:
                     ssoStub.SetUsers([]);
-                    <span class="hljs-keyword">break</span>;
-                    <span class="hljs-keyword">case</span> <span class="hljs-string">"a user is logged in with session id: valid-token"</span>:
+                <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> <span class="hljs-string">"a user is logged in with session id: valid-token"</span>:
                     ssoStub.SetUsers([<span class="hljs-string">"valid-token"</span>]);
-                    <span class="hljs-keyword">break</span>;
-                    <span class="hljs-keyword">default</span>:
-                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
+                <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Failed to set up provider state: "</span> + providerState.State);
             }
         }
-                    <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">else</span>
         {
-                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Provider states endpoint did not get the necessary stubs"</span>);
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Provider states endpoint did not get the necessary stubs"</span>);
         }
     });
 }
 </code></pre>
-                    <p>As we do not control the order of test cases and the stub repositories are singletons, it is important to use methods like SetUsers() that wipe previous data. </p>
-                </div>
-                <h1 id="stub-external-dependencies">Stub External Dependencies</h1>
-                <p>CDCT tests communication between microservices, but it does so in total isolation. That is, the Provider may not rely on any external service besides the Pact Broker. The Consumer calls come from a mock created by Pact. Therefore all external dependencies must be cut off. This requires you to understand your application and determine where to create the stubs. You will also need to figure out the behaviour of the stubs yourself. </p>
-                <p>Furthermore, you may need to create stubs to properly fulfil provider states as mentioned <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Provider-States">previously</a>. You will likely need to jump back and forth between these steps as you go along and figure out what you need.</p>
-                <p>However, be careful that you do not stub away the things that you want to test. As a rule of thumb, strive to create stubs at the bottom of the dependency hierarchy in order to preserve as much original functionality as possible. While contract tests are not about testing functionality, we must ensure that responses look the way they would in a real scenario.</p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <h2 id="running-example">Running Example</h2>
-                    <p>The running example relies on two external services which are served through these interfaces:</p>
+                <p>As we do not control the order of test cases and the stub repositories are singletons, it is important to use methods like SetUsers() that wipe previous data. </p>
+            </div>
+            <h1 id="stub-external-dependencies">Stub External Dependencies</h1>
+            <p>CDCT tests communication between microservices, but it does so in total isolation. That is, the Provider may not rely on any external service besides the Pact Broker. The Consumer calls come from a mock created by Pact. Therefore all external dependencies must be cut off. This requires you to understand your application and determine where to create the stubs. You will also need to figure out the behaviour of the stubs yourself. </p>
+            <p>Furthermore, you may need to create stubs to properly fulfil provider states as mentioned <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Provider-States">previously</a>. You will likely need to jump back and forth between these steps as you go along and figure out what you need.</p>
+            <p>However, be careful that you do not stub away the things that you want to test. As a rule of thumb, strive to create stubs at the bottom of the dependency hierarchy in order to preserve as much original functionality as possible. While contract tests are not about testing functionality, we must ensure that responses look the way they would in a real scenario.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <h2 id="running-example-stubs">Running Example</h2>
+                <p>The running example relies on two external services which are served through these interfaces:</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ISso</span>
 {
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> Get the id of a logged in user.</span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="sessionId"&gt;</span>The session id of the logged in user.<span class="hljs-doctag">&lt;/param&gt;</span></span>
-                    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;returns&gt;</span>User id<span class="hljs-doctag">&lt;/returns&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> Get the id of a logged in user.</span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="sessionId"&gt;</span>The session id of the logged in user.<span class="hljs-doctag">&lt;/param&gt;</span></span>
+                <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;returns&gt;</span>User id<span class="hljs-doctag">&lt;/returns&gt;</span></span>
     Task&lt;<span class="hljs-keyword">int</span>?&gt; GetUserId(<span class="hljs-keyword">string</span> sessionId);
 }
 </code></pre>
 <pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IPostRepository</span>
 {
-                    <span class="hljs-function">IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId</span>)</span>;
+                <span class="hljs-function">IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId</span>)</span>;
     Post? GetPost(<span class="hljs-keyword">string</span> postId);
-                    <span class="hljs-function"><span class="hljs-keyword">string</span> <span class="hljs-title">Add</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span> title, <span class="hljs-keyword">string</span> content</span>)</span>;
+                <span class="hljs-function"><span class="hljs-keyword">string</span> <span class="hljs-title">Add</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span> title, <span class="hljs-keyword">string</span> content</span>)</span>;
 }
 </code></pre>
-                    <p>They can be stubbed as follows. Note that they both contain methods to set state, which is necessary for fulfilling Provider States.</p>
+                <p>They can be stubbed as follows. Note that they both contain methods to set state, which is necessary for fulfilling Provider States.</p>
 <pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SsoStub</span> : <span class="hljs-title">ISso</span>
 {
-                    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">int</span>&gt; _users = [];
+                <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">int</span>&gt; _users = [];
 
-                    <span class="hljs-keyword">public</span> Task&lt;<span class="hljs-keyword">int</span>?&gt; GetUserId(<span class="hljs-keyword">string</span> sessionId)
+                <span class="hljs-keyword">public</span> Task&lt;<span class="hljs-keyword">int</span>?&gt; GetUserId(<span class="hljs-keyword">string</span> sessionId)
     {
-                    <span class="hljs-keyword">if</span> (_users.TryGetValue(sessionId, <span class="hljs-keyword">out</span> <span class="hljs-keyword">int</span> playerId))
+                <span class="hljs-keyword">if</span> (_users.TryGetValue(sessionId, <span class="hljs-keyword">out</span> <span class="hljs-keyword">int</span> playerId))
         {
-                    <span class="hljs-keyword">return</span> Task.FromResult&lt;<span class="hljs-keyword">int</span>?&gt;(playerId);
+                <span class="hljs-keyword">return</span> Task.FromResult&lt;<span class="hljs-keyword">int</span>?&gt;(playerId);
         }
-                    <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">else</span>
         {
-                    <span class="hljs-keyword">return</span> Task.FromResult&lt;<span class="hljs-keyword">int</span>?&gt;(<span class="hljs-literal">null</span>);
+                <span class="hljs-keyword">return</span> Task.FromResult&lt;<span class="hljs-keyword">int</span>?&gt;(<span class="hljs-literal">null</span>);
         }
     }
 
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] <span class="hljs-title">SetUsers</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] sessionTokens</span>) 
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] <span class="hljs-title">SetUsers</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] sessionTokens</span>) 
     </span>{
         _users.Clear();
-                    <span class="hljs-keyword">int</span>[] ids = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[sessionTokens.Length];
-                    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; sessionTokens.Length; i++)
+                <span class="hljs-keyword">int</span>[] ids = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[sessionTokens.Length];
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; sessionTokens.Length; i++)
         {
-                    <span class="hljs-keyword">int</span> id = i;
+                <span class="hljs-keyword">int</span> id = i;
             ids[i] = id;
             _users.Add(sessionTokens[i], id);
         }
-                    <span class="hljs-keyword">return</span> ids;
+                <span class="hljs-keyword">return</span> ids;
     }
 }
 </code></pre>
 <pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PostRepositoryStub</span> : <span class="hljs-title">IPostRepository</span>
 {
-                    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">string</span>[]&gt; _postIds = [];
-                    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, Post&gt; _posts = [];
+                <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">string</span>[]&gt; _postIds = [];
+                <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, Post&gt; _posts = [];
 
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetPostsForUser</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span>[] postIds</span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetPostsForUser</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span>[] postIds</span>)
     </span>{
         _postIds[userId] = postIds;
     }
 
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetPost</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> postId, Post post</span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetPost</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> postId, Post post</span>)
     </span>{
         _posts[postId] = post;
     }
 
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId</span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId</span>)
     </span>{
-                    <span class="hljs-keyword">return</span> _postIds[userId];
+                <span class="hljs-keyword">return</span> _postIds[userId];
     }
 
-                    <span class="hljs-keyword">public</span> Post? GetPost(<span class="hljs-keyword">string</span> postId)
+                <span class="hljs-keyword">public</span> Post? GetPost(<span class="hljs-keyword">string</span> postId)
     {
-                    <span class="hljs-keyword">return</span> _posts.GetValueOrDefault(postId);
+                <span class="hljs-keyword">return</span> _posts.GetValueOrDefault(postId);
     }
 
-                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> <span class="hljs-title">Add</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span> title, <span class="hljs-keyword">string</span> content</span>)
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> <span class="hljs-title">Add</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">string</span> title, <span class="hljs-keyword">string</span> content</span>)
     </span>{
-                    <span class="hljs-keyword">return</span> <span class="hljs-string">"id-of-the-new-post"</span>;
+                <span class="hljs-keyword">return</span> <span class="hljs-string">"id-of-the-new-post"</span>;
     }
 }
 </code></pre>
-                    <p>Sometimes you’ll be able to run your tests without implementing certain stub methods, and that is fine. In general, you want to implement as little in the stubs as possible for the tests to pass. If we do not yet know how to implement something, we can let it throw an exception if it is not yet needed. </p>
-                    <p>The stubs are then injected when the app is created:</p>
+                <p>Sometimes you’ll be able to run your tests without implementing certain stub methods, and that is fine. In general, you want to implement as little in the stubs as possible for the tests to pass. If we do not yet know how to implement something, we can let it throw an exception if it is not yet needed. </p>
+                <p>The stubs are then injected when the app is created:</p>
 <pre><code class="lang-c#"><span class="hljs-comment">// Start server</span>
 <span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt;
 {
@@ -655,68 +699,68 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
     builder.Services.<span class="hljs-keyword">Replace</span>(ServiceDescriptor.Singleton&lt;IPostRepository, PostRepositoryStub&gt;());
 });
 </code></pre>
-                </div>
-                <h1 id="troubleshooting">Troubleshooting</h1>
-                <p>If the verifications fail, it could be due to incorrect setup, a mistake in the contract, or of course that the provider simply does not work as you expect. Here are a few guidelines to keep in mind.</p>
+            </div>
+            <h1 id="troubleshooting">Troubleshooting</h1>
+            <p>If the verifications fail, it could be due to incorrect setup, a mistake in the contract, or of course that the provider simply does not work as you expect. Here are a few guidelines to keep in mind.</p>
+            <ul>
+                <li>If your app includes logging, look through those logs for error messages. </li>
+                <li>If a test case fails for multiple reasons, it’s generally easiest to deal with the status code first.</li>
+            </ul>
+            <p>There are also some language-specific issues you might run into.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
                 <ul>
-                    <li>If your app includes logging, look through those logs for error messages. </li>
-                    <li>If a test case fails for multiple reasons, it’s generally easiest to deal with the status code first.</li>
+                    <li>If you get a lot of 404 responses:<br>Look at the subsection on Controllers in the <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Refactor-Code">section on Refactoring</a>.</li>
+                    <li>If your provider states all fail:<br>Did you remember to inject your stubs properly? If you made a CreateApp in Program with a configureBuilder delegate, did you remember to actually invoke it?</li>
                 </ul>
-                <p>There are also some language-specific issues you might run into.</p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <ul>
-                        <li>If you get a lot of 404 responses:<br>Look at the subsection on Controllers in the <a href="https://danskespil.atlassian.net/wiki/spaces/WU/pages/441712673/Provider#Refactor-Code">section on Refactoring</a>.</li>
-                        <li>If your provider states all fail:<br>Did you remember to inject your stubs properly? If you made a CreateApp in Program with a configureBuilder delegate, did you remember to actually invoke it?</li>
-                    </ul>
-                </div>
-                <h1 id="finishing-the-local-example">Finishing the Local Example</h1>
-                <p>You should now be in a state where you can run your tests successfully. If you look at your local Broker, you will see it being nice and green.</p>
-                <figure>
-                    <img src="../images/HappyBroker.png"
-                         alt="Happy Broker"
-                         class="zoomable" />
-                    <figcaption>Figure 10: Happy Broker</figcaption>
-                </figure>
-                <p>If you click the matrix icon, you can see more information on the versions that have been matched. You can see that the Provider Version has some random string and a branch called local-testing. </p>
-                <figure>
-                    <img src="../images/ContractVerificationDetails.png"
-                         alt="Contract Verification Details"
-                         class="zoomable" />
-                    <figcaption>Figure 11: Contract Verification Details</figcaption>
-                </figure>
-                <p>This is actually not how we want it to work. You should be able to run your tests locally, but the verifications should only be published by the CI pipeline. That way, the version will match the git commit sha, and the branch will match the git branch. Therefore you should now remove this line from your code:</p>
+            </div>
+            <h1 id="finishing-local-example">Finishing the Local Example</h1>
+            <p>You should now be in a state where you can run your tests successfully. If you look at your local Broker, you will see it being nice and green.</p>
+            <figure>
+                <img src="../images/HappyBroker.png"
+                     alt="Happy Broker"
+                     class="zoomable" />
+                <figcaption>Figure 10: Happy Broker</figcaption>
+            </figure>
+            <p>If you click the matrix icon, you can see more information on the versions that have been matched. You can see that the Provider Version has some random string and a branch called local-testing. </p>
+            <figure>
+                <img src="../images/ContractVerificationDetails.png"
+                     alt="Contract Verification Details"
+                     class="zoomable" />
+                <figcaption>Figure 11: Contract Verification Details</figcaption>
+            </figure>
+            <p>This is actually not how we want it to work. You should be able to run your tests locally, but the verifications should only be published by the CI pipeline. That way, the version will match the git commit sha, and the branch will match the git branch. Therefore you should now remove this line from your code:</p>
 <pre><code class="lang-c#">sourceFactory.SetPublishFromLocalFallback()<span class="hljs-comment">;</span>
 </code></pre>
-                <p>Now you can run your tests locally without publishing anything.</p>
-                <p>To enable CI testing and publishing, we must first lose the local environment and use real Broker. In your Provider test code, replace your local broker url with one used by your organisation. You should have been given this when assigned this task. If you are the first person in your organisation to do this, you will need to set up the Broker. Follow our guide on how to do that.</p>
-                <p>If you now run your tests, you may be told that there exists no contracts for your Provider. This is because no Consumers have published contracts for it yet. If this is the case, you can’t get any further for now. If you are a developer on a service that could be a Consumer of your Provider, now would be a good time to follow the Consumer implementation guide for it. When you have done that, you can come back and continue.</p>
-                <p>If instead there are contracts waiting for you, carry on to the next section.</p>
-                
-                <div class="info-box">
-                    <span class="info-icon">i</span>
+            <p>Now you can run your tests locally without publishing anything.</p>
+            <p>To enable CI testing and publishing, we must first lose the local environment and use real Broker. In your Provider test code, replace your local broker url with one used by your organisation. You should have been given this when assigned this task. If you are the first person in your organisation to do this, you will need to set up the Broker. Follow our guide on how to do that.</p>
+            <p>If you now run your tests, you may be told that there exists no contracts for your Provider. This is because no Consumers have published contracts for it yet. If this is the case, you can’t get any further for now. If you are a developer on a service that could be a Consumer of your Provider, now would be a good time to follow the Consumer implementation guide for it. When you have done that, you can come back and continue.</p>
+            <p>If instead there are contracts waiting for you, carry on to the next section.</p>
 
-                    <div>
-                        <p>
-                            If you get an error saying that there are no contracts, but you are
-                            certain there should be, double-check that the Provider name is the
-                            same everywhere. It should match the GitHub repository name.
-                        </p>
+            <div class="info-box">
+                <span class="info-icon">i</span>
 
-                        <p>
-                            The Contract must also come from a Consumer version on the main
-                            branch or on a branch whose name matches the Provider branch.
-                        </p>
-                    </div>
+                <div>
+                    <p>
+                        If you get an error saying that there are no contracts, but you are
+                        certain there should be, double-check that the Provider name is the
+                        same everywhere. It should match the GitHub repository name.
+                    </p>
+
+                    <p>
+                        The Contract must also come from a Consumer version on the main
+                        branch or on a branch whose name matches the Provider branch.
+                    </p>
                 </div>
+            </div>
             <h1 id="ci-cd">CI/CD</h1>
-                <p>We can run the tests locally, but we also need them to run in our CI/CD pipeline. This will allow us to properly publish our test results to the Pact Broker. Down the line, this is necessary for the Consumer to be deployed. </p>
-                <p>Follow the instructions relevant to your language and CI/CD platform.</p>
-                <button type="button" class="expandable-button">C#</button>
-                <div class="expandable-content">
-                    <p>Start by going to the settings of your repository, then to the secrets and variables section for actions. Create a new variable called <code>BROKER_URL</code>and set it to the full URL of your organisation’s broker (including a trailing slash).</p>
-                    <p>Make sure your repository contains a .github/workflows/ directory. </p>
-                    <p>Create or modify <code>ci.yml</code> to contain the following.</p>
+            <p>We can run the tests locally, but we also need them to run in our CI/CD pipeline. This will allow us to properly publish our test results to the Pact Broker. Down the line, this is necessary for the Consumer to be deployed. </p>
+            <p>Follow the instructions relevant to your language and CI/CD platform.</p>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <p>Start by going to the settings of your repository, then to the secrets and variables section for actions. Create a new variable called <code>BROKER_URL</code>and set it to the full URL of your organisation’s broker (including a trailing slash).</p>
+                <p>Make sure your repository contains a .github/workflows/ directory. </p>
+                <p>Create or modify <code>ci.yml</code> to contain the following.</p>
 <pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: CI
 
 <span class="http"><span class="hljs-attribute">on</span>: [push]
@@ -766,7 +810,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             -ContentType "application/json" `
             -Body '{"branch": "$<span class="hljs-template-variable">{{ github.ref_name }}</span>"}'</span></span></span>
 </code></pre>
-                    <p>Create <code>verify_updated_contract.yml</code> with the following content.</p>
+                <p>Create <code>verify_updated_contract.yml</code> with the following content.</p>
 <pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: Verify Updated Contracts
 
 <span class="stylus">on:
@@ -809,12 +853,12 @@ jobs:
           githubActor: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.client_payload</span><span class="hljs-selector-class">.github_actor</span> }}
           baseBranch: pact-failures</span>
 </code></pre>
-                    <p>CD part is WIP.</p>
-                </div>
-                <h1 id="what-now-">What Now?</h1>
-                <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
-                <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
-                <p>Read more about cooperation with CDCT here.</p>
+                <p>CD part is WIP.</p>
+            </div>
+            <h1 id="what-now">What Now?</h1>
+            <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
+            <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
+            <p>Read more about cooperation with CDCT here.</p>
 
         </main>
     </div>
