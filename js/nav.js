@@ -18,7 +18,12 @@ const sidebars = {
         title: "Tutorials",
         links: [
             ["tutorials/index.html", "Getting Started"],
+            ["tutorials/CDCTWorkflow.html", "CI/CD"],
             ["tutorials/consumer.html", "Consumer"],
+            ["tutorials/ContractError.html", "Contract Testing"],
+            ["tutorials/InfrastructureSetup.html", "Contract Broker"],
+            ["tutorials/LocalTestingPactBroker.html", "Contract Error Handling"],
+            ["tutorials/OASService.html", "Contract Testing"],
             ["tutorials/provider.html", "Provider"],
             ["tutorials/testing-gateways.html", "Testing Gateways", [
                 ["tutorials/gateway-setup.html", "Setting Up Gateway Tests"],
