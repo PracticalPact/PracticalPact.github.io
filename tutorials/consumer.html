@@ -27,76 +27,118 @@
             <p>See below for test file examples for both C# and JavaScript.</p>
             <p>Create a new project, which you can call ConsumerTests. The C# example below uses xUnit, but Pact can be used with other test frameworks as well. </p>
             <p>Install the nuget packages PactNet version 5.0.1. If you use Xunit, also install PactNet.Output.Xunit version 1.0.0. The following is an example of what might be in the project file.</p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
 <pre><code>    &lt;ItemGroup&gt;
-        &lt;PackageReference <span class="hljs-keyword">Include</span>=<span class="hljs-string">"Microsoft.NET.Test.Sdk"</span> <span class="hljs-keyword">Version</span>=<span class="hljs-string">"17.14.1"</span> /&gt;
-        &lt;PackageReference <span class="hljs-keyword">Include</span>=<span class="hljs-string">"PactNet"</span> <span class="hljs-keyword">Version</span>=<span class="hljs-string">"5.0.1"</span> /&gt;
-        &lt;PackageReference <span class="hljs-keyword">Include</span>=<span class="hljs-string">"PactNet.Output.Xunit"</span> <span class="hljs-keyword">Version</span>=<span class="hljs-string">"1.0.0"</span> /&gt;
-        &lt;PackageReference <span class="hljs-keyword">Include</span>=<span class="hljs-string">"xunit"</span> <span class="hljs-keyword">Version</span>=<span class="hljs-string">"2.9.3"</span> /&gt;
-        &lt;PackageReference <span class="hljs-keyword">Include</span>=<span class="hljs-string">"xunit.runner.visualstudio"</span> <span class="hljs-keyword">Version</span>=<span class="hljs-string">"2.5.4"</span> /&gt;
+        &lt;PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" /&gt;
+        &lt;PackageReference Include="PactNet" Version="5.0.1" /&gt;
+        &lt;PackageReference Include="PactNet.Output.Xunit" Version="1.0.0" /&gt;
+        &lt;PackageReference Include="xunit" Version="2.9.3" /&gt;
+        &lt;PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" /&gt;
     &lt;/ItemGroup&gt;
 
   &lt;ItemGroup&gt;
-    &lt;Using <span class="hljs-keyword">Include</span>=<span class="hljs-string">"Xunit"</span> /&gt;
+    &lt;Using Include="Xunit" /&gt;
   &lt;/ItemGroup&gt;
-</code></pre><p>Create a new class to carry out the tests. Consider calling it ConsumerTests.cs. Paste in the following code and replace [TEST_CLASS_NAME] with your chosen class name. Replace [PROVIDER NAME] with the name of the Provider that you are writing tests for. Make sure it matches its repository name to avoid confusion. Finally, replace [CONSUMER NAME] with the name of your current microservice. This is simply a fallback value when running locally; on the CI pipeline, it will be replaced by your repository name. </p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> System.Net;
-<span class="hljs-keyword">using</span> PactNet;
-<span class="hljs-keyword">using</span> PactNet.Matchers;
-<span class="hljs-keyword">using</span> PactNet.Output.Xunit;
-<span class="hljs-keyword">using</span> Xunit.Abstractions;
+</code></pre>
+            </div>
 
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> [<span class="hljs-title">TEST_CLASS_NAME</span>]
-</span>{
-            <span class="hljs-keyword">private</span> readonly IPactBuilderV4 _pact;
+            <p>Create a new class to carry out the tests. Consider calling it ConsumerTests.cs. Paste in the following code and replace [TEST_CLASS_NAME] with your chosen class name. Replace [PROVIDER NAME] with the name of the Provider that you are writing tests for. Make sure it matches its repository name to avoid confusion. Finally, replace [CONSUMER NAME] with the name of your current microservice. This is simply a fallback value when running locally; on the CI pipeline, it will be replaced by your repository name. </p>
 
-            <span class="hljs-keyword">public</span> [TEST_CLASS_NAME](ITestOutputHelper output)
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>using System.Net;
+using PactNet;
+using PactNet.Matchers;
+using PactNet.Output.Xunit;
+using Xunit.Abstractions;
+
+public class [TEST_CLASS_NAME]
+{
+    private readonly IPactBuilderV4 _pact;
+
+    public [TEST_CLASS_NAME](ITestOutputHelper output)
     {
-            <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> <span class="hljs-type">PactConfig</span>
+        var config = new PactConfig
         {
-            Outputters = [<span class="hljs-keyword">new</span> <span class="hljs-type">XunitOutput</span>(output)],
-            PactDir = Path.Combine(<span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">"pacts"</span>)
+            Outputters = [new XunitOutput(output)],
+            PactDir = Path.Combine("..", "..", "..", "..", "pacts")
         };
 
-        _pact = Pact.V4(Environment.GetEnvironmentVariable(<span class="hljs-string">"REPOSITORY_NAME"</span>) ?? <span class="hljs-string">"[CONSUMER NAME]"</span>, <span class="hljs-string">"[PROVIDER NAME]"</span>, config).WithHttpInteractions();
+        _pact = Pact.V4(Environment.GetEnvironmentVariable("REPOSITORY_NAME") ?? "[CONSUMER NAME]", "[PROVIDER NAME]", config).WithHttpInteractions();
     }
 }
 </code></pre>
+            </div>
+
             <p>You have now created the boilerplate setup, which defines who the Consumer and who the Provider is. It also specifies where the contracts will be placed locally (in your repository root) and how logging works. In the next section you'll be able to see the running example version of this setup.</p>
             <p>In order to install Pact in your project, you must run these two lines in the terminal:</p>
-<pre><code class="lang-js"><span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">install</span> @<span class="hljs-keyword">pact</span>-<span class="hljs-keyword">foundation</span>/<span class="hljs-keyword">pact</span>@^<span class="hljs-keyword">16</span>.<span class="hljs-keyword">3</span>.<span class="hljs-keyword">0</span>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>npm install @pact-foundation/pact@^16.3.0
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">install</span> @<span class="hljs-keyword">pact</span>-<span class="hljs-keyword">foundation</span>/<span class="hljs-keyword">pact</span>-<span class="hljs-keyword">cli</span>@^<span class="hljs-keyword">18</span>.<span class="hljs-keyword">0</span>.<span class="hljs-keyword">0</span>
+            </div>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>npm install @pact-foundation/pact-cli@^18.0.0
 </code></pre>
+            </div>
+
             <p>Make sure these lines are included in your package.json under "scripts":</p>
-<pre><code class="lang-js"><span class="hljs-string">"clean:pacts"</span>: <span class="hljs-string">"node -e \"</span>require(<span class="hljs-string">'fs'</span>).rmSync(<span class="hljs-string">'pacts'</span>, { recursive: <span class="hljs-literal">true</span>, <span class="hljs-literal">force</span>: <span class="hljs-literal">true</span> })\<span class="hljs-string">""</span>,
-<span class="hljs-string">"test:pact"</span>: <span class="hljs-string">"jest --runInBand --testMatch='**/[PATH TO TEST FILE]'"</span>,
-<span class="hljs-string">"test:pacts"</span>: <span class="hljs-string">"npm run clean:pacts &amp;&amp; npm run test:pact"</span>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
+"test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
+"test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact"
 </code></pre>
+            </div>
+
             <p>If you have several consumer tests for one consumer, you can add more tests and include them in test:pacts. An example could be with OAS:</p>
-<pre><code><span class="hljs-string">"test:pact"</span>: <span class="hljs-string">"jest --runInBand --testMatch='</span>**/[PATH TO TEST FILE]'<span class="hljs-string">",
-"</span>test:pactOAS<span class="hljs-string">": "</span>jest --runInBand --testMatch=<span class="hljs-string">'**/[PATH TO OAS TEST FILE]'</span><span class="hljs-string">",</span>
-</code></pre><p>Finally, the last script should include:</p>
-<pre><code>"<span class="hljs-selector-tag">test</span><span class="hljs-selector-pseudo">:pacts"</span>: "<span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">run</span> <span class="hljs-selector-tag">clean</span><span class="hljs-selector-pseudo">:pacts</span> &amp;&amp; <span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">run</span> <span class="hljs-selector-tag">test</span><span class="hljs-selector-pseudo">:pact</span> &amp;&amp; <span class="hljs-selector-tag">npm</span> <span class="hljs-selector-tag">run</span> <span class="hljs-selector-tag">test</span><span class="hljs-selector-pseudo">:pactOAS"</span>
-</code></pre><p>Below is shown the template for a given contract test. Make a directory for consumer tests called <code>consumerTests/</code> and in that a .js file (e.g. called ConsumerTests.js). </p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>"test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
+"test:pactOAS": "jest --runInBand --testMatch='**/[PATH TO OAS TEST FILE]'",
+</code></pre>
+            </div>
+
+            <p>Finally, the last script should include:</p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>"test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact &amp;&amp; npm run test:pactOAS"
+</code></pre>
+            </div>
+
+            <p>Below is shown the template for a given contract test. Make a directory for consumer tests called <code>consumerTests/</code> and in that a .js file (e.g. called ConsumerTests.js). </p>
             <p>It starts with Pact configuration and naming as shown below:</p>
-<pre><code class="lang-js"><span class="hljs-comment">/** <span class="hljs-doctag">@jest</span>-environment node */</span>
 
-<span class="hljs-keyword">const</span> path = <span class="hljs-keyword">require</span>(<span class="hljs-string">"path"</span>);
-<span class="hljs-keyword">const</span> axios = <span class="hljs-keyword">require</span>(<span class="hljs-string">"axios"</span>);
-<span class="hljs-keyword">const</span> { Pact, Matchers } = <span class="hljs-keyword">require</span>(<span class="hljs-string">"@pact-foundation/pact"</span>);
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>/** @jest-environment node */
 
-<span class="hljs-keyword">const</span> { eachLike, like } = Matchers;
+const path = require("path");
+const axios = require("axios");
+const { Pact, Matchers } = require("@pact-foundation/pact");
 
-describe(<span class="hljs-string">"[NAME OF THE TEST]"</span>, () =&gt; {
-            <span class="hljs-keyword">const</span> pact = <span class="hljs-keyword">new</span> Pact({
-    consumer: <span class="hljs-string">"process.env.REPOSITORY_NAME"</span>,
-    provider: <span class="hljs-string">"[PROVIDER REPO NAME]"</span>,
-    dir: path.resolve(process.cwd(), <span class="hljs-string">"pacts"</span>),
-    logLevel: <span class="hljs-string">"info"</span>,
-    pactfileWriteMode: <span class="hljs-string">"overwrite"</span>,
+const { eachLike, like } = Matchers;
+
+describe("[NAME OF THE TEST]", () => {
+    const pact = new Pact({
+    consumer: "process.env.REPOSITORY_NAME",
+    provider: "[PROVIDER REPO NAME]",
+    dir: path.resolve(process.cwd(), "pacts"),
+    logLevel: "info",
+    pactfileWriteMode: "overwrite",
   });
 });
 </code></pre>
+            </div>
+
             <h1 id="create-scenarios">Create Scenarios</h1>
             <p>Now it is time to create the Scenarios of the Contract. If you are uncertain about what a Scenario is or how a Contract is structured, read this short explanation before you continue.</p>
             <p>For each Scenario, we need to specify what the request will be, and what the rules for the response are. Remember that this also includes an example of a response that follows those rules. We of course also need to make a description of the Scenario and define a Provider State.</p>
@@ -104,268 +146,291 @@ describe(<span class="hljs-string">"[NAME OF THE TEST]"</span>, () =&gt; {
             <p>The Pact framework helps us here. It has functionality to spin up a mock HTTP server that we can send real HTTP requests to. For each Scenario we describe, it will expect us to send it an HTTP request that is identical to what we described in the Scenario. It will then respond according to the example response we provided in the Scenario. This way, each Scenario will be executed as a test. If all tests pass, the Scenarios will be combined into a final Contract.</p>
             <p>When performing these tests, it is crucial that the code we use to send the requests is the same as the production code. Otherwise we might get a disconnect between the real behaviour and what we are testing. This would be troublesome, if we later on changed the production code without remembering the test code.</p>
             <p>Each Scenario is written in its own test method and consists of two parts. The first part is the Scenario, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
-<pre><code class="lang-c#">    [<span class="hljs-name">Fact</span>]
-    public async Task [<span class="hljs-name">TEST_NAME</span>]()
-    {
-        // Scenario:
-        _pact
-            .UponReceiving(<span class="hljs-string">"[DESCRIPTION OF REQUEST]"</span>)
-            .Given(<span class="hljs-string">"[PROVIDER STATE]"</span>)
-            .WithRequest([<span class="hljs-name">HTTP</span> METHOD], <span class="hljs-string">"[ENDPOINT]"</span>)
-            .WithHeader(<span class="hljs-string">"[HEADER NAME]"</span>, <span class="hljs-string">"[HEADER VALUE]"</span>)
-            .WillRespond()
-            .WithStatus([<span class="hljs-name">STATUS</span> CODE])
-            .WithJsonBody(<span class="hljs-name">new</span>
-            {
-                [<span class="hljs-name">RESPONSE_FIELD</span>] = Match.MinType(<span class="hljs-name">new</span>
-                {
-                    id = Match.Type(<span class="hljs-string">"[EXAMPLE ID]"</span>),
-                    value = Match.Type(<span class="hljs-string">"[EXAMPLE VALUE]"</span>)
-                }, <span class="hljs-number">1</span>)
-            })<span class="hljs-comment">;</span>
 
-        // Test:
-        await _pact.VerifyAsync(<span class="hljs-name">async</span> ctx =&gt;
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>[Fact]
+public async Task [TEST_NAME]()
+{
+    // Scenario:
+    _pact
+        .UponReceiving("[DESCRIPTION OF REQUEST]")
+        .Given("[PROVIDER STATE]")
+        .WithRequest([HTTP METHOD], "[ENDPOINT]")
+        .WithHeader("[HEADER NAME]", "[HEADER VALUE]")
+        .WillRespond()
+        .WithStatus([STATUS CODE])
+        .WithJsonBody(new
         {
-            var client = new HttpClient { BaseAddress = ctx.MockServerUri }<span class="hljs-comment">;</span>
+            [RESPONSE_FIELD] = Match.MinType(new
+            {
+                id = Match.Type("[EXAMPLE ID]"),
+                value = Match.Type("[EXAMPLE VALUE]")
+            }, 1)
+        });
 
-            var request = new HttpRequestMessage([<span class="hljs-name">HTTP</span> METHOD], <span class="hljs-string">"[ENDPOINT]"</span>)<span class="hljs-comment">;</span>
-            request.Headers.Add(<span class="hljs-string">"[HEADER NAME]"</span>, <span class="hljs-string">"[HEADER VALUE]"</span>)<span class="hljs-comment">;</span>
+    // Test:
+    await _pact.VerifyAsync(async ctx =>
+    {
+        var client = new HttpClient { BaseAddress = ctx.MockServerUri };
 
-            var response = await client.SendAsync(<span class="hljs-name">request</span>)<span class="hljs-comment">;</span>
+        var request = new HttpRequestMessage([HTTP METHOD], "[ENDPOINT]");
+        request.Headers.Add("[HEADER NAME]", "[HEADER VALUE]");
 
-            Assert.Equal([<span class="hljs-name">STATUS</span> CODE], response.StatusCode)<span class="hljs-comment">;</span>
-        })<span class="hljs-comment">;</span>
-    }
+        var response = await client.SendAsync(request);
+
+        Assert.Equal([STATUS CODE], response.StatusCode);
+    });
 }
 </code></pre>
+            </div>
+
             <p>To further dig into the syntax of Pact .NET, take a look here <a href="https://github.com/pact-foundation/pact-net">https://github.com/pact-foundation/pact-net</a> . </p>
             <p><strong>Running Example</strong></p>
             <p>Below is the entire consumer test code for the running example. It has three Scenarios: a successful get, a failed get, and a successful post. There are of course more possible Scenarios, but this is enough for now.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> System.Net;
-<span class="hljs-keyword">using</span> PactNet;
-<span class="hljs-keyword">using</span> PactNet.Matchers;
-<span class="hljs-keyword">using</span> PactNet.Output.Xunit;
-<span class="hljs-keyword">using</span> Xunit.Abstractions;
-<span class="hljs-keyword">using</span> ForumFrontend;
 
-<span class="hljs-keyword">namespace</span> <span class="hljs-title">ConsumerTests</span>;
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>using System.Net;
+using PactNet;
+using PactNet.Matchers;
+using PactNet.Output.Xunit;
+using Xunit.Abstractions;
+using ForumFrontend;
 
-<span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
-<span class="hljs-comment"><span class="hljs-doctag">///</span> This performs Consumer tests for the Provider called example-provider-csharp and creates the Contract.</span>
-<span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ExampleProviderCsharpTest</span>
+namespace ConsumerTests;
+
+/// &lt;summary&gt;
+/// This performs Consumer tests for the Provider called example-provider-csharp and creates the Contract.
+/// &lt;/summary&gt;
+public class ExampleProviderCsharpTest
 {
-            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> IPactBuilderV4 _pact;
+    private readonly IPactBuilderV4 _pact;
 
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ExampleProviderCsharpTest</span>(<span class="hljs-params">ITestOutputHelper output</span>)
-    </span>{
-            <span class="hljs-keyword">var</span> config = <span class="hljs-keyword">new</span> PactConfig
+    public ExampleProviderCsharpTest(ITestOutputHelper output)
+    {
+        var config = new PactConfig
         {
-            Outputters = [<span class="hljs-keyword">new</span> XunitOutput(output)],
-            PactDir = Path.Combine(<span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">".."</span>, <span class="hljs-string">"pacts"</span>)
+            Outputters = [new XunitOutput(output)],
+            PactDir = Path.Combine("..", "..", "..", "..", "pacts")
         };
 
-        _pact = Pact.V4(Environment.GetEnvironmentVariable(<span class="hljs-string">"REPOSITORY_NAME"</span>) ?? <span class="hljs-string">"example-consumer-csharp"</span>, <span class="hljs-string">"example-provider-csharp"</span>, config).WithHttpInteractions();
+        _pact = Pact.V4(Environment.GetEnvironmentVariable("REPOSITORY_NAME") ?? "example-consumer-csharp", "example-provider-csharp", config).WithHttpInteractions();
 
     }
 
     [Fact]
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">GetAllPosts_IsLoggedIn_ReturnsAllIds</span>(<span class="hljs-params"></span>)
-    </span>{
-            <span class="hljs-keyword">string</span> sessionId = <span class="hljs-string">"valid-token"</span>;
+    public async Task GetAllPosts_IsLoggedIn_ReturnsAllIds()
+    {
+        string sessionId = "valid-token";
 
         _pact
-            .UponReceiving(<span class="hljs-string">"a request for all posts with a valid session id"</span>)
-            .Given(<span class="hljs-string">$"a user with at least one post is logged in with session id: <span class="hljs-subst">{sessionId}</span>"</span>)
-            .WithRequest(HttpMethod.Get, <span class="hljs-string">"/posts"</span>)
-            .WithHeader(<span class="hljs-string">"session-id"</span>, sessionId)
+            .UponReceiving("a request for all posts with a valid session id")
+            .Given($"a user with at least one post is logged in with session id: {sessionId}")
+            .WithRequest(HttpMethod.Get, "/posts")
+            .WithHeader("session-id", sessionId)
             .WillRespond()
             .WithStatus(HttpStatusCode.OK)
-            <span class="hljs-comment">// This specifies the response body. It must have a field called posts.</span>
-            <span class="hljs-comment">// MinType means that it must be an array of a particular type with length of at least 1.</span>
-            <span class="hljs-comment">// post-id-1 is an example entry, which we can then check for below. It also lets the type matcher infer that posts needs to be an array of strings.</span>
-            .WithJsonBody(<span class="hljs-keyword">new</span>
+            // This specifies the response body. It must have a field called posts.
+            // MinType means that it must be an array of a particular type with length of at least 1.
+            // post-id-1 is an example entry, which we can then check for below. It also lets the type matcher infer that posts needs to be an array of strings.
+            .WithJsonBody(new
             {
-                posts = Match.MinType(<span class="hljs-string">"post-id-1"</span>, <span class="hljs-number">1</span>)
+                posts = Match.MinType("post-id-1", 1)
             });
 
-            <span class="hljs-keyword">await</span> _pact.VerifyAsync(<span class="hljs-keyword">async</span> ctx =&gt;
+        await _pact.VerifyAsync(async ctx =>
         {
-            <span class="hljs-keyword">using</span> PostClient postClient = <span class="hljs-keyword">new</span>(ctx.MockServerUri);
-            <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">await</span> postClient.GetAllPosts(sessionId);
+            using PostClient postClient = new(ctx.MockServerUri);
+            var result = await postClient.GetAllPosts(sessionId);
 
-            <span class="hljs-keyword">var</span> sucResult = Assert.IsType&lt;SuccessResult&lt;PostClient.GetAllPostsResponse&gt;&gt;(result);
+            var sucResult = Assert.IsType&lt;SuccessResult&lt;PostClient.GetAllPostsResponse&gt;&gt;(result);
             Assert.NotNull(sucResult.content);
-            Assert.Equal([<span class="hljs-string">"post-id-1"</span>], sucResult.content.Posts);
+            Assert.Equal(["post-id-1"], sucResult.content.Posts);
         });
     }
 
     [Fact]
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">GetAllPosts_IsNotLoggedIn_GivesUnauthorizedError</span>(<span class="hljs-params"></span>)
-    </span>{
-            <span class="hljs-keyword">string</span> sessionId = <span class="hljs-string">"invalid-token"</span>;
+    public async Task GetAllPosts_IsNotLoggedIn_GivesUnauthorizedError()
+    {
+        string sessionId = "invalid-token";
 
         _pact
-            .UponReceiving(<span class="hljs-string">"a request for all posts with invalid session id"</span>)
-            .Given(<span class="hljs-string">$"no user exists with session id: <span class="hljs-subst">{sessionId}</span>"</span>)
-            .WithRequest(HttpMethod.Get, <span class="hljs-string">"/posts"</span>)
-            .WithHeader(<span class="hljs-string">"session-id"</span>, sessionId)
+            .UponReceiving("a request for all posts with invalid session id")
+            .Given($"no user exists with session id: {sessionId}")
+            .WithRequest(HttpMethod.Get, "/posts")
+            .WithHeader("session-id", sessionId)
             .WillRespond()
             .WithStatus(HttpStatusCode.Unauthorized);
 
-            <span class="hljs-keyword">await</span> _pact.VerifyAsync(<span class="hljs-keyword">async</span> ctx =&gt;
+        await _pact.VerifyAsync(async ctx =>
         {
-            <span class="hljs-keyword">using</span> PostClient postClient = <span class="hljs-keyword">new</span>(ctx.MockServerUri);
-            <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">await</span> postClient.GetAllPosts(sessionId);
+            using PostClient postClient = new(ctx.MockServerUri);
+            var result = await postClient.GetAllPosts(sessionId);
 
             Assert.IsType&lt;UnauthorizedErrorResult&gt;(result);
         });
     }
 
     [Fact]
-            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">CreateNewPost_IsLoggedIn_ReturnsNewId</span>(<span class="hljs-params"></span>)
-    </span>{
-            <span class="hljs-keyword">string</span> sessionId = <span class="hljs-string">"valid-token"</span>;
-            <span class="hljs-keyword">string</span> title = <span class="hljs-string">"A Post Title"</span>;
-            <span class="hljs-keyword">string</span> content = <span class="hljs-string">"Post content"</span>;
+    public async Task CreateNewPost_IsLoggedIn_ReturnsNewId()
+    {
+        string sessionId = "valid-token";
+        string title = "A Post Title";
+        string content = "Post content";
 
         _pact
-            .UponReceiving(<span class="hljs-string">"a request to create a new post"</span>)
-            .Given(<span class="hljs-string">$"a user is logged in with session id: <span class="hljs-subst">{sessionId}</span>"</span>)
-            .WithRequest(HttpMethod.Post, <span class="hljs-string">"/posts"</span>)
-            .WithHeader(<span class="hljs-string">"session-id"</span>, sessionId)
-            .WithJsonBody(<span class="hljs-keyword">new</span>{
+            .UponReceiving("a request to create a new post")
+            .Given($"a user is logged in with session id: {sessionId}")
+            .WithRequest(HttpMethod.Post, "/posts")
+            .WithHeader("session-id", sessionId)
+            .WithJsonBody(new{
                 title = title,
                 content = content
             })
             .WillRespond()
             .WithStatus(HttpStatusCode.Created)
-            <span class="hljs-comment">// This specifies the response body. It must have a field called id of type string.</span>
-            .WithJsonBody(<span class="hljs-keyword">new</span>
+            // This specifies the response body. It must have a field called id of type string.
+            .WithJsonBody(new
             {
-                id = Match.Type(<span class="hljs-string">"new-post-id"</span>)
+                id = Match.Type("new-post-id")
             });
 
-            <span class="hljs-keyword">await</span> _pact.VerifyAsync(<span class="hljs-keyword">async</span> ctx =&gt;
+        await _pact.VerifyAsync(async ctx =>
         {
-            <span class="hljs-keyword">using</span> PostClient postClient = <span class="hljs-keyword">new</span>(ctx.MockServerUri);
-            <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">await</span> postClient.CreateNewPost(sessionId, title, content);
+            using PostClient postClient = new(ctx.MockServerUri);
+            var result = await postClient.CreateNewPost(sessionId, title, content);
 
-            <span class="hljs-keyword">var</span> sucResult = Assert.IsType&lt;SuccessResult&lt;PostClient.CreateNewPostResponse&gt;&gt;(result);
+            var sucResult = Assert.IsType&lt;SuccessResult&lt;PostClient.CreateNewPostResponse&gt;&gt;(result);
             Assert.NotNull(sucResult.content);
-            Assert.Equal(<span class="hljs-string">"new-post-id"</span>, sucResult.content.Id);
+            Assert.Equal("new-post-id", sucResult.content.Id);
         });
     }
 }
 </code></pre>
-            <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
-<pre><code class="lang-js">  it(<span class="hljs-string">"returns [DATA FOR A VALID REQUEST]"</span>, async () =&gt; {
-    await pact
-      .<span class="hljs-keyword">addInteraction()
-</span>      .given(<span class="hljs-string">"[PROVIDER STATE]"</span>)
-      .uponReceiving(<span class="hljs-string">"[DESCRIPTION OF REQUEST]"</span>)
-      .withRequest(<span class="hljs-string">"[HTTP METHOD]"</span>, <span class="hljs-string">"[ENDPOINT]"</span>, <span class="hljs-keyword">builder </span>=&gt; {
-            <span class="hljs-keyword">builder.headers({
-</span>          <span class="hljs-string">"[HEADER NAME]"</span>: <span class="hljs-string">"[HEADER VALUE]"</span>,
-        })<span class="hljs-comment">;</span>
-      })
-      .willRespondWith([ERRORCODE], <span class="hljs-keyword">builder </span>=&gt; {
-            <span class="hljs-keyword">builder.jsonBody({
-</span>          [<span class="hljs-keyword">INSERT </span><span class="hljs-keyword">JSON </span><span class="hljs-keyword">BODY]
-</span>          }),
-        })<span class="hljs-comment">;</span>
-      })
-</code></pre>
-            <p>After that comes the local test execution as explained previously. It might look like the following. In this example, we just used axios, but a real case would likely have an axios wrapper or similar. Again, use code as close to production as possible..</p>
-<pre><code class="lang-js"> .executeTest(<span class="hljs-keyword">async</span> mockServer =&gt; {
-            <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> axios({
-            <span class="hljs-attr">method</span>: <span class="hljs-string">"[HTTP METHOD]"</span>,
-            <span class="hljs-attr">url</span>: <span class="hljs-string">`<span class="hljs-subst">${mockServer.url}</span>[ENDPOINT]`</span>,
-            <span class="hljs-attr">headers</span>: {
-            <span class="hljs-string">"[HEADER NAME]"</span>: <span class="hljs-string">"[HEADER VALUE]"</span>,
-          },
-        });
+            </div>
 
-        expect(response.status).toBe([ERRORCODE]);
+            <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>  it("returns [DATA FOR A VALID REQUEST]", async () => {
+    await pact
+      .addInteraction()
+      .given("[PROVIDER STATE]")
+      .uponReceiving("[DESCRIPTION OF REQUEST]")
+      .withRequest("[HTTP METHOD]", "[ENDPOINT]", builder => {
+        builder.headers({
+          "[HEADER NAME]": "[HEADER VALUE]",
+        });
+      })
+      .willRespondWith([ERRORCODE], builder => {
+        builder.jsonBody({
+          [INSERT JSON BODY]
+        }),
       });
+  })
+</code></pre>
+            </div>
+
+            <p>After that comes the local test execution as explained previously. It might look like the following. In this example, we just used axios, but a real case would likely have an axios wrapper or similar. Again, use code as close to production as possible..</p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code> .executeTest(async mockServer => {
+    const response = await axios({
+      method: "[HTTP METHOD]",
+      url: `${mockServer.url}[ENDPOINT]`,
+      headers: {
+        "[HEADER NAME]": "[HEADER VALUE]",
+      },
+    });
+
+    expect(response.status).toBe([ERRORCODE]);
   });
 });
 </code></pre>
+            </div>
+
             <p>To further dig into the Pact syntax, take a look here <a href="https://github.com/pact-foundation/pact-js">https://github.com/pact-foundation/pact-js</a> </p>
             <p>All together an example of GET ALL FAVORITES is shown below:</p>
-<pre><code class="lang-js"><span class="hljs-comment">/** <span class="hljs-doctag">@jest</span>-environment node */</span>
 
-<span class="hljs-keyword">const</span> FavoritesClient = <span class="hljs-keyword">require</span>(<span class="hljs-string">"../favoritesClient"</span>);  <span class="hljs-comment">// Client used to call Favorite</span>
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>/** @jest-environment node */
 
-<span class="hljs-keyword">const</span> path = <span class="hljs-keyword">require</span>(<span class="hljs-string">"path"</span>);
-<span class="hljs-keyword">const</span> axios = <span class="hljs-keyword">require</span>(<span class="hljs-string">"axios"</span>);
+const FavoritesClient = require("../favoritesClient");  // Client used to call Favorite
 
-<span class="hljs-comment">// Pact + matchers for defining expected interactions and responses</span>
-<span class="hljs-keyword">const</span> { Pact, Matchers } = <span class="hljs-keyword">require</span>(<span class="hljs-string">"@pact-foundation/pact"</span>);
-<span class="hljs-keyword">const</span> { eachLike, like } = Matchers;
+const path = require("path");
+const axios = require("axios");
 
-<span class="hljs-comment">// Contract tests between frontend (consumer) and Favorites API (provider)</span>
-describe(<span class="hljs-string">'Favorites API Pact'</span>, () =&gt; {
+// Pact + matchers for defining expected interactions and responses
+const { Pact, Matchers } = require("@pact-foundation/pact");
+const { eachLike, like } = Matchers;
 
-            <span class="hljs-comment">// Pact mock server setup</span>
-            <span class="hljs-keyword">const</span> pact = <span class="hljs-keyword">new</span> Pact({
+// Contract tests between frontend (consumer) and Favorites API (provider)
+describe('Favorites API Pact', () => {
+
+    // Pact mock server setup
+    const pact = new Pact({
         consumer: process.env.REPOSITORY_NAME,
-        provider: <span class="hljs-string">'ds-favorite-clone--oliverndmagnus'</span>,
-        dir: path.resolve(process.cwd(), <span class="hljs-string">"pacts"</span>),
-        logLevel: <span class="hljs-string">'info'</span>,
-        pactfileWriteMode: <span class="hljs-string">"overwrite"</span>,
+        provider: 'ds-favorite-clone--oliverndmagnus',
+        dir: path.resolve(process.cwd(), "pacts"),
+        logLevel: 'info',
+        pactfileWriteMode: "overwrite",
     });
 
-            <span class="hljs-comment">// One test scenario: successful GET</span>
-    it(<span class="hljs-string">'gets all favorites for a user'</span>, async () =&gt; {
+    // One test scenario: successful GET
+    it('gets all favorites for a user', async () => {
 
         await pact
             .addInteraction()
 
-            <span class="hljs-comment">// Preconditions for the provider state</span>
-            .given(<span class="hljs-string">'a player with session token aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa exists with favorites and highlights'</span>)
+            // Preconditions for the provider state
+            .given('a player with session token aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa exists with favorites and highlights')
 
-            <span class="hljs-comment">// Description of request</span>
-            .uponReceiving(<span class="hljs-string">'a request for all favorites with that token'</span>)
+            // Description of request
+            .uponReceiving('a request for all favorites with that token')
 
-            <span class="hljs-comment">// Expected request from the consumer</span>
-            .withRequest(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/v1/casino/game'</span>, (builder) =&gt; {
+            // Expected request from the consumer
+            .withRequest('GET', '/v1/casino/game', (builder) => {
                 builder
-                    .headers({ <span class="hljs-string">'x-session'</span>: <span class="hljs-string">'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'</span> });
+                    .headers({ 'x-session': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' });
             })
 
-            <span class="hljs-comment">// Expected response</span>
-            .willRespondWith(<span class="hljs-number">200</span>, (builder) =&gt; {
+            // Expected response
+            .willRespondWith(200, (builder) => {
                 builder.jsonBody({
                     favorites: eachLike({
-                        id: like(<span class="hljs-string">"c42dcc42-281d-f111-8f81-005056875d96"</span>),
-                        entityId: like(<span class="hljs-string">"ddff3a8fd1234c58821c1e00e4fbedc6"</span>),
-                        creationDate: like(<span class="hljs-string">"2026-03-11T08:56:59+00:00"</span>),
-                        updatedDate: like(<span class="hljs-string">"2026-03-11T14:39:53+00:00"</span>)
+                        id: like("c42dcc42-281d-f111-8f81-005056875d96"),
+                        entityId: like("ddff3a8fd1234c58821c1e00e4fbedc6"),
+                        creationDate: like("2026-03-11T08:56:59+00:00"),
+                        updatedDate: like("2026-03-11T14:39:53+00:00")
                     }),
                     highLights: eachLike({
-                        id: like(<span class="hljs-string">"c42dcc42-281d-f111-8f80-005056875d96"</span>),
-                        entityId: like(<span class="hljs-string">"ddff3a8fd1234c58821c1e00e4fbedc6"</span>),
-                        creationDate: like(<span class="hljs-string">"2026-03-11T08:56:59+00:00"</span>),
-                        updatedDate: like(<span class="hljs-string">"2026-03-11T14:39:53+00:00"</span>)
+                        id: like("c42dcc42-281d-f111-8f80-005056875d96"),
+                        entityId: like("ddff3a8fd1234c58821c1e00e4fbedc6"),
+                        creationDate: like("2026-03-11T08:56:59+00:00"),
+                        updatedDate: like("2026-03-11T14:39:53+00:00")
                     })
                 });
             })
 
-            <span class="hljs-comment">// Send the request to the mock server and evaluate its response</span>
-            .executeTest(async (mockServer) =&gt; {
-            <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> FavoritesClient(mockServer.url);
-            <span class="hljs-keyword">const</span> response = await client.get(<span class="hljs-string">"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"</span>);
+            // Send the request to the mock server and evaluate its response
+            .executeTest(async (mockServer) => {
+            const client = new FavoritesClient(mockServer.url);
+            const response = await client.get("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-            <span class="hljs-comment">// Validate structure of response</span>
-                expect(response.status).toBe(<span class="hljs-number">200</span>);
-                expect(<span class="hljs-keyword">Array</span>.isArray(response.data.favorites)).toBe(<span class="hljs-keyword">true</span>);
-                expect(<span class="hljs-keyword">Array</span>.isArray(response.data.highLights)).toBe(<span class="hljs-keyword">true</span>);
+            // Validate structure of response
+                expect(response.status).toBe(200);
+                expect(Array.isArray(response.data.favorites)).toBe(true);
+                expect(Array.isArray(response.data.highLights)).toBe(true);
             });
     });
 });
 </code></pre>
+            </div>
+
             <ol>
                 <li>It sets up Pact between CasinoFrontend and FavoriteAPI</li>
                 <li>It defines one expected GET request for favorites</li>
@@ -396,6 +461,9 @@ describe(<span class="hljs-string">'Favorites API Pact'</span>, () =&gt; {
             <p>You have now created the Contracts locally. However, for the Provider to make use of it, it must be uploaded to the Broker. This is done in the CI pipeline. Therefore you must add a CI script. These examples use GitHub Actions. </p>
             <p>First go to your repository settings and add a variable called <code>BROKER_URL</code>. Set it to your broker url.</p>
             <p>Next create a file in <code>.github/workflows/</code> called <code>ci.yml</code> . Look in the examples below to find the specific contents.  </p>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
 <pre><code>name: CI
 
 on: [push]
@@ -442,7 +510,12 @@ jobs:
             -Uri "${{ vars.BROKER_URL }}pacticipants/${{ env.REPOSITORY_NAME }}/versions/${{ github.sha }}" `
             -ContentType "application/json" `
             -Body '{"branch": "${{ github.ref_name }}"}'
-</code></pre><pre><code>name: CI
+</code></pre>
+            </div>
+
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>name: CI
 
 on: 
   push
@@ -492,60 +565,68 @@ jobs:
 
       - name: Run provider contract tests
         run: dotnet test --no-build --filter "Category=Contract&ContractRole=Provider"
-</code></pre><p>After pushing, you should be able to see your Contract in the Broker.</p>
+</code></pre>
+            </div>
+
+            <p>After pushing, you should be able to see your Contract in the Broker.</p>
             <p>Broker showing the running example</p>
             <h1 id="continuous-deployment-cd-">Continuous Deployment (CD)</h1>
             <p>Finally, we will add CD to the pipeline. Before we deploy our microservice anywhere, we want to make sure that our Providers are correctly deployed. </p>
             <p>Make a new file called <code>cd.yml</code> in <code>.github/workflows</code> with the contents. It will first check if our Providers are correctly deployed, and then record our deployment. This example is in GitHub Actions and does not actually perform a deployment; it simply marks it in the Broker for the purposes of CDCT.</p>
             <p>While the CI script from before is run automatically, this must be triggered manually from the Actions page. This is only possible once it has been merged into main, so you may not be able to do it for a while.</p>
-<pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: CD
-<span class="hljs-attribute">run-name</span>: CD - ${{ inputs.environment }}
 
-<span class="yaml"><span class="hljs-attr">on:</span>
-<span class="hljs-attr">  workflow_dispatch:</span>
-<span class="hljs-attr">    inputs:</span>
-<span class="hljs-attr">      environment:</span>
-<span class="hljs-attr">        type:</span> choice
-<span class="hljs-attr">        options:</span>
-<span class="hljs-bullet">          -</span> town21
-<span class="hljs-bullet">          -</span> town24
-<span class="hljs-bullet">          -</span> production
-<span class="hljs-attr">env:</span>
-<span class="hljs-attr">  REPOSITORY_NAME:</span> ${{ github.event.repository.name }}
+            <button type="button" class="expandable-button">Show code</button>
+            <div class="expandable-content">
+<pre><code>name: CD
+run-name: CD - ${{ inputs.environment }}
 
-<span class="hljs-attr">jobs:</span>
-<span class="hljs-attr">  can-i-deploy:</span>
-<span class="hljs-attr">    runs-on:</span> ubuntu-latest
-<span class="hljs-attr">    steps:</span>
-<span class="hljs-attr">      - uses:</span> PracticalPact/pactbroker-webhook-action/can-i-deploy-consumer-action@main
-<span class="hljs-attr">        name:</span> Can I Deploy?
-<span class="hljs-attr">        with:</span>
-<span class="hljs-attr">          brokerUrl:</span> ${{ vars.BROKER_URL }}
-<span class="hljs-attr">          brokerToken:</span> ${{ secrets.PACT_BROKER_TOKEN }}
-<span class="hljs-attr">          consumerName:</span> ${{ env.REPOSITORY_NAME }}
-<span class="hljs-attr">          consumerVersion:</span> ${{ github.sha }}
-<span class="hljs-attr">          toEnvironment:</span> ${{ inputs.environment }}
-<span class="hljs-attr">          retryWhileUnknown:</span> <span class="hljs-number">10</span>
-<span class="hljs-attr">          retryInterval:</span> <span class="hljs-number">15</span>
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - town21
+          - town24
+          - production
+env:
+  REPOSITORY_NAME: ${{ github.event.repository.name }}
 
-<span class="hljs-attr">  deploy:</span>
-<span class="hljs-attr">    needs:</span> can-i-deploy  
-<span class="hljs-attr">    runs-on:</span> ubuntu-latest
-<span class="hljs-attr">    steps:</span>
-<span class="hljs-attr">      - name:</span> Deploy
-<span class="hljs-attr">        run:</span> echo <span class="hljs-string">"Deploying to $<span class="hljs-template-variable">{{ inputs.environment }}</span>..."</span>
-<span class="hljs-attr">      - name:</span> Record Deployment
-<span class="hljs-attr">        uses:</span> PracticalPact/pactbroker-webhook-action/record-deployment-action@main
-<span class="hljs-attr">        with:</span>
-<span class="hljs-attr">          brokerUrl:</span> ${{ vars.BROKER_URL }}
-<span class="hljs-attr">          applicationName:</span> ${{ env.REPOSITORY_NAME }}
-<span class="hljs-attr">          version:</span> ${{ github.sha }}
-<span class="hljs-attr">          environment:</span> ${{ inputs.environment }}</span>
+jobs:
+  can-i-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: PracticalPact/pactbroker-webhook-action/can-i-deploy-consumer-action@main
+        name: Can I Deploy?
+        with:
+          brokerUrl: ${{ vars.BROKER_URL }}
+          brokerToken: ${{ secrets.PACT_BROKER_TOKEN }}
+          consumerName: ${{ env.REPOSITORY_NAME }}
+          consumerVersion: ${{ github.sha }}
+          toEnvironment: ${{ inputs.environment }}
+          retryWhileUnknown: 10
+          retryInterval: 15
+
+  deploy:
+    needs: can-i-deploy  
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        run: echo "Deploying to ${{ inputs.environment }}..."
+      - name: Record Deployment
+        uses: PracticalPact/pactbroker-webhook-action/record-deployment-action@main
+        with:
+          brokerUrl: ${{ vars.BROKER_URL }}
+          applicationName: ${{ env.REPOSITORY_NAME }}
+          version: ${{ github.sha }}
+          environment: ${{ inputs.environment }}
 </code></pre>
+            </div>
 
         </main>
     </div>
 
+    <script src="../js/scripts.js"></script>
     <script src="../js/nav.js"></script>
     <script>renderNav('tutorials', '../')</script>
 </body>
