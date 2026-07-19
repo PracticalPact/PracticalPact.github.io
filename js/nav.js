@@ -7,7 +7,7 @@ const sidebars = {
             ["pages/cdct-briefly.html", "CDCT Briefly"],
             ["pages/setup.html", "Project Setup"],
             ["pages/contracts.html", "Contracts"],
-            ["pages/contract-briefly.html", "Contract Briefly"],
+            ["pages/contracts-briefly.html", "Contracts Briefly"],
             ["pages/infrastructure.html", "Infrastructure"],
             ["pages/gateways.html", "Gateways"],
             ["pages/cicd.html", "CI/CD"],
