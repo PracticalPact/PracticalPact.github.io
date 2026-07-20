@@ -555,7 +555,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <img src="../images/ProviderTerminalExample.png"
                      alt="Provider test summary"
                      class="zoomable" />
-                <figcaption>Figure 7: Provider Terminal Example</figcaption>
+                <figcaption>Figure 6: Provider Terminal Example</figcaption>
             </figure>
 
             <h1 id="provider-states">Provider States</h1>
@@ -565,14 +565,14 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <img src="../images/RunningExamplePactBroker.png"
                      alt="Running Example Pact Broker"
                      class="zoomable" />
-                <figcaption>Figure 8: Running Example Pact Broker</figcaption>
+                <figcaption>Figure 7: Running Example Pact Broker</figcaption>
             </figure>
             <p>In the contract view, you can see all the test cases. Here we are interested in the text that comes after each “given”. These are the provider states that we must accomodate.</p>
             <figure>
                 <img src="../images/RunningExampleProviderStates.png"
                      alt="Running Example Provider States"
                      class="zoomable" />
-                <figcaption>Figure 9: Running Example Provider States</figcaption>
+                <figcaption>Figure 8: Running Example Provider States</figcaption>
             </figure>
             <p>When you handle each provider state, you will need to figure out what the minimal steps needed are for the state to be fulfilled. To do this, you may need to go back and forth between this section and the one on <a href="#stub-external-dependencies">stubbing external services</a>. </p>
             <p>For example, consider an example where your Provider makes use of a database. If there is a provider state that says that there must exist an item with a particular id, you will probably need to make a database stub, such that you easily can manipulate the data. </p>
@@ -734,14 +734,14 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <img src="../images/HappyBroker.png"
                      alt="Happy Broker"
                      class="zoomable" />
-                <figcaption>Figure 10: Happy Broker</figcaption>
+                <figcaption>Figure 9: Happy Broker</figcaption>
             </figure>
             <p>If you click the matrix icon, you can see more information on the versions that have been matched. You can see that the Provider Version has some random string and a branch called local-testing. </p>
             <figure>
                 <img src="../images/ContractVerificationDetails.png"
                      alt="Contract Verification Details"
                      class="zoomable" />
-                <figcaption>Figure 11: Contract Verification Details</figcaption>
+                <figcaption>Figure 10: Contract Verification Details</figcaption>
             </figure>
             <p>This is actually not how we want it to work. You should be able to run your tests locally, but the verifications should only be published by the CI pipeline. That way, the version will match the git commit sha, and the branch will match the git branch. Therefore you should now remove this line from your code:</p>
 <pre class=" line-numbers"><code class="lang-csharp">sourceFactory.SetPublishFromLocalFallback()<span class="hljs-comment">;</span>
