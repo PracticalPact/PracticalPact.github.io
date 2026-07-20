@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provider tutorial</title>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -90,7 +103,7 @@
             <p>Ensure that you have <a href="https://www.docker.com/get-started/">Docker</a> installed and that it is running.</p>
             <h2 id="docker-compose">Docker Compose</h2>
             <p>Create a file called <code>docker-compose.yml</code> with the following contents. The location of the file does not matter.</p>
-<pre><code class="lang-yaml"><span class="hljs-attribute">services</span>:
+<pre class=" line-numbers"><code class=" language-js">
             <span class="hljs-attribute">postgres</span>:
             <span class="hljs-attribute">image</span>: <span class="hljs-attribute">postgres</span>:<span class="hljs-number">16</span>
             <span class="hljs-attribute">environment</span>:
@@ -207,28 +220,22 @@
             <button type="button" class="expandable-button">Images</button>
             <div class="expandable-content">
                 <figure>
-                    <img src="../images/ContractFactoryExample0.png"
+                    <img src="../images/ContractFactoryExample1.png"
                          alt="Pact Version Overview"
                          class="zoomable" />
                     <figcaption>Figure 3: Contract Factory Example</figcaption>
                 </figure>
                 <figure>
-                    <img src="../images/ContractFactoryExample1.png"
+                    <img src="../images/ContractFactoryExample2.png"
                          alt="Pact Version Overview"
                          class="zoomable" />
                     <figcaption>Figure 4: Contract Factory Example</figcaption>
                 </figure>
                 <figure>
-                    <img src="../images/ContractFactoryExample2.png"
-                         alt="Pact Version Overview"
-                         class="zoomable" />
-                    <figcaption>Figure 5: Contract Factory Example</figcaption>
-                </figure>
-                <figure>
                     <img src="../images/ContractFactoryExample3.png"
                          alt="Pact Version Overview"
                          class="zoomable" />
-                    <figcaption>Figure 6: Contract Factory Example</figcaption>
+                    <figcaption>Figure 5: Contract Factory Example</figcaption>
                 </figure>
                 <p>If you have (or will) followed the Consumer implementation guide and paid attention to the running example, you may notice that this is a simplified version of the Contract built there.</p>
             </div>
@@ -251,7 +258,7 @@
                 <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
                 <h2 id="modern-program-setup"><strong>Modern setup with all code in Program.cs</strong></h2>
                 <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
-<pre><code class="lang-c#">using ...;
+<pre class=" line-numbers"><code class="lang-csharp">using ...;
 
 <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
 <span class="hljs-comment">// Set up builder...</span>
@@ -264,7 +271,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 </code></pre>
                 <p>If there is no Program class definition there, make one.</p>
                 <p>Rewrite Program.cs to look like the following.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> ...;
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">using</span> ...;
 
 <span class="hljs-keyword">var</span> app = CreateApp(args);
 app.Run();
@@ -282,7 +289,7 @@ app.Run();
 }
 </code></pre>
                 <p>With this refactor, we will <a href="#create-test-project">in the next section</a> be able to start the app like this:</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">Program.CreateApp([], builder =&gt; {
                 <span class="hljs-comment">// Modify builder...</span>
 });
 <span class="hljs-comment">// Modify app...</span>
@@ -292,14 +299,14 @@ await <span class="hljs-keyword">app</span>.StartAsync();
                 <h2 id="using-controllers"><strong>Using Controllers</strong></h2>
                 <p>If your API endpoints are created with Controller classes, you will likely have a line that adds those controllers to the app builder: <code>builder.Services.AddControllers()</code>. This will add all controllers in the current assembly. The issue is that when the code is run from another project, it will be unable to find the normal controllers. Therefore we have to chain on the line <code>.AddApplicationPart(typeof(Program).Assembly)</code>.</p>
                 <p>So if it for example looked like this before:</p>
-<pre><code class="lang-c#"><span class="hljs-selector-tag">builder</span><span class="hljs-selector-class">.Services</span><span class="hljs-selector-class">.AddControllers</span>()
+<pre class=" line-numbers"><code class="lang-csharp">Services.AddControllers()
                 <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
         {
                 <span class="hljs-comment">// ...</span>
         });
 </code></pre>
                 <p>It would now be</p>
-<pre><code class="lang-c#"><span class="hljs-selector-tag">builder</span><span class="hljs-selector-class">.Services</span><span class="hljs-selector-class">.AddControllers</span>()
+<pre class=" line-numbers"><code class="lang-csharp">builder.Services.AddControllers()
                 <span class="hljs-selector-class">.AddApplicationPart</span>(typeof(Program).Assembly)
                 <span class="hljs-selector-class">.AddJsonOptions</span>(options =&gt;
         {
@@ -308,7 +315,7 @@ await <span class="hljs-keyword">app</span>.StartAsync();
 </code></pre>
                 <h2 id="running-example-refactor">Running Example</h2>
                 <p>In the example, <code>Program.cs</code> looks like this:</p>
-<pre><code class="lang-c#">using ForumBackend.Posts;
+<pre class=" line-numbers"><code class="lang-csharp">using ForumBackend.Posts;
 using ForumBackend.Sso;
 
 <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
@@ -334,7 +341,7 @@ builder.Services.AddSingleton&lt;IPostRepository, DatabasePostRepository&gt;();
 public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword">Program</span> { }
 </code></pre>
                 <p>So we simply change it to this:</p>
-<pre><code class="lang-c#">using ForumBackend.Posts;
+<pre class="line-numbers"><code class="lang-csharp">using ForumBackend.Posts;
 using ForumBackend.Sso;
 
 <span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = CreateApp(<span class="hljs-keyword">args</span>);
@@ -385,7 +392,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <p>If you use xunit, also install the newest 1.x version of PactNet.Output.Xunit.</p>
                 <p><strong>Main file</strong></p>
                 <p>Create <em>ProviderTests.cs</em> with the following contents. Make necessary adjustments if you do not use MsTest. Also replace [APPLICATION_NAME] and set the correct namespace. The application name must match what you wrote in the contract. Also write the correct code for creating and starting the app at the start of ContractTest(). Go back to the previous section if you need to make changes to the code.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection.Extensions;
 <span class="hljs-keyword">using</span> PracticalPact.Utilities;
@@ -467,7 +474,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <p>The provider tests can now be run with <code>dotnet test --filter &quot;TestCategory=Contract&amp;ContractRole=Provider&quot;</code>. </p>
                 <h2 id="running-example-provider-test">Running Example</h2>
                 <p>We will use Xunit, which results in the following code. Note that the attributes are different from the MsTest code. Also note that we need to get an output helper and set it in the Pact configuration to see our test output in the test explorer in the IDE.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">using</span> Microsoft.AspNetCore.Builder;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
 <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection.Extensions;
 <span class="hljs-keyword">using</span> PracticalPact.Utilities;
@@ -574,7 +581,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             <div class="expandable-content">
                 <h2 id="running-example-provider-states">Running Example</h2>
                 <p>This example uses the SsoStub and the PostRepositoryStub which will be introduced in the next section. If you also need something similar, you must create them first. </p>
-<pre><code class="lang-c#"><span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
 <span class="hljs-comment"><span class="hljs-doctag">///</span> Pact will send requests to /provider-states with "given" strings. This method enables that endpoint.</span>
 <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
 <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="app"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span>
@@ -618,7 +625,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             <div class="expandable-content">
                 <h2 id="running-example-stubs">Running Example</h2>
                 <p>The running example relies on two external services which are served through these interfaces:</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ISso</span>
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ISso</span>
 {
                 <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
                 <span class="hljs-comment"><span class="hljs-doctag">///</span> Get the id of a logged in user.</span>
@@ -628,7 +635,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
     Task&lt;<span class="hljs-keyword">int</span>?&gt; GetUserId(<span class="hljs-keyword">string</span> sessionId);
 }
 </code></pre>
-<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IPostRepository</span>
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IPostRepository</span>
 {
                 <span class="hljs-function">IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> userId</span>)</span>;
     Post? GetPost(<span class="hljs-keyword">string</span> postId);
@@ -636,7 +643,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 }
 </code></pre>
                 <p>They can be stubbed as follows. Note that they both contain methods to set state, which is necessary for fulfilling Provider States.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SsoStub</span> : <span class="hljs-title">ISso</span>
+<pre class="line-numbers"><code class="lang-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SsoStub</span> : <span class="hljs-title">ISso</span>
 {
                 <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">int</span>&gt; _users = [];
 
@@ -666,7 +673,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
     }
 }
 </code></pre>
-<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PostRepositoryStub</span> : <span class="hljs-title">IPostRepository</span>
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PostRepositoryStub</span> : <span class="hljs-title">IPostRepository</span>
 {
                 <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">string</span>[]&gt; _postIds = [];
                 <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, Post&gt; _posts = [];
@@ -699,7 +706,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 </code></pre>
                 <p>Sometimes you’ll be able to run your tests without implementing certain stub methods, and that is fine. In general, you want to implement as little in the stubs as possible for the tests to pass. If we do not yet know how to implement something, we can let it throw an exception if it is not yet needed. </p>
                 <p>The stubs are then injected when the app is created:</p>
-<pre><code class="lang-c#"><span class="hljs-comment">// Start server</span>
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-comment">// Start server</span>
 <span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt;
 {
     builder.Services.<span class="hljs-keyword">Replace</span>(ServiceDescriptor.Singleton&lt;ISso, SsoStub&gt;());
@@ -737,7 +744,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <figcaption>Figure 11: Contract Verification Details</figcaption>
             </figure>
             <p>This is actually not how we want it to work. You should be able to run your tests locally, but the verifications should only be published by the CI pipeline. That way, the version will match the git commit sha, and the branch will match the git branch. Therefore you should now remove this line from your code:</p>
-<pre><code class="lang-c#">sourceFactory.SetPublishFromLocalFallback()<span class="hljs-comment">;</span>
+<pre class=" line-numbers"><code class="lang-csharp">sourceFactory.SetPublishFromLocalFallback()<span class="hljs-comment">;</span>
 </code></pre>
             <p>Now you can run your tests locally without publishing anything.</p>
             <p>To enable CI testing and publishing, we must first lose the local environment and use real Broker. In your Provider test code, replace your local broker url with one used by your organisation. You should have been given this when assigned this task. If you are the first person in your organisation to do this, you will need to set up the Broker. Follow our guide on how to do that.</p>
@@ -768,7 +775,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                 <p>Start by going to the settings of your repository, then to the secrets and variables section for actions. Create a new variable called <code>BROKER_URL</code>and set it to the full URL of your organisation’s broker (including a trailing slash).</p>
                 <p>Make sure your repository contains a .github/workflows/ directory. </p>
                 <p>Create or modify <code>ci.yml</code> to contain the following.</p>
-<pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: CI
+<pre class="line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: CI
 
 <span class="http"><span class="hljs-attribute">on</span>: [push]
 
@@ -818,7 +825,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
             -Body '{"branch": "$<span class="hljs-template-variable">{{ github.ref_name }}</span>"}'</span></span></span>
 </code></pre>
                 <p>Create <code>verify_updated_contract.yml</code> with the following content.</p>
-<pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: Verify Updated Contracts
+<pre class="line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: Verify Updated Contracts
 
 <span class="stylus">on:
   workflow_dispatch:

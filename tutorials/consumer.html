@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Consumer tutorial</title>
-    <link rel="stylesheet" href="../css/styles.css">
 
     <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
@@ -18,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <div class="topbar"></div>
@@ -126,7 +126,7 @@ public class [TEST_CLASS_NAME]
 
                     <p>Make sure these lines are included in your package.json under "scripts":</p>
 
-<pre> class="line-numbers"<code class="language-js">"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
+<pre class="line-numbers"><code class="language-js">"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
 "test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
 "test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact"
 </code></pre>

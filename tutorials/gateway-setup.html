@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Setting up Gateway Contract Testing</title>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -26,7 +39,7 @@
                 <p>In the test project, install the nuget packages PracticalPact.Gateway and PracticalPact.Utilities.</p>
                 <p><strong>Main file</strong></p>
                 <p>Create <em>GatewayContractTests.cs</em> with the following contents. Make necessary adjustments if you do not use xUnit. Also set [GATEWAY_NAME] to the name of the github repository of the gateway.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> PracticalPact.Gateway;
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-keyword">using</span> PracticalPact.Gateway;
 <span class="hljs-keyword">using</span> PracticalPact.Utilities;
 <span class="hljs-keyword">using</span> PactNet;
 <span class="hljs-keyword">using</span> PactNet.Infrastructure.Outputters;
@@ -92,7 +105,7 @@
                 <p>Consider the options below for which applies to your solution. You may need to consult multiple of them to get everything to work.</p>
                 <h2 id="-modern-setup-with-all-code-in-program-cs-"><strong>Modern setup with all code in Program.cs</strong></h2>
                 <p>Most APIs have all the startup code in Program.cs. If your solution is set up like that, your Program.cs will look like the following.</p>
-<pre><code class="lang-c#">using ...;
+<pre class=" line-numbers"><code class="lang-csharp">using ...;
 
 <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(<span class="hljs-keyword">args</span>);
 <span class="hljs-comment">// Set up builder...</span>
@@ -105,7 +118,7 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
 </code></pre>
                 <p>If there is no Program class definition there, make one.</p>
                 <p>Rewrite Program.cs to look like the following.</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">using</span> ...;
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-keyword">using</span> ...;
 
 <span class="hljs-keyword">var</span> app = CreateApp(args);
 app.Run();
@@ -123,7 +136,7 @@ app.Run();
 }
 </code></pre>
                 <p>With this refactor, we will in the next section be able to start the app like this:</p>
-<pre><code class="lang-c#"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
+<pre class=" line-numbers"><code class="lang-csharp"><span class="hljs-keyword">var</span> <span class="hljs-keyword">app</span> = <span class="hljs-keyword">Program</span>.CreateApp([], builder =&gt; {
                 <span class="hljs-comment">// Modify builder...</span>
 });
 <span class="hljs-comment">// Modify app...</span>
@@ -133,7 +146,7 @@ await <span class="hljs-keyword">app</span>.StartAsync();
                 </div>
                 <h1 id="ci">CI</h1>
                 <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
-<pre><code class="lang-yaml"><span class="hljs-attribute">name</span>: CI
+<pre class=" line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: CI
 
 <span class="yaml"><span class="hljs-attr">on:</span> 
 <span class="hljs-attr">  push:</span>

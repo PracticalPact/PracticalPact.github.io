@@ -40,8 +40,10 @@ body {
 
 .content {
     flex: 1;
-    padding: 40px;
-    max-width: 900px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 32px 40px;
+    box-sizing: border-box;
 }
 
     .content img:not(#overlay-img) {
@@ -284,4 +286,17 @@ th code {
         overflow-x: auto;
         min-width: 800px;
     }
+}
+
+pre,
+pre code,
+pre[class*="language-"],
+code[class*="language-"] {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.contract-comparison pre,
+.contract-comparison code {
+    font-size: 11px;
 }
