@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>Consumer tutorial</title>
     <link rel="stylesheet" href="../css/styles.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
 </head>
 <body>
     <div class="topbar"></div>
@@ -58,7 +72,7 @@
 
                 <button type="button" class="expandable-button">Requirements (csproj file)</button>
                 <div class="expandable-content">
-<pre><code>    &lt;ItemGroup&gt;
+<pre class="line-numbers"><code class="language-xml">    &lt;ItemGroup&gt;
         &lt;PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" /&gt;
         &lt;PackageReference Include="PactNet" Version="5.0.1" /&gt;
         &lt;PackageReference Include="PactNet.Output.Xunit" Version="1.0.0" /&gt;
@@ -74,7 +88,7 @@
 
                     <p>Create a new class to carry out the tests. Consider calling it ConsumerTests.cs. Paste in the following code and replace [TEST_CLASS_NAME] with your chosen class name. Replace [PROVIDER NAME] with the name of the Provider that you are writing tests for. Make sure it matches its repository name to avoid confusion. Finally, replace [CONSUMER NAME] with the name of your current microservice. This is simply a fallback value when running locally; on the CI pipeline, it will be replaced by your repository name. </p>
 
-<pre><code>using System.Net;
+<pre class="line-numbers"><code class="language-csharp">using System.Net;
 using PactNet;
 using PactNet.Matchers;
 using PactNet.Output.Xunit;
@@ -104,34 +118,34 @@ public class [TEST_CLASS_NAME]
                 <div class="expandable-content">
                     <p>In order to install Pact in your project, you must run these two lines in the terminal:</p>
 
-<pre><code>npm install @pact-foundation/pact@^16.3.0
+<pre class="line-numbers"><code class="language-js">npm install @pact-foundation/pact@^16.3.0
 </code></pre>
 
-<pre><code>npm install @pact-foundation/pact-cli@^18.0.0
+<pre class="line-numbers"><code class="language-js">npm install @pact-foundation/pact-cli@^18.0.0
 </code></pre>
 
                     <p>Make sure these lines are included in your package.json under "scripts":</p>
 
-<pre><code>"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
+<pre> class="line-numbers"<code class="language-js">"clean:pacts": "node -e \"require('fs').rmSync('pacts', { recursive: true, force: true })\"",
 "test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
 "test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact"
 </code></pre>
 
                     <p>If you have several consumer tests for one consumer, you can add more tests and include them in test:pacts. An example could be with OAS:</p>
 
-<pre><code>"test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
+<pre class=" line-numbers"><code class=" language-js">"test:pact": "jest --runInBand --testMatch='**/[PATH TO TEST FILE]'",
 "test:pactOAS": "jest --runInBand --testMatch='**/[PATH TO OAS TEST FILE]'",
 </code></pre>
 
                     <p>Finally, the last script should include:</p>
 
-<pre><code>"test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact &amp;&amp; npm run test:pactOAS"
+<pre class=" line-numbers"><code class=" language-js">"test:pacts": "npm run clean:pacts &amp;&amp; npm run test:pact &amp;&amp; npm run test:pactOAS"
 </code></pre>
 
                     <p>Below is shown the template for a given contract test. Make a directory for consumer tests called <code>consumerTests/</code> and in that a .js file (e.g. called ConsumerTests.js). </p>
                     <p>It starts with Pact configuration and naming as shown below:</p>
 
-<pre><code>/** @jest-environment node */
+<pre class="line-numbers"><code class=" language-js">/** @jest-environment node */
 
 const path = require("path");
 const axios = require("axios");
@@ -163,7 +177,8 @@ describe("[NAME OF THE TEST]", () => {
                     <p>Each Scenario is written in its own test method and consists of two parts. The first part is the Scenario, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
 
 
-<pre><code>[Fact]
+<pre class="line-numbers"><code class="language-csharp">
+[Fact]
 public async Task [TEST_NAME]()
 {
     // Scenario:
@@ -202,7 +217,7 @@ public async Task [TEST_NAME]()
                     <p><strong>Running Example</strong></p>
                     <p>Below is the entire consumer test code for the running example. It has three Scenarios: a successful get, a failed get, and a successful post. There are of course more possible Scenarios, but this is enough for now.</p>
 
-<pre><code>using System.Net;
+<pre class="line-numbers"><code class="language-csharp">using System.Net;
 using PactNet;
 using PactNet.Matchers;
 using PactNet.Output.Xunit;
@@ -326,7 +341,7 @@ public class ExampleProviderCsharpTest
                     <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
 
 
-<pre><code>  it("returns [DATA FOR A VALID REQUEST]", async () => {
+<pre class=" line-numbers"><code class="language-js">  it("returns [DATA FOR A VALID REQUEST]", async () => {
     await pact
       .addInteraction()
       .given("[PROVIDER STATE]")
@@ -346,7 +361,7 @@ public class ExampleProviderCsharpTest
 
                     <p>After that comes the local test execution as explained previously. It might look like the following. In this example, we just used axios, but a real case would likely have an axios wrapper or similar. Again, use code as close to production as possible..</p>
 
-<pre><code> .executeTest(async mockServer => {
+<pre class=" line-numbers"><code class=" language-js"> .executeTest(async mockServer => {
     const response = await axios({
       method: "[HTTP METHOD]",
       url: `${mockServer.url}[ENDPOINT]`,
@@ -363,7 +378,7 @@ public class ExampleProviderCsharpTest
                     <p>To further dig into the Pact syntax, take a look here <a href="https://github.com/pact-foundation/pact-js">https://github.com/pact-foundation/pact-js</a> </p>
                     <p>All together an example of GET ALL FAVORITES is shown below:</p>
 
-<pre><code>/** @jest-environment node */
+<pre class=" line-numbers"><code class=" language-js">/** @jest-environment node */
 
 const FavoritesClient = require("../favoritesClient");  // Client used to call Favorite
 
@@ -465,7 +480,7 @@ describe('Favorites API Pact', () => {
                         <tbody>
                             <tr>
                                 <td>
-<pre><code>{
+<pre class=" line-numbers"><code class=" language-js">{
   "consumer": {
     "name": "CasinoFrontend"
   },
@@ -509,7 +524,7 @@ describe('Favorites API Pact', () => {
                                 <td>
                                     <h3>JavaScript</h3>
 
-<pre><code>it("gets all favorites for a user", async () =&gt; {
+<pre class=" line-numbers"><code class=" language-js">it("gets all favorites for a user", async () =&gt; {
   await pact
     .addInteraction()
     .given("a user with favorites exists")
@@ -543,7 +558,7 @@ describe('Favorites API Pact', () => {
 
                                     <h3>C#</h3>
 
-<pre><code>[Fact]
+<pre class="line-numbers"><code class=" language-js">[Fact]
 public async Task Gets_favorites_for_authorized_user()
 {
     _pact
@@ -595,7 +610,7 @@ public async Task Gets_favorites_for_authorized_user()
 
                     <button type="button" class="expandable-button">JavaScript</button>
                     <div class="expandable-content">
-<pre><code>name: CI
+<pre class="line-numbers"><code class=" language-js">name: CI
 
 on: [push]
 
@@ -646,7 +661,7 @@ jobs:
 
                     <button type="button" class="expandable-button">C#</button>
                     <div class="expandable-content">
-<pre><code>name: CI
+<pre class="line-numbers"><code class=" language-js">name: CI
 
 on: 
   push
@@ -715,7 +730,7 @@ jobs:
 
                     <button type="button" class="expandable-button">Show code</button>
                     <div class="expandable-content">
-<pre><code>name: CD
+<pre class=" line-numbers"><code class=" language-js">name: CD
 run-name: CD - ${{ inputs.environment }}
 
 on:
