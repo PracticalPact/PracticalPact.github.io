@@ -16,7 +16,7 @@ const sidebars = {
         links: [
             ["tutorials/index.html", "Getting Started"],
             ["tutorials/CDCTWorkflow.html", "CDCT Workflow"],
-            ["tutorials/consumer.html", "Consumer"],
+            ["tutorials/create-consumer-contract.html", "Create Consumer Contract"],
             ["tutorials/ContractError.html", "Contract Error"],
             ["tutorials/InfrastructureSetup.html", "Infrastructure Setup"],
             ["tutorials/LocalTestingPactBroker.html", "Local Testing Pact Broker"],
