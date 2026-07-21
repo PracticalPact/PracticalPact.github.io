@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>CDCT Concept</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <script src="../js/scripts.js"></script>
 </head>
 <body>
     <div class="topbar"></div>
@@ -34,26 +33,12 @@
                 <p>The beautiful thing about CDCT is that it can be performed in total isolation. The Consumer does not need to actually communicate with the Provider to perform its test, and vice versa. That makes it possible to run CDCT both locally and in CI/CD pipelines without any of the hassle of integration tests.</p>
             </div>
         </main>
-
     </div>
+    <div id="overlay" onclick="closeImage()">
+        <img id="overlay-img" alt="Expanded image">
+    </div>
+    <script src="../js/scripts.js"></script>
     <script src="../js/nav.js"></script>
     <script>renderNav('docs', '../')</script>
 </body>
 </html>
-
-<script>
-    const overlay = document.getElementById("overlay");
-    const overlayImg = document.getElementById("overlay-img");
-
-    document.querySelectorAll(".zoomable").forEach(img => {
-        img.addEventListener("click", () => {
-            overlayImg.src = img.src;
-            overlay.style.display = "flex";
-        });
-    });
-
-    function closeImage() {
-        overlay.style.display = "none";
-        overlayImg.src = "";
-    }
-</script>

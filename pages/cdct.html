@@ -112,24 +112,12 @@
 
     </div>
 
+
+    <div id="overlay" onclick="closeImage()">
+        <img id="overlay-img" alt="Expanded image">
+    </div>
+    <script src="../js/scripts.js"></script>
     <script src="../js/nav.js"></script>
     <script>renderNav('docs', '../')</script>
-
-    <script>
-        const overlay = document.getElementById("overlay");
-        const overlayImg = document.getElementById("overlay-img");
-
-        document.querySelectorAll(".zoomable").forEach(img => {
-            img.addEventListener("click", () => {
-                overlayImg.src = img.src;
-                overlay.style.display = "flex";
-            });
-        });
-
-        function closeImage() {
-            overlay.style.display = "none";
-            overlayImg.src = "";
-        }
-    </script>
 </body>
 </html>

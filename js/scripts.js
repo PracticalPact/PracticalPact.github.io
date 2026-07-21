@@ -1,18 +1,39 @@
-window.onload = function() { main(); }
-async function main() {
+window.onload = main;
 
-    var expandables = document.getElementsByClassName("expandable-button");
-    var i;
-    
-    for (i = 0; i < expandables.length; i++) {
-        expandables[i].addEventListener("click", function() {
+function main() {
+    const expandables = document.getElementsByClassName("expandable-button");
+
+    for (const button of expandables) {
+        button.addEventListener("click", function () {
             this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.maxHeight){
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-            } 
+
+            const content = this.nextElementSibling;
+
+            content.style.maxHeight = content.style.maxHeight
+                ? null
+                : content.scrollHeight + "px";
         });
-    } 
+    }
+
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlay-img");
+
+    if (!overlay || !overlayImg) return;
+
+    document.querySelectorAll(".zoomable").forEach(img => {
+        img.addEventListener("click", () => {
+            overlayImg.src = img.src;
+            overlay.style.display = "flex";
+        });
+    });
+}
+
+function closeImage() {
+    const overlay = document.getElementById("overlay");
+    const overlayImg = document.getElementById("overlay-img");
+
+    if (!overlay || !overlayImg) return;
+
+    overlay.style.display = "none";
+    overlayImg.src = "";
 }

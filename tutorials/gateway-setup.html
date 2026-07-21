@@ -143,9 +143,9 @@ app.Run();
 
 await <span class="hljs-keyword">app</span>.StartAsync();
 </code></pre>
-                </div>
-                <h1 id="ci">CI</h1>
-                <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
+            </div>
+            <h1 id="ci">CI</h1>
+            <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
 <pre class=" line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: CI
 
 <span class="yaml"><span class="hljs-attr">on:</span> 
@@ -175,12 +175,14 @@ await <span class="hljs-keyword">app</span>.StartAsync();
 <span class="hljs-attr">      - name:</span> Run all tests 
 <span class="hljs-attr">        run:</span> dotnet test</span>
 </code></pre>
-                <h1 id="what-now-">What Now?</h1>
-                <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
+            <h1 id="what-now-">What Now?</h1>
+            <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
 
         </main>
     </div>
-
+    <div id="overlay" onclick="closeImage()">
+        <img id="overlay-img" alt="Expanded image">
+    </div>
     <script src="../js/scripts.js"></script>
     <script src="../js/nav.js"></script>
     <script>renderNav('tutorials', '../')</script>
