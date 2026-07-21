@@ -1,6 +1,6 @@
 const sidebars = {
     docs: {
-        title: "Consumer Driven Contract Testing - A CDCT method",
+        title: "Practical Pact - A Consumer Driven Contract Testing method",
         links: [
             ["index.html", "Welcome"],
             ["pages/cdct.html", "CDCT Concept"],
@@ -32,7 +32,7 @@ const sidebars = {
 };
 function renderNav(section, base = "") {
     document.querySelector(".topbar").innerHTML = `
-    <a href="${base}index.html" class="brand">CDCT Method</a>
+    <a href="${base}index.html" class="brand">Practical Pact</a>
     <a href="${base}index.html">Guides</a>
     <a href="${base}tutorials/index.html">Tutorials</a>
   `;
