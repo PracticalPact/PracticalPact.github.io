@@ -480,7 +480,7 @@ describe('Favorites API Pact', () => {
                 <tbody>
                     <tr>
                         <td>
-<pre class=" line-numbers"><code class=" language-js">{
+<pre class=" line-numbers"><code>{
   "consumer": {
     "name": "CasinoFrontend"
   },
@@ -524,7 +524,7 @@ describe('Favorites API Pact', () => {
                         <td>
                             <h3>JavaScript</h3>
 
-<pre class=" line-numbers"><code class=" language-js">it("gets all favorites for a user", async () =&gt; {
+<pre class=" line-numbers"><code>it("gets all favorites for a user", async () =&gt; {
   await pact
     .addInteraction()
     .given("a user with favorites exists")
@@ -558,7 +558,7 @@ describe('Favorites API Pact', () => {
 
                             <h3>C#</h3>
 
-<pre class="line-numbers"><code class=" language-js">[Fact]
+<pre class="line-numbers"><code>[Fact]
 public async Task Gets_favorites_for_authorized_user()
 {
     _pact
