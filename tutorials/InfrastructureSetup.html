@@ -89,6 +89,46 @@
                     </tr>
                 </tbody>
             </table>
+
+            <h2 id="database-challenges">Database Challenges</h2>
+
+            <p>
+                One issue that may occur when using MySQL with the Pact Broker is shown below.
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error message</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <code>
+                                Sequel::DatabaseError: Mysql2::Error: Data too long for column 'body' at row 1
+                            </code>
+                        </td>
+                        <td>
+                            The error occurs when the Pact Broker attempts to store a webhook request body
+                            that is larger than the database column allows. In our method, the webhook body
+                            can include values such as <code>Content-Type</code>, <code>Accept</code>, and
+                            <code>Authorization</code>. Long values, such as fine-grained GitHub tokens, may
+                            cause the stored body to exceed the supported size.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                This can become a problem when webhooks contain large header values. In our setup,
+                the issue was only observed when using MySQL. We therefore recommend considering
+                PostgreSQL for the Pact Broker database, as we did not encounter the same limitation
+                with that setup.
+            </p>
+
+
             <p><strong>OAS-service:</strong></p>
             <table>
                 <thead>
