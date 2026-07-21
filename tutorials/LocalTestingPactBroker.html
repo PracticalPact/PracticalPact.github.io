@@ -15,7 +15,6 @@
             <h1 id="local-testing-pact-broker">Local testing Pact Broker</h1>
             <h3 id="local-for-testing-">Local (for testing)</h3>
             <p>To test the system locally, you can run Pact Broker and its database using Docker Compose. A minimal setup:</p>
-            <p>yaml</p>
 <pre><code><span class="hljs-attribute">services</span>:
             <span class="hljs-attribute">postgres</span>:
             <span class="hljs-attribute">image</span>: <span class="hljs-attribute">postgres</span>:<span class="hljs-number">16</span>
@@ -41,7 +40,6 @@
             <span class="hljs-attribute">pg</span>:
 </code></pre><p>This starts Pact Broker on <code>http://localhost:9292</code>.</p>
             <p>To also test contract creation, a <code>contract-factory</code> service can be added to the setup. This is a test utility that generates and publishes contracts to the Pact Broker:</p>
-            <p>yaml</p>
 <pre><code>  <span class="hljs-attribute">contract-factory</span>:
             <span class="hljs-attribute">image</span>: PracticalPact/<span class="hljs-attribute">contract-factory</span>:latest
             <span class="hljs-attribute">ports</span>:
