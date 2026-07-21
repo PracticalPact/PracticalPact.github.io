@@ -26,6 +26,14 @@
             <p>
                 CDCT with Pact is designed to be part of these pipelines. Consumer tests should run in the consumer repository, while provider verification should run in the provider repository. Contracts and verification results can then be published to the Pact Broker as part of the normal CI process. Before deployment, the pipeline can use the Broker to check whether the application version is compatible with the versions already running in the target environment. This makes contract testing part of the normal development and deployment process instead of a separate manual activity.
             </p>
+
+            <p>
+                Practical Pact provides a set of GitHub Actions that simplify parts of the CI/CD setup introduced in this method. These actions support tasks such as publishing contracts, checking deployment compatibility, recording deployments, and configuring Pact Broker webhooks. More information about the available actions can be found in the
+                <a href="https://github.com/PracticalPact/pactbroker-webhook-action">
+                    Practical Pact GitHub repository
+                </a>.
+                Each action is described in its respective README file.
+            </p>
         </main>
 
     </div>
