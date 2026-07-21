@@ -6,14 +6,9 @@ const sidebars = {
             ["pages/cdct.html", "CDCT Concept"],
             ["pages/cdct-briefly.html", "CDCT Briefly"],
             ["pages/setup.html", "Project Setup"],
-            ["pages/contracts.html", "Contracts"],
             ["pages/contracts-briefly.html", "Contracts Briefly"],
-            ["pages/infrastructure.html", "Infrastructure"],
-            ["pages/gateways.html", "Gateways"],
             ["pages/cicd.html", "CI/CD"],
-            ["pages/local-tests.html", "Local Tests"],
             ["pages/broker.html", "Pact Broker"],
-            ["pages/workflow.html", "Team Workflow"],
         ]
     },
     tutorials: {

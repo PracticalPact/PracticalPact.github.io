@@ -12,43 +12,24 @@
 
         <nav class="sidebar"></nav>
 
-
         <main class="content">
             <h1>CI/CD Integration</h1>
 
-            <h2>Goal</h2>
             <p>
-                Contract testing should run automatically as part of the development pipeline.
+                Continuous Integration (CI) and Continuous Deployment (CD) are practices used to automate important parts of software development. CI focuses on automatically building and testing code whenever developers make changes. This helps teams find errors early, before the changes are merged or released. CD extends this process by preparing or deploying tested changes to an environment. Together, CI/CD creates a more consistent development process and reduces the amount of manual work needed to build, test, and release software.
             </p>
 
-            <h2>Consumer pipeline</h2>
-            <ol>
-                <li>Run consumer tests.</li>
-                <li>Generate contract files.</li>
-                <li>Publish contracts to the Pact Broker.</li>
-            </ol>
-
-            <h2>Provider pipeline</h2>
-            <ol>
-                <li>Retrieve relevant contracts from the Pact Broker.</li>
-                <li>Run provider verification tests.</li>
-                <li>Publish verification results to the Pact Broker.</li>
-            </ol>
-
-            <h2>Decision points</h2>
-            <ul>
-                <li>If verification passes, allow the pipeline to continue.</li>
-                <li>If verification fails, block deployment or notify the provider team.</li>
-                <li>If the failure is caused by missing test setup, update the provider test configuration.</li>
-            </ul>
-
-            <h2>Output</h2>
             <p>
-                Automated compatibility checks in the CI/CD pipeline.
+                CI/CD is especially useful in systems with several services and development teams. Changes can be made and released independently, which makes it important to check that each change still works with the rest of the system. Automated pipelines provide fast feedback and apply the same checks every time. This reduces the risk of human error and makes it easier to release changes more often.
+            </p>
+
+            <p>
+                CDCT with Pact is designed to be part of these pipelines. Consumer tests should run in the consumer repository, while provider verification should run in the provider repository. Contracts and verification results can then be published to the Pact Broker as part of the normal CI process. Before deployment, the pipeline can use the Broker to check whether the application version is compatible with the versions already running in the target environment. This makes contract testing part of the normal development and deployment process instead of a separate manual activity.
             </p>
         </main>
 
     </div>
+
     <script src="../js/nav.js"></script>
     <script>renderNav('docs', '../')</script>
 </body>
