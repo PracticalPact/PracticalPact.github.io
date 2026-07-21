@@ -300,3 +300,58 @@ code[class*="language-"] {
 .contract-comparison code {
     font-size: 11px;
 }
+
+.table-of-contents {
+    max-width: 760px;
+    margin: 2rem 0;
+    padding: 1.5rem 1.75rem;
+    background: #eef4ec;
+    border: 1px solid #BDD2B6;
+    border-left: 4px solid #A2B29F;
+    border-radius: 8px;
+}
+
+    .table-of-contents h2 {
+        margin: 0 0 1rem;
+        font-size: 1.25rem;
+    }
+
+    .table-of-contents ul {
+        margin: 0;
+        padding-left: 1.25rem;
+    }
+
+    .table-of-contents > ul {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .table-of-contents li {
+        margin: 0.45rem 0;
+        line-height: 1.4;
+    }
+
+    .table-of-contents > ul > li {
+        padding: 0.35rem 0;
+        border-bottom: 1px solid #d6e2d2;
+    }
+
+        .table-of-contents > ul > li:last-child {
+            border-bottom: none;
+        }
+
+    .table-of-contents ul ul {
+        margin-top: 0.4rem;
+        padding-left: 1.5rem;
+        list-style: disc;
+    }
+
+    .table-of-contents a {
+        color: #40543d;
+        text-decoration: none;
+    }
+
+        .table-of-contents a:hover {
+            color: #263824;
+            text-decoration: underline;
+        }

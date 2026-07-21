@@ -18,14 +18,14 @@ const sidebars = {
             ["tutorials/CDCTWorkflow.html", "CDCT Workflow"],
             ["tutorials/ContractError.html", "Contract Error"],
             ["tutorials/create-consumer-contract.html", "Create Consumer Contract"],
+            ["tutorials/provider.html", "Handle Contracts as Provider"],
             ["tutorials/InfrastructureSetup.html", "Infrastructure Setup"],
             ["tutorials/LocalTestingPactBroker.html", "Local Testing Pact Broker"],
             ["tutorials/OASService.html", "OAS Service"],
-            ["tutorials/provider.html", "Handle Contracts as Provider"],
             ["tutorials/testing-gateways.html", "Testing Gateways", [
+                ["tutorials/gateway-cicd.html", "Gateway CI/CD"],
                 ["tutorials/gateway-setup.html", "Setting Up Gateway Tests"],
                 ["tutorials/gateway-consumer.html", "Writing Consumer Tests"],
-                ["tutorials/gateway-cicd.html", "Gateway CI/CD"],
             ]],
         ]
     }

@@ -29,50 +29,58 @@
             <p>This guide will teach you the details of how Consumer-Driven Contract Testing (CDCT) works for a Provider. If you do not know what CDCT or a Provider is, start by reading <a href="https://practicalpact.github.io/pages/cdct-briefly.html">this short introduction</a> before you continue.</p>
             <p>Your job is to implement CDCT for a microservice that will act as a Provider for another Consumer. First choose the microservice that you understand the best, and which could serve as the Provider for something else. This would likely be an API that is called by some front end or other microservice. The one that you choose will be the project to work on throughout this tutorial.</p>
             <p>To set up a project for the role of Provider is mostly a one-time endeavour. When Contracts are created or modified, you may need to extend the Provider States — we will get to those later — but that should be a minor task. </p>
+            <nav class="table-of-contents" aria-label="Table of contents">
 
-            <ul>
-                <li><a href="#provider-contract-sequence-diagram">Provider contract sequence diagram</a></li>
-                <li><a href="#running-example-overview">Running Example</a></li>
-                <li>
-                    <a href="#local-test-environment">Local test environment</a>
-                    <ul>
-                        <li><a href="#docker">Docker</a></li>
-                        <li><a href="#docker-compose">Docker Compose</a></li>
-                        <li><a href="#create-contract">Create Contract</a></li>
-                        <li><a href="#running-example-contract">Running Example</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#refactor-code">Refactor Code</a>
-                    <ul>
-                        <li><a href="#modern-program-setup">Modern setup with all code in Program.cs</a></li>
-                        <li><a href="#using-controllers">Using Controllers</a></li>
-                        <li><a href="#running-example-refactor">Running Example</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#create-test-project">Create test project or directory</a>
-                    <ul>
-                        <li><a href="#running-example-provider-test">Running Example</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#provider-states">Provider States</a>
-                    <ul>
-                        <li><a href="#running-example-provider-states">Running Example</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#stub-external-dependencies">Stub External Dependencies</a>
-                    <ul>
-                        <li><a href="#running-example-stubs">Running Example</a></li>
-                    </ul>
-                </li>
-                <li><a href="#troubleshooting">Troubleshooting</a></li>
-                <li><a href="#finishing-local-example">Finishing the Local Example</a></li>
-                <li><a href="#ci-cd">CI/CD</a></li>
-                <li><a href="#what-now">What Now?</a></li>
-            </ul>
+                <ul>
+                    <li><a href="#provider-contract-sequence-diagram">Provider contract sequence diagram</a></li>
+                    <li><a href="#running-example-overview">Running Example</a></li>
+
+                    <li>
+                        <a href="#local-test-environment">Local test environment</a>
+                        <ul>
+                            <li><a href="#docker">Docker</a></li>
+                            <li><a href="#docker-compose">Docker Compose</a></li>
+                            <li><a href="#create-contract">Create Contract</a></li>
+                            <li><a href="#running-example-contract">Running Example</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#refactor-code">Refactor Code</a>
+                        <ul>
+                            <li><a href="#modern-program-setup">Modern setup with all code in Program.cs</a></li>
+                            <li><a href="#using-controllers">Using Controllers</a></li>
+                            <li><a href="#running-example-refactor">Running Example</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#create-test-project">Create test project or directory</a>
+                        <ul>
+                            <li><a href="#running-example-provider-test">Running Example</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#provider-states">Provider States</a>
+                        <ul>
+                            <li><a href="#running-example-provider-states">Running Example</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#stub-external-dependencies">Stub External Dependencies</a>
+                        <ul>
+                            <li><a href="#running-example-stubs">Running Example</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    <li><a href="#finishing-local-example">Finishing the Local Example</a></li>
+                    <li><a href="#ci-cd">CI/CD</a></li>
+                    <li><a href="#what-now">What Now?</a></li>
+                </ul>
+            </nav>
 
             <h1 id="provider-contract-sequence-diagram">Provider contract sequence diagram</h1>
 
