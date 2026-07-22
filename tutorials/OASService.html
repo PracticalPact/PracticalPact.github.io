@@ -39,11 +39,11 @@
             <p>Instead, use a filesystem-safe provider name:</p>
 <pre class=" line-numbers"><code class="language-js"><span class="hljs-keyword">const</span> pact = <span class="hljs-keyword">new</span> Pact({
     consumer: <span class="hljs-string">"Frontend"</span>,
-    provider: <span class="hljs-string">"dli-favorite.town21.dsservice.eu-swagger-v1-swagger.json"</span>,
+    provider: <span class="hljs-string">"[URL...]-swagger.json"</span>,
     dir: path.resolve(process.cwd(), <span class="hljs-string">"pacts"</span>)
 });
 </code></pre><p>The actual OAS URL is passed separately when the webhook is created:</p>
-<pre class=" line-numbers"><code class="language-js">https:<span class="hljs-regexp">//</span>dli-favorite.town21.dsservice.eu<span class="hljs-regexp">/swagger/</span>v1<span class="hljs-regexp">/swagger.json</span>
+<pre class=" line-numbers"><code class="language-js">https:<span class="hljs-regexp">//</span>[provider-url]<span class="hljs-regexp">/swagger/</span>v1<span class="hljs-regexp">/swagger.json</span>
 </code></pre><h2 id="how-does-it-work-">How does it work?</h2>
             <p>The microservice takes a Pact contract and compares it against the provider&#39;s <code>swagger.json</code> file.</p>
             <p>Every time the consumer publishes a contract to the Pact Broker, the broker fires a webhook to the OAS Microservice with three values: <code>providerUrl</code>, <code>pactUrl</code>, and <code>publishVerificationResult</code>.</p>
@@ -78,8 +78,8 @@
   uses: PracticalPact<span class="hljs-meta-keyword">/pactbroker-webhook-action/</span>webhook-OAS-action@main
   with:
     brokerUrl: ${{ vars.BROKER_URL }}
-    providerName: dli-favorite.town21.dsservice.eu-swagger-v1-swagger.json
-    oasUrl: https:<span class="hljs-comment">//dli-favorite.town21.dsservice.eu/swagger/v1/swagger.json</span>
+    providerName: [provider-url]-swagger.json
+    oasUrl: https:<span class="hljs-comment">//[provider-url]/swagger/v1/swagger.json</span>
 <span class="hljs-symbol">    oasServiceUrl:</span> https:<span class="hljs-comment">//ds-platform-cdct-oas-service.dsservice.eu</span>
 </code></pre><p>The action creates a webhook for the specific consumer-provider pair. The generated webhook has this structure:</p>
 <pre class="line-numbers"><code class=" language-js">{
@@ -90,13 +90,13 @@
   ],
             <span class="hljs-attr">"request"</span>: {
             <span class="hljs-attr">"method"</span>: <span class="hljs-string">"POST"</span>,
-            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://ds-platform-cdct-oas-service.dsservice.eu/compare-from-webhook"</span>,
+            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://PracticalPact/oas-service/compare-from-webhook"</span>,
             <span class="hljs-attr">"headers"</span>: {
             <span class="hljs-attr">"content-type"</span>: <span class="hljs-string">"application/json"</span>,
             <span class="hljs-attr">"accept"</span>: <span class="hljs-string">"application/json"</span>
     },
             <span class="hljs-attr">"body"</span>: {
-            <span class="hljs-attr">"providerUrl"</span>: <span class="hljs-string">"https://dli-favorite.town21.dsservice.eu/swagger/v1/swagger.json"</span>,
+            <span class="hljs-attr">"providerUrl"</span>: <span class="hljs-string">"[input URL...]//swagger.json"</span>,
             <span class="hljs-attr">"pactUrl"</span>: <span class="hljs-string">"${pactbroker.pactUrl}"</span>,
             <span class="hljs-attr">"publishVerificationResult"</span>: <span class="hljs-literal">true</span>
     }
