@@ -1,19 +1,14 @@
 window.onload = main;
 
 function main() {
-    const expandables = document.getElementsByClassName("expandable-button");
+    const expandables = document.querySelectorAll(".expandable-button");
 
-    for (const button of expandables) {
+    expandables.forEach(button => {
         button.addEventListener("click", function () {
             this.classList.toggle("active");
-
-            const content = this.nextElementSibling;
-
-            content.style.maxHeight = content.style.maxHeight
-                ? null
-                : content.scrollHeight + "px";
+            this.nextElementSibling.classList.toggle("open");
         });
-    }
+    });
 
     const overlay = document.getElementById("overlay");
     const overlayImg = document.getElementById("overlay-img");

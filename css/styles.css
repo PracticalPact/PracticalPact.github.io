@@ -116,7 +116,10 @@ body {
     overflow: hidden;
     background-color: #F8EDE3;
     max-height: 0;
-    transition: max-height 0.2s ease-out;
+}
+
+ .expandable-content.open {
+    max-height: none;
 }
 
 .sidebar-sub {

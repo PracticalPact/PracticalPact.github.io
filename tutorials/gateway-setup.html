@@ -144,41 +144,184 @@ app.Run();
 await <span class="hljs-keyword">app</span>.StartAsync();
 </code></pre>
             </div>
-            <h1 id="ci">CI</h1>
-            <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
-<pre class=" line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: CI
+            <h1 id="ci">CI/CD</h1>
+            <button type="button" class="expandable-button">C#</button>
+            <div class="expandable-content">
+                <button type="button" class="expandable-button">CI</button>
+                <div class="expandable-content">
+                    <p>Create a file called <code>.github/workflows/ci.yml</code> with the following contents.</p>
+                    <pre class="line-numbers"><code class="language-js">name: CI
 
-<span class="yaml"><span class="hljs-attr">on:</span> 
-<span class="hljs-attr">  push:</span>
-<span class="hljs-attr">    branches:</span>
-<span class="hljs-bullet">      -</span> <span class="hljs-string">'main'</span>
-<span class="hljs-bullet">      -</span> <span class="hljs-string">'feature/**'</span>
-<span class="hljs-bullet">      -</span> <span class="hljs-string">'my-change'</span>
+on: [push]
 
-<span class="hljs-attr">env:</span>
-<span class="hljs-attr">  GITHUB_PACKAGE_USER_NAME:</span> ${{ github.actor }} 
-<span class="hljs-attr">  GITHUB_PACKAGE_TOKEN:</span> ${{ secrets.GITHUB_TOKEN }}
-<span class="hljs-attr">  GIT_BRANCH:</span> ${{ github.ref_name }}
-<span class="hljs-attr">  GIT_SHA:</span> ${{ github.sha }}
-<span class="hljs-attr">  IS_CI:</span> <span class="hljs-literal">true</span>
+env:
+  GITHUB_PACKAGE_USER_NAME: ${{ github.actor }}
+  GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GIT_BRANCH: ${{ github.ref_name }}
+  GIT_SHA: ${{ github.sha }}
+  BROKER_URL: ${{ vars.BROKER_URL }}
+  APPLICATION_NAME: ${{ github.event.repository.name }}
 
-<span class="hljs-attr">jobs:</span>
-<span class="hljs-attr">  build-service:</span>
-<span class="hljs-attr">    name:</span> Build and Test
-<span class="hljs-attr">    runs-on:</span> ubuntu-latest
-<span class="hljs-attr">    steps:</span>
-<span class="hljs-attr">      - uses:</span> actions/checkout@v6
+jobs:
+  build-service:
+    name: Build and Test
+    runs-on: ubuntu-latest
 
-<span class="hljs-attr">      - run:</span> dotnet restore
-<span class="hljs-attr">      - name:</span> Build
-<span class="hljs-attr">        run:</span> dotnet build --<span class="hljs-literal">no</span>-restore
-<span class="hljs-attr">      - name:</span> Run all tests 
-<span class="hljs-attr">        run:</span> dotnet test</span>
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run normal tests
+        run: dotnet test --no-build --filter "TestCategory!=Contract"
+
+      - name: Run contract tests
+        run: dotnet test --no-build --filter "TestCategory=Contract" --logger "console;verbosity=normal"
+
+      - name: Create missing webhooks
+        uses: PracticalPact/pactbroker-webhook-action/webhook-gateway-action@main
+        with:
+          brokerUrl: ${{ env.BROKER_URL }}
+          gatewayName: ${{ env.APPLICATION_NAME }}
+          githubToken: ${{ secrets.PACT_GITHUB_TOKEN }}
+
+      - name: Register repository URL
+        shell: pwsh
+        run: |
+          Invoke-RestMethod `
+            -Method Patch `
+            -Uri "${{ vars.BROKER_URL }}pacticipants/${{ env.APPLICATION_NAME }}" `
+            -ContentType "application/merge-patch+json" `
+            -Body '{"repositoryUrl": "https://github.com/${{ github.repository }}", "mainBranch": "main"}'
+
+      - name: Register version
+        shell: pwsh
+        run: |
+          Invoke-RestMethod `
+            -Method Put `
+            -Uri "${{ vars.BROKER_URL }}pacticipants/${{ env.APPLICATION_NAME }}/versions/${{ github.sha }}" `
+            -ContentType "application/json" `
+            -Body '{"branch": "${{ github.ref_name }}"}'
 </code></pre>
-            <h1 id="what-now-">What Now?</h1>
-            <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
+                    <p>
+                        Create <code>verify_updated_contract.yml</code> with the following content:
+                    </p>
+                    <pre class="line-numbers"><code class="language-js">name: Verify Updated Contracts
 
-        </main>
+run-name: Updated Contract, check on ${{ github.event.client_payload.branch }}
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - contract_requiring_verification_published
+
+env:
+  PACT_URL: ${{ github.event.client_payload.pact_url }}
+  GIT_SHA: ${{ github.event.client_payload.sha }}
+  GIT_BRANCH: ${{ github.event.client_payload.branch }}
+  APPLICATION_NAME: ${{ github.event.repository.name }}
+  GITHUB_PACKAGE_USER_NAME: ${{ github.actor }}
+  GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build-service:
+    name: Build and Verify Contracts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add Summary
+        run: |
+          echo "### Run Info" >> $GITHUB_STEP_SUMMARY
+          echo "${{ env.PACT_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ env.GIT_BRANCH }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ env.GIT_SHA }}" >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ env.GIT_SHA }}
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run contract tests
+        run: dotnet test --no-build --filter "TestCategory=Contract"
+</code></pre>
+                </div>
+                <button type="button" class="expandable-button">CD</button>
+                <div class="expandable-content">
+                    <p>Create a file called <code>.github/workflows/cd.yml</code> with the following contents.</p>
+                    <pre class="line-numbers"><code class="language-js">name: CD
+
+run-name: CD - ${{ inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - town21
+          - town24
+          - production
+
+env:
+  REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+jobs:
+  can-i-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Can I Deploy?
+        uses: PracticalPact/pactbroker-webhook-action/can-i-deploy-gateway-action@main
+        with:
+          brokerUrl: ${{ vars.BROKER_URL }}
+          brokerToken: ${{ secrets.PACT_BROKER_TOKEN }}
+          applicationName: ${{ env.REPOSITORY_NAME }}
+          version: ${{ github.sha }}
+          toEnvironment: ${{ inputs.environment }}
+          retryWhileUnknown: 1
+          retryInterval: 2
+
+  deploy:
+    needs: can-i-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        run: echo "Deploying to ${{ inputs.environment }}..."
+
+      - name: Record Deployment
+        uses: PracticalPact/pactbroker-webhook-action/gateway-record-deployment-action@main
+        with:
+          brokerUrl: ${{ vars.BROKER_URL }}
+          applicationName: ${{ env.REPOSITORY_NAME }}
+          version: ${{ github.sha }}
+          environment: ${{ inputs.environment }}
+</code></pre>
+                </div>
+                </div>
+
+                <h1 id="what-now-">What Now?</h1>
+                <p>Whenever you run the tests, it should take all the contracts targeting the gateway and turn them into new contracts. You can try to publish a contract where the provider’s name is written with the format <code>[GATEWAY]---[PROVIDER]</code>. For example <code>my-gateway---my-backend</code>. If, in that example, the Consumer was called <code>my-frontend</code>, then when you run the gateway tests, it should create a new contract with a Consumer called <code>my-frontend---my-gateway</code> and a Provider called <code>my-backend</code>.</p>
+
+</main>
     </div>
     <div id="overlay" onclick="closeImage()">
         <img id="overlay-img" alt="Expanded image">

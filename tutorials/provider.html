@@ -775,114 +775,226 @@ public partial <span class="hljs-keyword">class</span> <span class="hljs-keyword
                     </p>
                 </div>
             </div>
-            <h1 id="ci-cd">CI/CD</h1>
-            <p>We can run the tests locally, but we also need them to run in our CI/CD pipeline. This will allow us to properly publish our test results to the Pact Broker. Down the line, this is necessary for the Consumer to be deployed. </p>
-            <p>Follow the instructions relevant to your language and CI/CD platform.</p>
-            <button type="button" class="expandable-button">C#</button>
-            <div class="expandable-content">
-                <p>Start by going to the settings of your repository, then to the secrets and variables section for actions. Create a new variable called <code>BROKER_URL</code>and set it to the full URL of your organisation’s broker (including a trailing slash).</p>
-                <p>Make sure your repository contains a .github/workflows/ directory. </p>
-                <p>Create or modify <code>ci.yml</code> to contain the following.</p>
-<pre class="line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: CI
+                    <h1 id="ci-cd">CI/CD</h1>
 
-<span class="http"><span class="hljs-attribute">on</span>: [push]
+                    <p>
+                        We can run the tests locally, but they should also run in the CI/CD pipeline.
+                        This allows the verification results to be published to the Pact Broker and
+                        makes them available for deployment checks.
+                    </p>
 
-<span class="yaml"><span class="hljs-attr">env:</span>
-<span class="hljs-attr">  GITHUB_PACKAGE_USER_NAME:</span> ${{ github.actor }} 
-<span class="hljs-attr">  GITHUB_PACKAGE_TOKEN:</span> ${{ secrets.GITHUB_TOKEN }}
-<span class="hljs-attr">  GIT_BRANCH:</span> ${{ github.ref_name }}
-<span class="hljs-attr">  GIT_SHA:</span> ${{ github.sha }}
-<span class="hljs-attr">  BROKER_URL:</span> ${{ vars.BROKER_URL }}
-<span class="hljs-attr">  REPOSITORY_NAME:</span> ${{ github.event.repository.name }}
+                    <p>Follow the instructions relevant to your language and CI/CD platform.</p>
 
-<span class="hljs-attr">jobs:</span>
-<span class="hljs-attr">  build-service:</span>
-<span class="hljs-attr">    name:</span> Build and Test
-<span class="hljs-attr">    runs-on:</span> test-selfhosted
-<span class="hljs-attr">    steps:</span>
-<span class="hljs-attr">      - uses:</span> actions/checkout@v6
+                    <button type="button" class="expandable-button">C#</button>
+                    <div class="expandable-content">
 
-<span class="hljs-attr">      - run:</span> dotnet restore
-<span class="hljs-attr">      - name:</span> Build
-<span class="hljs-attr">        run:</span> dotnet build --<span class="hljs-literal">no</span>-restore
-<span class="hljs-attr">      - name:</span> Run normal tests 
-<span class="hljs-attr">        run:</span> dotnet test --<span class="hljs-literal">no</span>-build --filter <span class="hljs-string">"TestCategory!=Contract"</span>
-<span class="hljs-attr">      - name:</span> Run contract tests
-<span class="hljs-attr">        run:</span> dotnet test --<span class="hljs-literal">no</span>-build --filter <span class="hljs-string">"TestCategory=Contract"</span>
-<span class="hljs-attr">      - name:</span> Create missing webhooks
-<span class="hljs-attr">        uses:</span> PracticalPact/pactbroker-webhook-action/webhook-action@main
-<span class="hljs-attr">        with:</span>
-<span class="hljs-attr">          brokerUrl:</span> ${{ env.BROKER_URL }}
-<span class="hljs-attr">          providerName:</span> ${{ env.REPOSITORY_NAME }}
-<span class="hljs-attr">          githubToken:</span> ${{ secrets.PACT_GITHUB_TOKEN }}
-<span class="hljs-attr">      - name:</span> Register repository URL
-<span class="hljs-attr">        shell:</span> pwsh
-<span class="hljs-attr">        run:</span> <span class="hljs-string">| 
-          Invoke-RestMethod `
-          -Method Patch `
-          -Uri "$<span class="hljs-template-variable">{{ vars.BROKER_URL }}</span>pacticipants/$<span class="hljs-template-variable">{{ env.REPOSITORY_NAME }}</span>" `
-          -ContentType "application/merge-patch+json" `
-          -Body '{"repositoryUrl": "https://github.com/$<span class="hljs-template-variable">{{ github.repository }}</span>", "mainBranch": "main"}'
-</span><span class="hljs-attr">      - name:</span> Register version
-<span class="hljs-attr">        shell:</span> pwsh
-<span class="hljs-attr">        run:</span> <span class="hljs-string">|
-          Invoke-RestMethod `
-            -Method Put `
-            -Uri "$<span class="hljs-template-variable">{{ vars.BROKER_URL }}</span>pacticipants/$<span class="hljs-template-variable">{{ env.REPOSITORY_NAME }}</span>/versions/$<span class="hljs-template-variable">{{ github.sha }}</span>" `
-            -ContentType "application/json" `
-            -Body '{"branch": "$<span class="hljs-template-variable">{{ github.ref_name }}</span>"}'</span></span></span>
-</code></pre>
-                <p>Create <code>verify_updated_contract.yml</code> with the following content.</p>
-<pre class="line-numbers"><code class="language-js"><span class="hljs-attribute">name</span>: Verify Updated Contracts
+                        <p>
+                            Go to the settings of your repository and open
+                            <strong>Secrets and variables</strong> for GitHub Actions. Create a new
+                            repository variable called <code>BROKER_URL</code> and set it to the full
+                            URL of your organisation's Pact Broker, including the trailing slash.
+                        </p>
 
-<span class="stylus">on:
-  workflow_dispatch:
-  repository_dispatch:
-    types:
-      - contract_requiring_verification_published
+                        <p>
+                            Make sure the repository contains a
+                            <code>.github/workflows/</code> directory.
+                        </p>
 
-env:
-  PACT_URL: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.client_payload</span><span class="hljs-selector-class">.pact_url</span> }}
-  GIT_SHA: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.client_payload</span><span class="hljs-selector-class">.sha</span> }}
-  GIT_BRANCH: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.client_payload</span><span class="hljs-selector-class">.branch</span> }}
-  REPOSITORY_NAME: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.repository</span><span class="hljs-selector-class">.name</span> }}
-  GITHUB_PACKAGE_USER_NAME: ${{ github<span class="hljs-selector-class">.actor</span> }}
-  GITHUB_PACKAGE_TOKEN: ${{ secrets<span class="hljs-selector-class">.GITHUB_TOKEN</span> }}
+                        <button type="button" class="expandable-button">CI</button>
+                        <div class="expandable-content">
 
-jobs:
-  build-service:
-    name: Build and Verify Contracts
-    runs-on: test-selfhosted
-    steps:
-      - uses: actions/checkout@v6
+                            <p>
+                                Create or modify <code>ci.yml</code> to contain the following:
+                            </p>
+
+<pre class="line-numbers"><code class="language-js">
+    name: CI
+
+    on: [push]
+
+    env:
+        GITHUB_PACKAGE_USER_NAME: ${{ github.actor }}
+        GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GIT_BRANCH: ${{ github.ref_name }}
+        GIT_SHA: ${{ github.sha }}
+        BROKER_URL: ${{ vars.BROKER_URL }}
+        REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+    jobs:
+        build-service:
+        name: Build and Test
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v6
+
+        - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v5
         with:
-          ref: ${{ env<span class="hljs-selector-class">.GIT_SHA</span> }}
+        dotnet-version: "10.0.x"
 
-      - run: dotnet restore
+        - run: dotnet restore
 
-      - name: Build
+        - name: Build
         run: dotnet build --no-restore
 
-      - name: Run contract tests
-        run: dotnet test --no-build --<span class="hljs-attribute">filter</span> <span class="hljs-string">"TestCategory=Contract"</span>
+        - name: Run normal tests
+        run: dotnet test --no-build --filter "TestCategory!=Contract"
 
-      - <span class="hljs-keyword">if</span>: failure()
-        uses: PracticalPact/pactbroker-webhook-action/pr-action@main
+        - name: Run contract tests
+        run: dotnet test --no-build --filter "TestCategory=Contract"
+
+        - name: Create missing webhooks
+        uses: PracticalPact/pactbroker-webhook-action/webhook-action@main
         with:
-          githubToken: ${{ secrets<span class="hljs-selector-class">.PACT_GITHUB_TOKEN</span> }}
-          providerName: ${{ env<span class="hljs-selector-class">.REPOSITORY_NAME</span> }}
-          pactUrl: ${{ env<span class="hljs-selector-class">.PACT_URL</span> }}
-          githubActor: ${{ github<span class="hljs-selector-class">.event</span><span class="hljs-selector-class">.client_payload</span><span class="hljs-selector-class">.github_actor</span> }}
-          baseBranch: pact-failures</span>
-</code></pre>
-                <p>CD part is WIP.</p>
-            </div>
-            <h1 id="what-now">What Now?</h1>
-            <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
-            <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
-            <p>Read more about cooperation with CDCT here.</p>
+            brokerUrl: ${{ env.BROKER_URL }}
+            providerName: ${{ env.REPOSITORY_NAME }}
+            githubToken: ${{ secrets.PACT_GITHUB_TOKEN }}
 
-        </main>
+        - name: Register repository URL
+        shell: pwsh
+        run: |
+            Invoke-RestMethod `
+            -Method Patch `
+            -Uri "${{ vars.BROKER_URL }}pacticipants/${{ env.REPOSITORY_NAME }}" `
+            -ContentType "application/merge-patch+json" `
+            -Body '{"repositoryUrl": "https://github.com/${{ github.repository }}", "mainBranch": "main"}'
+
+        - name: Register version
+        shell: pwsh
+        run: |
+           Invoke-RestMethod `
+            -Method Put `
+            -Uri "${{ vars.BROKER_URL }}pacticipants/${{ env.REPOSITORY_NAME }}/versions/${{ github.sha }}" `
+            -ContentType "application/json" `
+            -Body '{"branch": "${{ github.ref_name }}"}'
+</code></pre>
+
+                            <p>
+                                Create <code>verify_updated_contract.yml</code> with the following content:
+                            </p>
+
+<pre class="line-numbers"><code class="language-js">
+    name: Verify Updated Contracts
+    run-name: Updated Contract, check on ${{ github.event.client_payload.branch }}
+
+    on:
+        workflow_dispatch:
+        repository_dispatch:
+        types:
+           - contract_requiring_verification_published
+
+    env:
+        PACT_URL: ${{ github.event.client_payload.pact_url }}
+        GIT_SHA: ${{ github.event.client_payload.sha }}
+        GIT_BRANCH: ${{ github.event.client_payload.branch }}
+        REPOSITORY_NAME: ${{ github.event.repository.name }}
+        GITHUB_PACKAGE_USER_NAME: ${{ github.actor }}
+        GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    jobs:
+        build-service:
+            name: Build and Verify Contracts
+            runs-on: ubuntu-latest
+
+            steps:
+            - uses: actions/checkout@v6
+            with:
+            ref: ${{ env.GIT_SHA }}
+
+            - name: Setup .NET Core SDK
+            uses: actions/setup-dotnet@v5
+            with:
+                dotnet-version: "10.0.x"
+
+        - run: dotnet restore
+
+        - name: Build
+        run: dotnet build --no-restore
+
+        - name: Run contract tests
+        run: dotnet test --no-build --filter "TestCategory=Contract"
+
+        - name: Create pull request when verification fails
+        if: failure()
+        uses: PracticalPact/pactbroker-webhook-action/pr-action@main
+            with:
+                githubToken: ${{ secrets.PACT_GITHUB_TOKEN }}
+                providerName: ${{ env.REPOSITORY_NAME }}
+                pactUrl: ${{ env.PACT_URL }}
+                githubActor: ${{ github.event.client_payload.github_actor }}
+                baseBranch: pact-failures
+</code></pre>
+
+                        </div>
+
+                        <button type="button" class="expandable-button">CD</button>
+                        <div class="expandable-content">
+
+                            <p>
+                                Create or modify <code>cd.yml</code> to contain the following:
+                            </p>
+
+                            <pre class="line-numbers"><code class="language-js">name: CD
+
+run-name: CD - ${{ inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        options:
+          - town21
+          - town24
+          - production
+
+env:
+  REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+jobs:
+  can-i-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Can I Deploy?
+        uses: PracticalPact/pactbroker-webhook-action/can-i-deploy-action@main
+        with:
+          applicationName: ${{ env.REPOSITORY_NAME }}
+          brokerUrl: ${{ vars.BROKER_URL }}
+          brokerToken: ${{ secrets.PACT_BROKER_TOKEN }}
+          version: ${{ github.sha }}
+          toEnvironment: ${{ inputs.environment }}
+          retryWhileUnknown: 10
+          retryInterval: 60
+
+  deploy:
+    needs: can-i-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        run: echo "Deploying to ${{ inputs.environment }}..."
+
+      - name: Record Deployment
+        uses: PracticalPact/pactbroker-webhook-action/record-deployment-action@main
+        with:
+          brokerUrl: ${{ vars.BROKER_URL }}
+          applicationName: ${{ env.REPOSITORY_NAME }}
+          version: ${{ github.sha }}
+          environment: ${{ inputs.environment }}
+</code></pre>
+
+                        </div>
+
+                    </div>
+                    <h1 id="what-now">What Now?</h1>
+                    <p>With this set up, you can always run tests locally to see if your service fulfills the contracts in the Broker. When you push, the CI/CD pipeline will do the same and publish the results to the Broker. Thus you will always be able to see if your changes will break your Consumers. Additionally, when a Consumer updates their contract with you, the validation will be automatically rerun. If the update requires new Provider States, you will need to add those in to validate the new contract. </p>
+                    <p>In the future, this all means that you will be prevented from deploying changes that break those who depend on you. Likewise, your Consumers will be able to clearly see what they can expect from you. If you do need to make a breaking change, you need coordinate this with the Consumer teams. If they need new behaviour from you, they need to coordinate it with you. </p>
+                    <p>Read more about cooperation with CDCT <a href="https://practicalpact.github.io/tutorials/CDCTWorkflow.html">here</a>.</p>
+
+</main>
     </div>
     <div id="overlay" onclick="closeImage()">
         <img id="overlay-img" alt="Expanded image">
