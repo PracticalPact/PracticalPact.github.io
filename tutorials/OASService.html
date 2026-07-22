@@ -72,7 +72,7 @@
                 <li>The result is sent back to the Pact Broker as a verification result, where it becomes visible in the broker UI.</li>
             </ol>
             <h2 id="how-to-use-it">How to use it</h2>
-            <p>The microservice is available at: <code>https://ds-platform-cdct-oas-service.dsservice.eu</code></p>
+            <p>The microservice is available at: <code>[internal microservice URL]</code></p>
             <p>The recommended approach is to create the webhook from the consumer CI pipeline after publishing the Pact:</p>
 <pre class=" line-numbers"><code class="language-js">- name: Create OAS webhook
   uses: PracticalPact<span class="hljs-meta-keyword">/pactbroker-webhook-action/</span>webhook-OAS-action@main
@@ -80,7 +80,7 @@
     brokerUrl: ${{ vars.BROKER_URL }}
     providerName: [provider-url]-swagger.json
     oasUrl: https:<span class="hljs-comment">//[provider-url]/swagger/v1/swagger.json</span>
-<span class="hljs-symbol">    oasServiceUrl:</span> https:<span class="hljs-comment">//ds-platform-cdct-oas-service.dsservice.eu</span>
+<span class="hljs-symbol">    oasServiceUrl:</span> https:<span class="hljs-comment">//[internal microservice URL]</span>
 </code></pre><p>The action creates a webhook for the specific consumer-provider pair. The generated webhook has this structure:</p>
 <pre class="line-numbers"><code class=" language-js">{
             <span class="hljs-attr">"events"</span>: [
