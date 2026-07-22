@@ -43,8 +43,8 @@
                     <p>For instructions on deploying the Pact Broker and OAS Service, see the <a href="InfrastructureSetup.html">infrastructure setup guide</a>.</p>
                 </div>
             </div>
-                <p>Do not use the OAS URL directly as the Pact provider name. URLs may contain characters such as <code>/</code> and <code>:</code>, which can cause problems when Pact writes the contract file.</p>
-                <p>Instead, use a filesystem-safe provider name:</p>
+            <p>Do not use the OAS URL directly as the Pact provider name. URLs may contain characters such as <code>/</code> and <code>:</code>, which can cause problems when Pact writes the contract file.</p>
+            <p>Instead, use a filesystem-safe provider name:</p>
 <pre class=" line-numbers"><code class="language-js"><span class="hljs-keyword">const</span> pact = <span class="hljs-keyword">new</span> Pact({
     consumer: <span class="hljs-string">"Frontend"</span>,
     provider: <span class="hljs-string">"[URL...]-swagger.json"</span>,
@@ -53,65 +53,118 @@
 </code></pre><p>The actual OAS URL is passed separately when the webhook is created:</p>
 <pre class=" line-numbers"><code class="language-js">https:<span class="hljs-regexp">//</span>[provider-url]<span class="hljs-regexp">/swagger/</span>v1<span class="hljs-regexp">/swagger.json</span>
 </code></pre><h2 id="how-does-it-work-">How does it work?</h2>
-                <p>The microservice takes a Pact contract and compares it against the provider&#39;s <code>swagger.json</code> file.</p>
-                <p>Every time the consumer publishes a contract to the Pact Broker, the broker fires a webhook to the OAS Microservice with three values: <code>providerUrl</code>, <code>pactUrl</code>, and <code>publishVerificationResult</code>.</p>
-                <ul>
-                    <li><code>providerUrl</code>: the actual URL of the provider’s OAS file</li>
-                    <li><code>pactUrl</code>: the URL of the published Pact contract</li>
-                    <li><code>publishVerificationResult</code>: whether the result should be published back to the Broker</li>
-                </ul>
-                <figure>
-                    <img src="../images/OASSeq.png"
-                         alt="Sequence diagram that shows the Oas Microservice flow"
-                         class="zoomable" />
-                    <figcaption>Figure 1: OAS Microservice flow</figcaption>
-                </figure>
+            <p>The microservice takes a Pact contract and compares it against the provider&#39;s <code>swagger.json</code> file.</p>
+            <p>Every time the consumer publishes a contract to the Pact Broker, the broker fires a webhook to the OAS Microservice with three values: <code>providerUrl</code>, <code>pactUrl</code>, and <code>publishVerificationResult</code>.</p>
+            <ul>
+                <li><code>providerUrl</code>: the actual URL of the provider’s OAS file</li>
+                <li><code>pactUrl</code>: the URL of the published Pact contract</li>
+                <li><code>publishVerificationResult</code>: whether the result should be published back to the Broker</li>
+            </ul>
+            <figure>
+                <img src="../images/OASSeq.png"
+                     alt="Sequence diagram that shows the Oas Microservice flow"
+                     class="zoomable" />
+                <figcaption>Figure 1: OAS Microservice flow</figcaption>
+            </figure>
 
-                <p>From there:</p>
-                <ol>
-                    <li><code>Resolve(providerUrl)</code> is called to check whether the URL is a valid absolute URL pointing to a Swagger endpoint.</li>
-                    <li>
-                        Two things can happen:<ul>
-                            <li>If the URL cannot be resolved, the microservice skips the comparison and tells the broker the webhook ran successfully.</li>
-                            <li>If the URL resolves, <code>Compare()</code> is called.</li>
-                        </ul>
-                    </li>
-                    <li><code>Compare()</code> fetches both the OAS and the Pact as JSON and compares them.</li>
-                    <li>The result is sent back to the Pact Broker as a verification result, where it becomes visible in the broker UI.</li>
-                </ol>
-                <h2 id="how-to-use-it">How to use it</h2>
-                <p>The microservice is available at: <code>[OAS Service URL]</code>. For internal OAS files, use an OAS Service deployment that can access the organisation’s internal network.</p>
-                <p>The recommended approach is to create the webhook from the consumer CI pipeline after publishing the Pact:</p>
-<pre class=" line-numbers"><code class="language-js">- name: Create OAS webhook
-  uses: PracticalPact<span class="hljs-meta-keyword">/pactbroker-webhook-action/</span>webhook-OAS-action@main
+            <p>From there:</p>
+            <ol>
+                <li><code>Resolve(providerUrl)</code> is called to check whether the URL is a valid absolute URL pointing to a Swagger endpoint.</li>
+                <li>
+                    Two things can happen:<ul>
+                        <li>If the URL cannot be resolved, the microservice skips the comparison and tells the broker the webhook ran successfully.</li>
+                        <li>If the URL resolves, <code>Compare()</code> is called.</li>
+                    </ul>
+                </li>
+                <li><code>Compare()</code> fetches both the OAS and the Pact as JSON and compares them.</li>
+                <li>The result is sent back to the Pact Broker as a verification result, where it becomes visible in the broker UI.</li>
+            </ol>
+            <h2 id="how-to-use-it">How to use it</h2>
+
+            <p>The OAS Service can be run locally for testing or deployed inside an organisation for use with internal APIs.</p>
+
+            <h3 id="run-locally-with-docker">Run locally with Docker</h3>
+
+            <p>From the root of the repository, run:</p>
+
+<pre class="line-numbers"><code>docker compose up --build</code></pre>
+
+            <p>The OAS Service will be available at:</p>
+
+<pre class="line-numbers"><code>http://localhost:8080</code></pre>
+
+            <p>The Swagger interface is available at:</p>
+
+<pre class="line-numbers"><code>http://localhost:8080/swagger</code></pre>
+
+            <p>To stop the service, run:</p>
+
+<pre class="line-numbers"><code>docker compose down</code></pre>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>The Docker container must be able to access both the Pact contract and the provider’s OAS file.</p>
+
+                    <p>If both services run in Docker Compose, use the provider’s Compose service name.</p>
+                </div>
+            </div>
+
+            <h3 id="deploy-inside-an-organisation">Deploy inside an organisation</h3>
+
+            <p>If the provider’s OAS file is only available inside an internal network, the OAS Service must also be deployed in a network or cluster that can access it.</p>
+
+            <p>For deployment instructions, see the <a href="InfrastructureSetup.html">infrastructure setup guide</a>.</p>
+
+            <h3 id="create-the-webhook">Create the webhook</h3>
+
+            <p>After the consumer publishes its Pact contract, create a webhook that sends the contract and OAS URLs to the OAS Service.</p>
+
+            <p>Add the following step to the consumer’s CI pipeline:</p>
+
+<pre class="line-numbers"><code class="language-yaml">- name: Create OAS webhook
+  uses: PracticalPact/pactbroker-webhook-action/webhook-OAS-action@main
   with:
     brokerUrl: ${{ vars.BROKER_URL }}
-    providerName: [provider-url]-swagger.json
-    oasUrl: https:<span class="hljs-comment">//[provider-url]/swagger/v1/swagger.json</span>
-<span class="hljs-symbol">    oasServiceUrl:</span> https:<span class="hljs-comment">//[internal microservice URL]</span>
-</code></pre><p>The action creates a webhook for the specific consumer-provider pair. The generated webhook has this structure:</p>
-<pre class="line-numbers"><code class=" language-js">{
-                <span class="hljs-attr">"events"</span>: [
+    providerName: [provider-name]
+    oasUrl: https://[provider-url]/swagger/v1/swagger.json
+    oasServiceUrl: https://[oas-service-url]</code></pre>
+
+            <p>The values are:</p>
+
+            <ul>
+                <li><code>brokerUrl</code>: the URL of the Pact Broker</li>
+                <li><code>providerName</code>: the provider name used in the Pact contract</li>
+                <li><code>oasUrl</code>: the full URL of the provider’s OAS file</li>
+                <li><code>oasServiceUrl</code>: the URL of the deployed OAS Service</li>
+            </ul>
+
+            <p>The action creates a webhook for the consumer-provider pair. When the contract changes, the Pact Broker sends a request to the OAS Service:</p>
+
+<pre class="line-numbers"><code class="language-json">{
+  "events": [
     {
-                <span class="hljs-attr">"name"</span>: <span class="hljs-string">"contract_content_changed"</span>
+      "name": "contract_content_changed"
     }
   ],
-                <span class="hljs-attr">"request"</span>: {
-                <span class="hljs-attr">"method"</span>: <span class="hljs-string">"POST"</span>,
-                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://PracticalPact/oas-service/compare-from-webhook"</span>,
-                <span class="hljs-attr">"headers"</span>: {
-                <span class="hljs-attr">"content-type"</span>: <span class="hljs-string">"application/json"</span>,
-                <span class="hljs-attr">"accept"</span>: <span class="hljs-string">"application/json"</span>
+  "request": {
+    "method": "POST",
+    "url": "https://[oas-service-url]/compare-from-webhook",
+    "headers": {
+      "content-type": "application/json",
+      "accept": "application/json"
     },
-                <span class="hljs-attr">"body"</span>: {
-                <span class="hljs-attr">"providerUrl"</span>: <span class="hljs-string">"[input URL...]//swagger.json"</span>,
-                <span class="hljs-attr">"pactUrl"</span>: <span class="hljs-string">"${pactbroker.pactUrl}"</span>,
-                <span class="hljs-attr">"publishVerificationResult"</span>: <span class="hljs-literal">true</span>
+    "body": {
+      "providerUrl": "https://[provider-url]/swagger/v1/swagger.json",
+      "pactUrl": "${pactbroker.pactUrl}",
+      "publishVerificationResult": true
     }
   }
-}
-</code></pre>
-</main>
+}</code></pre>
+
+            <p>The OAS Service compares the contract with the OAS file and publishes the verification result back to the Pact Broker.</p>
+
+        </main>
     </div>
     <div id="overlay" onclick="closeImage()">
         <img id="overlay-img" alt="Expanded image">
