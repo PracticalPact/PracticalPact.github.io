@@ -36,7 +36,7 @@
                     <li><a href="#consumer-contract-sequence-diagram">Consumer contract sequence diagram</a></li>
                     <li><a href="#update-gitignore">Update .gitignore</a></li>
                     <li><a href="#create-test-file">Create Test File</a></li>
-                    <li><a href="#create-scenarios">Create Scenarios</a></li>
+                    <li><a href="#create-interactions">Create Interactions</a></li>
                     <li><a href="#the-contract">The contract</a></li>
                     <li><a href="#continuous-integration">Continuous Integration (CI)</a></li>
                     <li><a href="#continuous-deployment">Continuous Deployment (CD)</a></li>
@@ -167,57 +167,57 @@ describe("[NAME OF THE TEST]", () => {
 </code></pre>
                 </div>
 
-                <h1 id="create-scenarios">Create Scenarios</h1>
-                <p>Now it is time to create the Scenarios of the Contract. If you are uncertain about what a Scenario is or how a Contract is structured, read this short explanation before you continue.</p>
-                <p>For each Scenario, we need to specify what the request will be, and what the rules for the response are. Remember that this also includes an example of a response that follows those rules. We of course also need to make a description of the Scenario and define a Provider State.</p>
+                <h1 id="create-interactions">Create Interactions</h1>
+                <p>Now it is time to create the Interactions of the Contract. If you are uncertain about what an Interaction is or how a Contract is structured, read this short explanation before you continue.</p>
+                <p>For each Interaction, we need to specify what the request will be, and what the rules for the response are. Remember that this also includes an example of a response that follows those rules. We of course also need to make a description of the Interaction and define a Provider State.</p>
                 <p>Additionally, we also need to prove that our Consumer actually is capable of sending the requests that we specify, and that it can handle a response that follows the rules we laid out. This is a safety check to ensure that we do not make a Contract that we ourselves can't obey.</p>
-                <p>The Pact framework helps us here. It has functionality to spin up a mock HTTP server that we can send real HTTP requests to. For each Scenario we describe, it will expect us to send it an HTTP request that is identical to what we described in the Scenario. It will then respond according to the example response we provided in the Scenario. This way, each Scenario will be executed as a test. If all tests pass, the Scenarios will be combined into a final Contract.</p>
+                <p>The Pact framework helps us here. It has functionality to spin up a mock HTTP server that we can send real HTTP requests to. For each Interaction we describe, it will expect us to send it an HTTP request that is identical to what we described in the Interaction. It will then respond according to the example response we provided in the Interaction. This way, each Interaction will be executed as a test. If all tests pass, the Interactions will be combined into a final Contract.</p>
                 <p>When performing these tests, it is crucial that the code we use to send the requests is the same as the production code. Otherwise we might get a disconnect between the real behaviour and what we are testing. This would be troublesome, if we later on changed the production code without remembering the test code.</p>
 
                 <button type="button" class="expandable-button">C#</button>
                 <div class="expandable-content">
-                    <p>Each Scenario is written in its own test method and consists of two parts. The first part is the Scenario, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
+                    <p>Each Interaction is written in its own test method and consists of two parts. The first part is the Interaction, and the second part is the test. The following is a rough template for what it can look like. A bit further down you can see an example of what it would look like for our running example.</p>
 
 
 <pre class="line-numbers"><code class="language-csharp">
-[Fact]
-public async Task [TEST_NAME]()
-{
-    // Scenario:
+    [Fact]
+    public async Task [TEST_NAME]()
+    {
+    // Interaction:
     _pact
-        .UponReceiving("[DESCRIPTION OF REQUEST]")
-        .Given("[PROVIDER STATE]")
-        .WithRequest([HTTP METHOD], "[ENDPOINT]")
-        .WithHeader("[HEADER NAME]", "[HEADER VALUE]")
-        .WillRespond()
-        .WithStatus([STATUS CODE])
-        .WithJsonBody(new
-        {
-            [RESPONSE_FIELD] = Match.MinType(new
-            {
-                id = Match.Type("[EXAMPLE ID]"),
-                value = Match.Type("[EXAMPLE VALUE]")
-            }, 1)
-        });
+    .UponReceiving("[DESCRIPTION OF REQUEST]")
+    .Given("[PROVIDER STATE]")
+    .WithRequest([HTTP METHOD], "[ENDPOINT]")
+    .WithHeader("[HEADER NAME]", "[HEADER VALUE]")
+    .WillRespond()
+    .WithStatus([STATUS CODE])
+    .WithJsonBody(new
+    {
+    [RESPONSE_FIELD] = Match.MinType(new
+    {
+    id = Match.Type("[EXAMPLE ID]"),
+    value = Match.Type("[EXAMPLE VALUE]")
+    }, 1)
+    });
 
     // Test:
     await _pact.VerifyAsync(async ctx =>
     {
-        var client = new HttpClient { BaseAddress = ctx.MockServerUri };
+    var client = new HttpClient { BaseAddress = ctx.MockServerUri };
 
-        var request = new HttpRequestMessage([HTTP METHOD], "[ENDPOINT]");
-        request.Headers.Add("[HEADER NAME]", "[HEADER VALUE]");
+    var request = new HttpRequestMessage([HTTP METHOD], "[ENDPOINT]");
+    request.Headers.Add("[HEADER NAME]", "[HEADER VALUE]");
 
-        var response = await client.SendAsync(request);
+    var response = await client.SendAsync(request);
 
-        Assert.Equal([STATUS CODE], response.StatusCode);
+    Assert.Equal([STATUS CODE], response.StatusCode);
     });
-}
+    }
 </code></pre>
 
                     <p>To further dig into the syntax of Pact .NET, take a look here <a href="https://github.com/pact-foundation/pact-net">https://github.com/pact-foundation/pact-net</a> . </p>
                     <p><strong>Running Example</strong></p>
-                    <p>Below is the entire consumer test code for the running example. It has three Scenarios: a successful get, a failed get, and a successful post. There are of course more possible Scenarios, but this is enough for now.</p>
+                    <p>Below is the entire consumer test code for the running example. It has three Interactions: a successful get, a failed get, and a successful post. There are of course more possible Interactions, but this is enough for now.</p>
 
 <pre class="line-numbers"><code class="language-csharp">using System.Net;
 using PactNet;
@@ -340,7 +340,7 @@ public class ExampleProviderCsharpTest
 
                 <button type="button" class="expandable-button">JavaScript</button>
                 <div class="expandable-content">
-                    <p>Following the boilerplate inside the "describe" from before, add each Scenario. Each starts with the contents for the Contract, which might look like the following.</p>
+                    <p>Following the boilerplate inside the "describe" from before, add each Interaction. Each starts with the contents for the Contract, which might look like the following.</p>
 
 
 <pre class=" line-numbers"><code class="language-js">  it("returns [DATA FOR A VALID REQUEST]", async () => {
@@ -403,7 +403,7 @@ describe('Favorites API Pact', () => {
         pactfileWriteMode: "overwrite",
     });
 
-    // One test scenario: successful GET
+    // One test interaction: successful GET
     it('gets all favorites for a user', async () => {
 
         await pact
