@@ -20,7 +20,7 @@ services:
       PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES: "5"
 
   contract-factory:
-    image: magnusmouritzen/contract-factory:latest
+    image: PracticalPact/contract-factory:latest
     ports:
      - "3000:3000"
     depends_on:
