@@ -23,9 +23,9 @@ const sidebars = {
             ["tutorials/LocalTestingPactBroker.html", "Local Testing Pact Broker"],
             ["tutorials/OASService.html", "OAS Service"],
             ["tutorials/testing-gateways.html", "Testing Gateways", [
-                ["tutorials/gateway-cicd.html", "Gateway CI/CD Small Example"],
                 ["tutorials/gateway-setup.html", "Setting Up Gateway Tests"],
                 ["tutorials/gateway-consumer.html", "Writing Consumer Tests"],
+                ["tutorials/gateway-cicd.html", "Gateway CI/CD Small Example"],
             ]],
         ]
     }

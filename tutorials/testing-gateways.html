@@ -13,10 +13,39 @@
 
         <main class="content">
             <h1 id="testing-gateways">Testing Gateways</h1>
-            <p>When you want to test a Consumer-Provider pair that has a gateway as an intermediary, you must instead write the tests to target the gateway. Thus the direct link gets broken and instead you end up with two pairs, where the gateway is the Provider of the original Consumer and the Consumer of the original Provider. When the gateway receives a contract for verification, it will automatically transform it into a contract that it can pass on to the original Provider. From the point of view of the Consumer, the process is therefore almost exactly the same as it would have been without the gateway. </p>
-            <p>Setting up contract testing for the gateway is a one-time endeavour. Follow this guide for instructions on how to do that.</p>
-            <p>To learn how to write tests that target a provider through a gateway, follow this guide.</p>
+
+            <p>
+                When you want to test a Consumer-Provider pair that has a gateway as an intermediary, you must instead write the tests to target the gateway. Thus the direct link gets broken and instead you end up with two pairs, where the gateway is the Provider of the original Consumer and the Consumer of the original Provider. When the gateway receives a contract for verification, it will automatically transform it into a contract that it can pass on to the original Provider. From the point of view of the Consumer, the process is therefore almost exactly the same as it would have been without the gateway.
+            </p>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>
+                        Setting up contract testing for the gateway is a one-time endeavour.
+                        Follow the
+                        <a href="https://practicalpact.github.io/tutorials/gateway-setup.html">
+                            gateway setup guide
+                        </a> for instructions on how to do that.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>
+                        To learn how to write tests that target a Provider through a gateway, follow the
+                        <a href="https://practicalpact.github.io/tutorials/gateway-consumer.html">
+                            gateway Consumer guide
+                        </a>.
+                    </p>
+                </div>
+            </div>
+            <div class="info-box"> <div class="info-icon">i</div> <div> <p> To see a small example of how the gateway workflow works in CI/CD, see the <a href="https://practicalpact.github.io/tutorials/gateway-cicd.html"> gateway CI/CD example </a>. </p> </div> </div>
         </main>
+
+
     </div>
     <div id="overlay" onclick="closeImage()">
         <img id="overlay-img" alt="Expanded image">
