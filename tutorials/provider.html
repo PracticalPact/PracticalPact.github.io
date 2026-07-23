@@ -104,7 +104,7 @@
             <h1 id="local-test-environment">Local test environment</h1>
             <p>Your organisation has a centralised Broker, which all services communicate with. Consumers upload their contracts and Providers download them. You can find it at <a href="https://pact-broker-dev.dsservice.eu/">https://pact-broker-dev.dsservice.eu/</a>. You do not need to know more about the Broker now, but if you at some point get confused about it, you can read more <a href="https://practicalpact.github.io/pages/broker.html">here</a>. For this guide, we will use a local Broker so you do not need to worry about breaking anything.</p>
             <p>Additionally, in a “real” scenario, your Provider would likely already have one or more Contracts from Consumers that are waiting to be verified. Whether or not that is currently true for your Provider, we will simplify by using an example contract that you have full control over.</p>
-            <p>You will therefore create your own contract using <strong>the Pact Contract Builder</strong> (which is available at <code>localhost:3000</code> after starting the Docker Compose setup below). <strong>The Pact Contract Builder</strong> allows you to manually define a contract by entering the required Scenarios and parameters, without needing to implement an actual Consumer application.</p>
+            <p>You will therefore create your own contract using <strong>the Pact Contract Builder</strong> (which is available at <code>localhost:3000</code> after starting the Docker Compose setup below). <strong>The Pact Contract Builder</strong> allows you to manually define a contract by entering the required Interactions and parameters, without needing to implement an actual Consumer application.</p>
             <p>This lets the guide focus entirely on the Provider side of contract testing. It also gives you the power to see what happens if you make changes to the contract. Once everything is working locally, you will move on to using the central Broker and contracts published by real Consumers.</p>
             <p>To set up the local environment, perform the following steps.</p>
             <h2 id="docker">Docker</h2>
@@ -223,7 +223,7 @@
             </figure>
 
             <h3 id="running-example-contract">Running Example</h3>
-            <p>For the example, we will create these three Scenarios.</p>
+            <p>For the example, we will create these three Interactions.</p>
 
             <button type="button" class="expandable-button">Images</button>
             <div class="expandable-content">

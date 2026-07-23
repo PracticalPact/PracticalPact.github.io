@@ -15,9 +15,108 @@
             <h1>Tutorials</h1>
 
             <p>
-                These tutorials explain how to set up Consumer-Driven Contract Testing for Consumers, Providers, and gateways. Some tutorials shows required code snippets and other setup details, while others are more general and explain the concepts behind the method.
+                This guide takes you through the implementation of Consumer-Driven Contract Testing
+                (CDCT) for a Consumer, a Provider, or both. If you are unfamiliar with these terms,
+                read this <a href="../pages/cdct.html">short introduction to CDCT</a> before continuing.
             </p>
+
+            <p>
+                First, decide whether you want to implement CDCT for a Consumer or a Provider.
+                Then choose a service that you understand well and that fulfils the chosen role.
+                The examples below can help you decide.
+            </p>
+
+            <p>
+                If you are unsure which role to choose, start with the service you understand best
+                and select the option that describes how it behaves in the interaction.
+            </p>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>
+                        If you want to implement CDCT for both Consumers and Providers, we recommend
+                        starting with the Provider tutorial and then continuing with the Consumer tutorial.
+                    </p>
+                </div>
+            </div>
+
+            <h2>Choose a role</h2>
+
+            <p>Is your service a Consumer, a Provider, or both?</p>
+
+            <div class="info-box">
+                <div class="info-icon">C</div>
+                <div>
+                    <h3>
+                        <a href="https://PracticalPact.github.io/tutorials/create-consumer-contract.html">
+                            Consumer
+                        </a>
+                    </h3>
+
+                    <p>
+                        A Consumer makes requests to a Provider. It initiates the interaction by sending
+                        HTTP requests.
+                    </p>
+
+                    <p>Examples include:</p>
+
+                    <ul>
+                        <li>Front-end applications</li>
+                        <li>Websites</li>
+                        <li>Mobile applications</li>
+                        <li>Services that call other services</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">P</div>
+                <div>
+                    <h3>
+                        <a href="https://practicalpact.github.io/tutorials/provider.html">
+                            Provider
+                        </a>
+                    </h3>
+
+                    <p>
+                        A Provider receives requests from a Consumer. It processes or retrieves data
+                        and sends a response back to the Consumer.
+                    </p>
+
+                    <p>Examples include:</p>
+
+                    <ul>
+                        <li>APIs</li>
+                        <li>Back-end services</li>
+                        <li>Services that expose data or functionality</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">B</div>
+                <div>
+                    <h3>Both</h3>
+
+                    <p>
+                        A service can interact with several other services, but in each individual
+                        interaction it acts as either a Consumer or a Provider.
+                    </p>
+
+                    <p>
+                        For example, a Backend for Frontend may be a Provider for a front-end application
+                        while also being a Consumer of other back-end services.
+                    </p>
+
+                    <p>
+                        In this situation, start by choosing one interaction and identify the role that
+                        the service has within that interaction.
+                    </p>
+                </div>
+            </div>
         </main>
+
     </div>
     <div id="overlay" onclick="closeImage()">
         <img id="overlay-img" alt="Expanded image">

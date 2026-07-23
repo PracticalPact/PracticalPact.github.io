@@ -3,12 +3,12 @@ const sidebars = {
         title: "Practical Pact - A Consumer Driven Contract Testing method",
         links: [
             ["index.html", "Welcome"],
+            ["pages/getting-started.html", "Getting Started"],
             ["pages/cdct.html", "CDCT Concept"],
             ["pages/cdct-briefly.html", "CDCT Briefly"],
-            ["pages/setup.html", "Project Setup"],
             ["pages/contracts-briefly.html", "Contracts Briefly"],
-            ["pages/cicd.html", "CI/CD"],
             ["pages/broker.html", "Pact Broker"],
+            ["pages/cicd.html", "CI/CD"],
         ]
     },
     tutorials: {

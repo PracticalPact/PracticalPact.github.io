@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,25 +16,131 @@
         <main class="content">
             <h1>CI/CD Integration</h1>
 
-            <p>
-                Continuous Integration (CI) and Continuous Deployment (CD) are practices used to automate important parts of software development. CI focuses on automatically building and testing code whenever developers make changes. This helps teams find errors early, before the changes are merged or released. CD extends this process by preparing or deploying tested changes to an environment. Together, CI/CD creates a more consistent development process and reduces the amount of manual work needed to build, test, and release software.
+            <p class="intro">
+                CI/CD automates how software is built, tested, and released. It provides fast
+                feedback on code changes and helps teams apply the same checks every time.
             </p>
 
-            <p>
-                CI/CD is especially useful in systems with several services and development teams. Changes can be made and released independently, which makes it important to check that each change still works with the rest of the system. Automated pipelines provide fast feedback and apply the same checks every time. This reduces the risk of human error and makes it easier to release changes more often.
-            </p>
+            <h2>What is CI/CD?</h2>
+
+            <div class="info-box">
+                <div class="info-icon">CI</div>
+                <div>
+                    <h3>Continuous Integration</h3>
+                    <p>
+                        Continuous Integration automatically builds and tests the code whenever
+                        developers make changes. This helps teams find errors before the changes
+                        are merged or released.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">CD</div>
+                <div>
+                    <h3>Continuous Deployment</h3>
+                    <p>
+                        Continuous Deployment extends this process by preparing or deploying
+                        tested changes to an environment. This reduces manual work and makes
+                        releases more consistent.
+                    </p>
+                </div>
+            </div>
+
+            <h2>Why is CI/CD important?</h2>
 
             <p>
-                CDCT with Pact is designed to be part of these pipelines. Consumer tests should run in the consumer repository, while provider verification should run in the provider repository. Contracts and verification results can then be published to the Pact Broker as part of the normal CI process. Before deployment, the pipeline can use the Broker to check whether the application version is compatible with the versions already running in the target environment. This makes contract testing part of the normal development and deployment process instead of a separate manual activity.
+                CI/CD is especially useful in systems with several services and development teams.
+                Services can be changed and released independently, so each change must be checked
+                against the rest of the system.
             </p>
 
+            <ul>
+                <li>Provides fast feedback on code changes</li>
+                <li>Runs the same checks for every release</li>
+                <li>Reduces manual work and human error</li>
+                <li>Makes it easier to release changes more often</li>
+            </ul>
+
+            <h2>How CDCT fits into CI/CD</h2>
+
             <p>
-                Practical Pact provides a set of GitHub Actions that simplify parts of the CI/CD setup introduced in this method. These actions support tasks such as publishing contracts, checking deployment compatibility, recording deployments, and configuring Pact Broker webhooks. More information about the available actions can be found in the
-                <a href="https://github.com/PracticalPact/pactbroker-webhook-action">
-                    Practical Pact GitHub repository
-                </a>.
-                Each action is described in its respective README file.
+                CDCT with Pact is designed to run as part of the normal CI/CD workflow.
+                Consumer tests run in the Consumer repository, while Provider verification
+                runs in the Provider repository.
             </p>
+
+            <div class="info-box">
+                <div class="info-icon">1</div>
+                <div>
+                    <h3>Consumer pipeline</h3>
+                    <p>
+                        The Consumer runs its contract tests and publishes the generated contracts
+                        to the Pact Broker.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">2</div>
+                <div>
+                    <h3>Provider pipeline</h3>
+                    <p>
+                        The Provider retrieves the published contracts, verifies them, and
+                        publishes the verification results to the Pact Broker.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">3</div>
+                <div>
+                    <h3>Deployment check</h3>
+                    <p>
+                        Before deployment, the pipeline asks the Pact Broker whether the application
+                        version is compatible with the versions already running in the target
+                        environment.
+                    </p>
+                </div>
+            </div>
+
+            <p>
+                This makes contract testing part of the normal development and deployment process
+                instead of a separate manual activity.
+            </p>
+
+            <h2>Practical Pact GitHub Actions</h2>
+
+            <p>
+                Practical Pact provides GitHub Actions that simplify several parts of the CI/CD
+                setup used by this method.
+            </p>
+
+            <ul>
+                <li>Publishing contracts to the Pact Broker</li>
+                <li>Checking whether an application version can be deployed</li>
+                <li>Recording deployments in the Pact Broker</li>
+                <li>Creating and managing Pact Broker webhooks</li>
+            </ul>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>
+                        The actions are examples and may need to be adapted to match your
+                        organisation’s CI/CD platform, repository structure, security requirements,
+                        and infrastructure.
+                    </p>
+
+                    <p>
+                        See the
+                        <a href="https://github.com/PracticalPact/pactbroker-webhook-action">
+                            Practical Pact GitHub repository
+                        </a>
+                        for the available actions. Each action is documented in its own README file.
+                    </p>
+                </div>
+            </div>
         </main>
 
     </div>
@@ -42,3 +149,4 @@
     <script>renderNav('docs', '../')</script>
 </body>
 </html>
+```

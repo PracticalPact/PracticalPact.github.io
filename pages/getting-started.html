@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Setup</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="topbar"></div>
+
+    <div class="layout">
+
+        <nav class="sidebar"></nav>
+
+        <main class="content">
+            <h1>Getting started with Practical Pact</h1>
+
+            <p>
+                Implementing Consumer-Driven Contract Testing requires changes to your test projects,
+                CI/CD pipelines, and the way Consumers and Providers coordinate changes.
+                Practical Pact provides a set of tutorials that guide you through these steps.
+            </p>
+
+            <p> 
+            
+            We recommend adapting the tutorials into an organisation-specific implementation guide before assigning the work to individual teams.
+            This guide can include examples that work with the organisation’s programming languages, CI/CD platform, Pact Broker, repository structure, security requirements, and infrastructure.
+            
+            </p> 
+            
+            <p> Teams can then use this guide as a shared reference when implementing CDCT. This helps ensure that they follow the same naming conventions, workflows, deployment checks, and technical setup. </p>
+
+            <h2>How to get started</h2>
+
+            <ol>
+                <li>
+                    Choose a service and identify whether it acts as a Consumer, a Provider, or both.
+                </li>
+                <li>
+                    Follow the relevant tutorial and implement the first contract test locally.
+                </li>
+                <li>
+                    Configure the Consumer and Provider names used in the contract.
+                </li>
+                <li>
+                    Publish the generated contract to a Pact Broker.
+                </li>
+                <li>
+                    Configure the Provider to verify the published contract.
+                </li>
+                <li>
+                    Add contract testing and deployment checks to the relevant CI/CD pipelines.
+                </li>
+                <li>
+                    Repeat the process for additional service interactions.
+                </li>
+            </ol>
+
+            <div class="info-box">
+                <div class="info-icon">i</div>
+                <div>
+                    <p>
+                        Start with one well-understood interaction between two services.
+                        This makes it easier to learn the workflow before introducing CDCT across
+                        more teams and services.
+                    </p>
+                </div>
+            </div>
+
+            <h2>Follow the tutorials</h2>
+
+            <p>
+                The tutorials cover the setup of Consumers, Providers, gateways, the Pact Broker,
+                and CI/CD workflows. Start with the role that best matches the service you have chosen.
+            </p>
+
+            <p>
+                Continue to the
+                <a href="https://practicalpact.github.io/tutorials/index.html">
+                    Practical Pact tutorials
+                </a>
+                to begin the implementation.
+            </p>
+        </main>
+
+    </div>
+    <div id="overlay" onclick="closeImage()">
+        <img id="overlay-img" alt="Expanded image">
+    </div>
+    <script src="../js/scripts.js"></script>
+    <script src="../js/nav.js"></script>
+    <script>renderNav('docs', '../')</script>
+
+</body>
+</html>
