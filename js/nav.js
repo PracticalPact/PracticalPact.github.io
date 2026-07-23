@@ -4,8 +4,8 @@ const sidebars = {
         links: [
             ["index.html", "Welcome"],
             ["pages/getting-started.html", "Getting Started"],
-            ["pages/cdct.html", "CDCT With Pact"],
             ["pages/cdct-briefly.html", "CDCT Briefly"],
+            ["pages/cdct.html", "CDCT With Pact"],
             ["pages/contracts-briefly.html", "Contracts Briefly"],
             ["pages/broker.html", "Pact Broker"],
             ["pages/cicd.html", "CI/CD"],
