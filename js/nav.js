@@ -14,7 +14,7 @@ const sidebars = {
     tutorials: {
         title: "Tutorials",
         links: [
-            ["tutorials/index.html", "Getting Started"],
+            ["tutorials/index.html", "Introduction"],
             ["tutorials/CDCTWorkflow.html", "CDCT Workflow"],
             ["tutorials/ContractError.html", "Contract Error"],
             ["tutorials/create-consumer-contract.html", "Create Consumer Contract"],
